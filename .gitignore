@@ -1,0 +1,80 @@
+# Visual Studio Code
+.vscode/
+
+# JetBrains Rider
+.idea/
+
+# User-specific files
+*.user
+*.suo
+*.sln.docstates
+
+# Build results
+bin/
+obj/
+
+# .NET Core
+**/bin/
+**/obj/
+
+# .NET Core project-specific files
+*.exe
+*.pdb
+*.dll
+*.log
+*.json
+
+# .NET Core projects cache directory
+project.lock.json
+project.fragment.lock.json
+packages/
+*.cache
+
+# ASP.NET Core Scaffolding
+*.csproj.user
+*.editorconfig
+
+# Database Migration
+Migrations/
+
+# NuGet
+*.nuget.props
+*.nuget.targets
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+
+# Local History for Rider
+.localhistory/
+
+# ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# Visual Studio for Mac
+.vs/
+
+# Rider
+.idea/
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
