@@ -11,11 +11,7 @@ public class AppDbContext : DbContext
     {
         _logger = logger;
     }
-    public void SomeMethod()
-    {
-        // Example method where you can log information
-        _logger.LogInformation("Executing SomeMethod...");
-    }
+
     // DbSet property
     public DbSet<MonthlyBilling> MonthlyBillings { get; set; }
     public DbSet<Consumer> Consumers { get; set; }
@@ -63,7 +59,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Consumer>()
             .HasOne(gs => gs.GridSection)
             .WithMany()
-            .HasForeignKey(gs => gs.ConsumerID);
+            .HasForeignKey(gs => gs.GridSectionID);
 
         base.OnModelCreating(modelBuilder);
     }

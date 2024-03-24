@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CoolingGridManager.Controllers.Customer
 {
-    [Area("Customer")]
+    [Area("customer")]
     [Route("api/customer/[controller]/{id}")]
     public partial class GetCustomerByIdController : Controller
     {
