@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 // using CoolingGridManager.Services;
 using CoolingGridManager.Models;
+
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +12,6 @@ namespace CoolingGridManager.Controllers.Customer
     public class CreateCustomerController : Controller
     {
         private readonly ILogger<CreateCustomerController> _logger;
-        // private readonly ConsumerService _consumerService;
         private readonly IHostEnvironment _env;
         private readonly AppDbContext _context;
         public CreateCustomerController(ILogger<CreateCustomerController> logger, AppDbContext context, /*ConsumerService consumerService,*/ IHostEnvironment env)

@@ -13,6 +13,9 @@
 bin/
 obj/
 
+# Logs
+logs/
+
 # .NET Core
 **/bin/
 **/obj/

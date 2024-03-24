@@ -2,7 +2,9 @@ using Microsoft.Extensions.Configuration;
 using Serilog;
 using Microsoft.EntityFrameworkCore;
 using static ConfigurationHelper;
+using CoolingGridManager.Services;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+
 
 // using CoolingGridManager.Services;
 
@@ -19,9 +21,8 @@ builder.Host.UseSerilog((context, configuration) =>
 // Register the logger as a service
 builder.Services.AddSingleton<Serilog.ILogger>(_ => Log.Logger);
 
+builder.Services.AddSingleton<ExceptionResponse>();
 
-
-builder.Services.AddScoped<ConsumerService>();
 
 // Configure database
 var connectionString = ConfigurationHelper.GetDatabaseConnectionString();
@@ -30,6 +31,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Add support for controllers
 builder.Services.AddControllers();
+
+builder.Services.AddScoped<ConsumerService>();
 
 var app = builder.Build();
 
@@ -45,7 +48,7 @@ app.UseSerilogRequestLogging();
 
 app.UseRouting();
 
-app.MapAreaRoute("customer", "{controller}/{action=Index}/{id?}");
+app.MapAreaRoute("customer", "{controller}/{action=Index}/{consumerId?}");
 
 // app.MapAreaControllerRoute(
 //     name: "consumption",
