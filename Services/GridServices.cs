@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using CoolingGridManager.Models;
-using Microsoft.EntityFrameworkCore;
+using CoolingGridManager.Exceptions;
 
 namespace CoolingGridManager.Services
 {

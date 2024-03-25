@@ -19,28 +19,32 @@ public class ExceptionResponse : ControllerBase
         _env = env;
     }
 
-    public ActionResult ExceptionResponseHandle(Exception ex, string internalResponse, ExceptionType exception)
+    public ActionResult ExceptionResponseHandle(Exception ex, string internalMessage, string officialMessage, ExceptionType exception)
     {
-        var officialResponse = ExceptionParser.ParseException(ex);
+        var exceptionInformation = ExceptionParser.ParseException(ex);
+        var internalResponseMessage = new { exception = exceptionInformation, InternalMessage = internalMessage, OfficialMessage = officialMessage };
         if (_env.IsDevelopment())
         {
             switch (exception)
             {
                 case ExceptionType.NotFound:
-                    Log.Warning("Exception: " + officialResponse);
-                    return NotFound(officialResponse);
+                    Log.Warning("Exception: " + internalResponseMessage);
+                    return NotFound(internalResponseMessage);
                 case ExceptionType.Unauthorized:
-                    Log.Warning("Exception: " + officialResponse);
-                    return Unauthorized(officialResponse);
+                    Log.Warning("Exception: " + internalResponseMessage);
+                    return Unauthorized(internalResponseMessage);
                 case ExceptionType.BadRequest:
                 case ExceptionType.Format:
-                    Log.Warning("Exception: " + officialResponse);
-                    return BadRequest(officialResponse);
+                    Log.Warning("Exception: " + internalResponseMessage);
+                    return BadRequest(internalResponseMessage);
                 case ExceptionType.General:
-                    Log.Warning("Exception: " + officialResponse);
-                    return StatusCode(500, new { message = officialResponse });
+                    Log.Warning("Exception: " + internalResponseMessage);
+                    return StatusCode(500, new
+                    {
+                        message = internalResponseMessage
+                    });
                 default:
-                    return StatusCode(500, new { message = officialResponse });
+                    return StatusCode(500, new { message = internalResponseMessage });
             }
         }
         else
@@ -48,20 +52,21 @@ public class ExceptionResponse : ControllerBase
             switch (exception)
             {
                 case ExceptionType.NotFound:
-                    Log.Warning("Exception: " + officialResponse);
-                    return NotFound(internalResponse);
+                    Log.Warning("Exception: " + internalResponseMessage);
+                    return NotFound(officialMessage);
                 case ExceptionType.Unauthorized:
-                    Log.Warning("Exception: " + officialResponse);
-                    return Unauthorized(internalResponse);
+                    Log.Warning("Exception: " + internalResponseMessage);
+                    return Unauthorized(officialMessage);
                 case ExceptionType.BadRequest:
                 case ExceptionType.Format:
-                    Log.Warning("Exception: " + officialResponse);
-                    return BadRequest(internalResponse);
+                    Log.Warning("Exception: " + internalResponseMessage);
+                    return BadRequest(officialMessage);
                 case ExceptionType.General:
-                    Log.Warning("Exception: " + officialResponse);
-                    return StatusCode(500, new { message = internalResponse });
+                    Log.Warning("Exception: " + internalResponseMessage);
+                    return StatusCode(500, new { message = officialMessage });
                 default:
-                    return StatusCode(500, new { message = internalResponse });
+                    Log.Warning("Exception: " + internalResponseMessage);
+                    return StatusCode(500, new { message = officialMessage });
             }
         }
     }

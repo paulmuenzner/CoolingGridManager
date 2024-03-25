@@ -35,6 +35,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<ConsumerService>();
 builder.Services.AddScoped<GridService>();
+builder.Services.AddScoped<GridSectionService>();
 
 var app = builder.Build();
 
@@ -50,8 +51,10 @@ app.UseSerilogRequestLogging();
 
 app.UseRouting();
 
-app.MapAreaRoute("consumers", "{controller}/{action=Index}/{consumerId?}");
+app.MapAreaRoute("consumers", "{controller}/{index}");
+app.MapAreaRoute("gridsections", "{controller}/{index}");
 app.MapAreaRoute("grids", "{controller}/{action=Index}/{consumerId?}");
+
 
 // app.MapAreaControllerRoute(
 //     name: "consumption",

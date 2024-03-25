@@ -1,15 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
 using CoolingGridManager.Services;
 using System.ComponentModel.DataAnnotations;
+using CoolingGridManager.ResponseHandler;
 
 public class GridModel
 {
     [Required]
-    [MaxLength(1)]
     public required string GridName { get; set; }
 }
 
-namespace CoolingGridManager.Controllers.Grid
+namespace CoolingGridManager.Controllers.GridController
 {
     [Area("grids")]
     [Route("api/grids/[controller]")]
@@ -29,15 +29,15 @@ namespace CoolingGridManager.Controllers.Grid
             try
             {
                 var gridId = await _gridService.AddGrid(model.GridName);
-                return Ok(new { GridID = gridId }); // Return the primary key of the newly added grid
+                return ResponseFormatter.FormatSuccessResponse(HttpStatus.OK, new { GridID = gridId }, $"New grid with name {model.GridName} and id {gridId} added");
             }
             catch (FormatException ex)
             {
-                return _exceptionResponse.ExceptionResponseHandle(ex, "An unexpected error occurred.", ExceptionType.Format);
+                return _exceptionResponse.ExceptionResponseHandle(ex, "Grid name already exists. Choose a different name.", "Grid name already exists. Choose a different name.", ExceptionType.Format);
             }
             catch (Exception ex)
             {
-                return _exceptionResponse.ExceptionResponseHandle(ex, "An unexpected error occurred.", ExceptionType.General);
+                return _exceptionResponse.ExceptionResponseHandle(ex, "An unexpected error occurred.", "Adding new grid currently not possible.", ExceptionType.General);
             }
 
         }

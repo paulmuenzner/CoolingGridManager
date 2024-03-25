@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Identity;
-using System.Threading.Tasks;
+using CoolingGridManager.Exceptions;
 using CoolingGridManager.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,8 +17,8 @@ namespace CoolingGridManager.Services
             _logger = logger;
         }
 
-        // CREATE CONSUMER
-        public async Task<Consumer> CreateConsumer(Consumer model)
+        // ADD CONSUMER
+        public async Task<Consumer> Add(Consumer model)
         {
             try
             {

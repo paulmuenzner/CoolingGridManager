@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using CoolingGridManager.Services;
-
+using CoolingGridManager.Exceptions;
 
 namespace CoolingGridManager.Controllers.Consumers
 {
@@ -28,11 +28,11 @@ namespace CoolingGridManager.Controllers.Consumers
             }
             catch (NotFoundException ex)
             {
-                return _exceptionResponse.ExceptionResponseHandle(ex, "No consumer found.", ExceptionType.NotFound);
+                return _exceptionResponse.ExceptionResponseHandle(ex, "No consumer found.", "No consumer found.", ExceptionType.NotFound);
             }
             catch (Exception ex)
             {
-                return _exceptionResponse.ExceptionResponseHandle(ex, "An unexpected error occurred.", ExceptionType.General);
+                return _exceptionResponse.ExceptionResponseHandle(ex, "An unexpected error occurred.", "Action currently not possible.", ExceptionType.General);
             }
             // return Ok(consumer);
             // return Ok($"Retrieved customer with ID: {consumerId}");
