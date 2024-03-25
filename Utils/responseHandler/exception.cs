@@ -1,5 +1,7 @@
-using System;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 
+// Not Found
 public class NotFoundException : Exception
 {
     // Additional properties to provide more context about the exception
@@ -16,6 +18,7 @@ public class NotFoundException : Exception
         QueryParameter = queryParameter;
     }
 
+
     // Override the ToString method to include the additional properties in the exception message
     public override string ToString()
     {
@@ -23,6 +26,21 @@ public class NotFoundException : Exception
     }
 }
 
+// Format
+public class FormatException : Exception
+{
+
+    public DateTime Timestamp { get; } = DateTime.UtcNow;
+    public FormatException(string message) : base(message)
+    {
+    }
+
+    // Override the ToString method to include the additional properties in the exception message
+    public override string ToString()
+    {
+        return $"Format Exception on [{Timestamp:yyyy-MM-dd HH:mm:ss.fff}]. Message: {Message}\n{StackTrace}";
+    }
+}
 
 /// //////////////////////
 // VALIDATION

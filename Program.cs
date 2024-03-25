@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using static ConfigurationHelper;
 using CoolingGridManager.Services;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Diagnostics;
 
 
 // using CoolingGridManager.Services;
@@ -33,6 +34,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddControllers();
 
 builder.Services.AddScoped<ConsumerService>();
+builder.Services.AddScoped<GridService>();
 
 var app = builder.Build();
 
@@ -48,7 +50,8 @@ app.UseSerilogRequestLogging();
 
 app.UseRouting();
 
-app.MapAreaRoute("customer", "{controller}/{action=Index}/{consumerId?}");
+app.MapAreaRoute("consumers", "{controller}/{action=Index}/{consumerId?}");
+app.MapAreaRoute("grids", "{controller}/{action=Index}/{consumerId?}");
 
 // app.MapAreaControllerRoute(
 //     name: "consumption",
@@ -60,10 +63,6 @@ app.MapAreaRoute("customer", "{controller}/{action=Index}/{consumerId?}");
 //     areaName: "billing",
 //     pattern: "api/billing/{controller}/{action=Index}/{id?}");
 
-// app.MapAreaControllerRoute(
-//     name: "grids",
-//     areaName: "grids",
-//     pattern: "api/grids/{controller}/{action=Index}/{id?}");
 
 // app.MapAreaControllerRoute(
 //     name: "gridsections",

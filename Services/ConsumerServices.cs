@@ -42,7 +42,7 @@ namespace CoolingGridManager.Services
             if (consumer == null)
             {
 
-                var message = string.Format("Origin is GetConsumerById");
+                var message = string.Format($"No consumer found with id {consumerId}. Result is null.");
                 throw new NotFoundException(message, "Consumer", consumerId);
 
             }

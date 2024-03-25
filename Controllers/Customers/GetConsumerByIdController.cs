@@ -2,21 +2,23 @@ using Microsoft.AspNetCore.Mvc;
 using CoolingGridManager.Services;
 
 
-namespace CoolingGridManager.Controllers.Customer
+namespace CoolingGridManager.Controllers.Consumers
 {
-    [Area("customer")]
-    [Route("api/customer/[controller]/{consumerId}")]
-    public partial class GetCustomerByIdController : Controller
+    [Area("consumers")]
+    [Route("api/consumers/[controller]/{consumerId}")]
+    public partial class GetConsumerByIdController : Controller
     {
-        private readonly ILogger<GetCustomerByIdController> _logger;
+        private readonly ILogger<GetConsumerByIdController> _logger;
         private readonly ConsumerService _consumerService;
         private readonly ExceptionResponse _exceptionResponse;
-        public GetCustomerByIdController(ExceptionResponse exceptionResponse, ILogger<GetCustomerByIdController> logger, ConsumerService consumerService)
+        public GetConsumerByIdController(ExceptionResponse exceptionResponse, ILogger<GetConsumerByIdController> logger, ConsumerService consumerService)
         {
             _consumerService = consumerService;
             _exceptionResponse = exceptionResponse;
             _logger = logger;
         }
+
+        [HttpGet]
         public async Task<IActionResult> GetConsumerById(int consumerId)
         {
             try
@@ -26,11 +28,11 @@ namespace CoolingGridManager.Controllers.Customer
             }
             catch (NotFoundException ex)
             {
-                return _exceptionResponse.ExceptionResponseHandle(ex.ToString(), "No consumer found.", ExceptionType.NotFound);
+                return _exceptionResponse.ExceptionResponseHandle(ex, "No consumer found.", ExceptionType.NotFound);
             }
             catch (Exception ex)
             {
-                return _exceptionResponse.ExceptionResponseHandle(ex.ToString(), "An unexpected error occurred.", ExceptionType.General);
+                return _exceptionResponse.ExceptionResponseHandle(ex, "An unexpected error occurred.", ExceptionType.General);
             }
             // return Ok(consumer);
             // return Ok($"Retrieved customer with ID: {consumerId}");

@@ -6,6 +6,7 @@ public enum ExceptionType
 {
     NotFound,
     Unauthorized,
+    BadRequest, Format,
     General
 }
 
@@ -18,8 +19,9 @@ public class ExceptionResponse : ControllerBase
         _env = env;
     }
 
-    public ActionResult ExceptionResponseHandle(string officialResponse, string internalResponse, ExceptionType exception)
+    public ActionResult ExceptionResponseHandle(Exception ex, string internalResponse, ExceptionType exception)
     {
+        var officialResponse = ExceptionParser.ParseException(ex);
         if (_env.IsDevelopment())
         {
             switch (exception)
@@ -29,7 +31,11 @@ public class ExceptionResponse : ControllerBase
                     return NotFound(officialResponse);
                 case ExceptionType.Unauthorized:
                     Log.Warning("Exception: " + officialResponse);
-                    return Unauthorized("Exception: " + officialResponse);
+                    return Unauthorized(officialResponse);
+                case ExceptionType.BadRequest:
+                case ExceptionType.Format:
+                    Log.Warning("Exception: " + officialResponse);
+                    return BadRequest(officialResponse);
                 case ExceptionType.General:
                     Log.Warning("Exception: " + officialResponse);
                     return StatusCode(500, new { message = officialResponse });
@@ -47,6 +53,10 @@ public class ExceptionResponse : ControllerBase
                 case ExceptionType.Unauthorized:
                     Log.Warning("Exception: " + officialResponse);
                     return Unauthorized(internalResponse);
+                case ExceptionType.BadRequest:
+                case ExceptionType.Format:
+                    Log.Warning("Exception: " + officialResponse);
+                    return BadRequest(internalResponse);
                 case ExceptionType.General:
                     Log.Warning("Exception: " + officialResponse);
                     return StatusCode(500, new { message = internalResponse });

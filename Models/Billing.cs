@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CoolingGridManager.Models
 {
     [Table("MonthlyBilling")]
-    public class MonthlyBilling
+    public class Billing
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -32,7 +32,7 @@ namespace CoolingGridManager.Models
 
         // Additional attributes...
 
-        public MonthlyBilling()
+        public Billing()
         {
             Consumer = null;
             BillingMonth = 0;

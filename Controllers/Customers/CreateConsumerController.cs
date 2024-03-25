@@ -5,16 +5,16 @@ using CoolingGridManager.Models;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 
-namespace CoolingGridManager.Controllers.Customer
+namespace CoolingGridManager.Controllers.Consumers
 {
-    [Area("Customer")]
-    [Route("customer")]
-    public class CreateCustomerController : Controller
+    [Area("consumers")]
+    [Route("consumers")]
+    public class CreateConsumersController : Controller
     {
-        private readonly ILogger<CreateCustomerController> _logger;
+        private readonly ILogger<CreateConsumersController> _logger;
         private readonly IHostEnvironment _env;
         private readonly AppDbContext _context;
-        public CreateCustomerController(ILogger<CreateCustomerController> logger, AppDbContext context, /*ConsumerService consumerService,*/ IHostEnvironment env)
+        public CreateConsumersController(ILogger<CreateConsumersController> logger, AppDbContext context, /*ConsumerService consumerService,*/ IHostEnvironment env)
         {
             _context = context;
             _logger = logger;
