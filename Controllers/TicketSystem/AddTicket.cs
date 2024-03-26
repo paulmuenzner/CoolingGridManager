@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using CoolingGridManager.Services;
 using CoolingGridManager.Models;
 using CoolingGridManager.ResponseHandler;
+using FluentValidation.Results;
 
 
 namespace CoolingGridManager.Controllers.TicketsController
@@ -24,6 +25,17 @@ namespace CoolingGridManager.Controllers.TicketsController
         {
             try
             {
+                TicketSolveRequestValidator validator = new();
+                ValidationResult result = validator.Validate(ticket);
+                _logger.Error($"ValidationResult1 {result}");
+                _logger.Error($"ValidationResult2 {result.IsValid}");
+                if (!result.IsValid)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        Console.WriteLine($"Error on the property {error.PropertyName}: {error.ErrorMessage}");
+                    }
+                }
                 var newTicket = await _ticketService.AddTicket(ticket);
                 return ResponseFormatter.FormatSuccessResponse(HttpStatus.OK, new { Ticket = newTicket }, $"New ticket with id {newTicket.TicketId} added");
             }

@@ -37,7 +37,7 @@ namespace CoolingGridManager.Services
             {
 
                 var message = string.Format($"No ticket found with id {ticketId}.");
-                throw new NotFoundException(message, "Consumer", ticketId);
+                throw new NotFoundException(message, "AddTicket", ticketId);
 
             }
             return ticket;
@@ -52,7 +52,7 @@ namespace CoolingGridManager.Services
 
                 if (ticket == null)
                 {
-                    throw new NotFoundException($"Ticket with ID {ticketId} not found.", "Consumer", ticketId);
+                    throw new NotFoundException($"Ticket with ID {ticketId} not found.", "UpdateStatusTicket", ticketId);
                 }
                 // Add a new status change object to the status history array
                 ticket.StatusHistory.Add(new StatusChange
@@ -70,7 +70,7 @@ namespace CoolingGridManager.Services
             catch (Exception ex)
             {
                 var message = string.Format("Exception: {ex}", ex.ToString());
-                throw new TryCatchException(message, "AddTicket");
+                throw new TryCatchException(message, "UpdateStatusTicket");
             }
         }
     }

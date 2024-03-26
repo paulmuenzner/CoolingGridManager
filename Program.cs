@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using System.Text.Json.Serialization;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using static CoolingGridManager.Controllers.TicketsController.UpdateStatusController;
 
 
 // using CoolingGridManager.Services;
@@ -38,8 +39,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddControllers().AddJsonOptions(x =>
    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
-// Add validation service
 builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
+
+// Add validation service
+//builder.Services.AddValidatorsFromAssemblyContaining<TicketSolveRequestValidator>();
+builder.Services.AddScoped<TicketSolveRequestValidator>();
 
 builder.Services.AddScoped<ConsumerService>();
 builder.Services.AddScoped<GridService>();
