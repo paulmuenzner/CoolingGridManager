@@ -5,11 +5,10 @@ using CoolingGridManager.Models;
 // dotnet ef database update
 public class AppDbContext : DbContext
 {
-    private readonly ILogger<AppDbContext> _logger;
 
-    public AppDbContext(ILogger<AppDbContext> logger)
+
+    public AppDbContext()
     {
-        _logger = logger;
     }
 
     // DbSet property
@@ -18,11 +17,11 @@ public class AppDbContext : DbContext
     public DbSet<Grid> Grids { get; set; }
     public DbSet<GridSection> GridSections { get; set; }
     public DbSet<Consumption> Consumptions { get; set; }
-    public DbSet<Ticket> Tickets { get; set; }
+    public DbSet<TicketModel> Tickets { get; set; }
 
 
     // Constructor for AppDbContext (optional)
-    public AppDbContext(DbContextOptions<AppDbContext> options, ILogger<AppDbContext> logger) : base(options) { _logger = logger ?? throw new ArgumentNullException(nameof(logger)); }
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
 
     // Additional DbSet properties and configurations can be added here

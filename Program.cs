@@ -5,6 +5,7 @@ using static ConfigurationHelper;
 using CoolingGridManager.Services;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Diagnostics;
+using System.Text.Json.Serialization;
 
 
 // using CoolingGridManager.Services;
@@ -30,12 +31,16 @@ var connectionString = ConfigurationHelper.GetDatabaseConnectionString();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
+
 // Add support for controllers
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(x =>
+   x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+
 
 builder.Services.AddScoped<ConsumerService>();
 builder.Services.AddScoped<GridService>();
 builder.Services.AddScoped<GridSectionService>();
+builder.Services.AddScoped<TicketService>();
 
 var app = builder.Build();
 
@@ -54,6 +59,7 @@ app.UseRouting();
 app.MapAreaRoute("consumers", "{controller}/{index}");
 app.MapAreaRoute("gridsections", "{controller}/{index}");
 app.MapAreaRoute("grids", "{controller}/{action=Index}/{consumerId?}");
+app.MapAreaRoute("tickets", "{controller}/{index}");
 
 
 // app.MapAreaControllerRoute(
@@ -72,10 +78,7 @@ app.MapAreaRoute("grids", "{controller}/{action=Index}/{consumerId?}");
 //     areaName: "gridsections",
 //     pattern: "api/gridsections/{controller}/{action=Index}/{id?}");
 
-// app.MapAreaControllerRoute(
-//     name: "ticketsystem",
-//     areaName: "ticketsystem",
-//     pattern: "api/ticketsystem/{controller}/{action=Index}/{id?}");
+
 
 app.MapGet("/{**slug}", async (context) =>
 {

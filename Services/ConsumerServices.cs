@@ -9,9 +9,9 @@ namespace CoolingGridManager.Services
     {
         private readonly AppDbContext _context;
 
-        private readonly ILogger<ConsumerService> _logger;
+        private readonly Serilog.ILogger _logger;
 
-        public ConsumerService(AppDbContext context, ILogger<ConsumerService> logger)
+        public ConsumerService(AppDbContext context, Serilog.ILogger logger)
         {
             _context = context;
             _logger = logger;
@@ -22,13 +22,22 @@ namespace CoolingGridManager.Services
         {
             try
             {
+                // Retrieve an existing grid section from the context
+                var existingGridSection = await _context.GridSections.FirstOrDefaultAsync();
+                if (existingGridSection == null)
+                {
+                    // Handle the case where no existing grid section is found
+                    throw new InvalidOperationException("No existing grid section found.");
+                }
+                // Assign the existing grid section to the consumer
+                model.GridSection = existingGridSection;
                 _context.Consumers.Add(model);
                 await _context.SaveChangesAsync();
                 return model;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error creating user");
+                _logger.Error(ex, "Error creating user");
                 throw;
             }
         }
@@ -81,14 +90,14 @@ namespace CoolingGridManager.Services
                 }
                 else
                 {
-                    _logger.LogError($"Non-existing user requested. User ID: {id}");
+                    _logger.Error($"Non-existing user requested. User ID: {id}");
                     throw new Exception($"Consumer with ID: {id} not found");
                 }
 
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error retrieving consumer with ID: {id}");
+                _logger.Error(ex, $"Error retrieving consumer with ID: {id}");
                 throw new Exception($"Consumer with ID: {id} not found");
             }
         }

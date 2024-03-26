@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using CoolingGridManager.ResponseHandler;
 using CoolingGridManager.Models;
 using CoolingGridManager.Services;
+using Microsoft.EntityFrameworkCore;
+
 
 
 namespace CoolingGridManager.Controllers.Consumers
@@ -10,15 +12,16 @@ namespace CoolingGridManager.Controllers.Consumers
     [Route("api/consumers/[controller]")]
     public class AddConsumerController : ControllerBase
     {
-        private readonly ILogger<AddConsumerController> _logger;
-
+        private readonly Serilog.ILogger _logger;
+        private readonly IExceptionHandlingService _exceptionHandlingService;
         private readonly ConsumerService _consumerService;
 
         private readonly ExceptionResponse _exceptionResponse;
-        public AddConsumerController(ExceptionResponse exceptionResponse, ILogger<AddConsumerController> logger, ConsumerService consumerService, IHostEnvironment env)
+        public AddConsumerController(IExceptionHandlingService exceptionHandlingService, ExceptionResponse exceptionResponse, Serilog.ILogger logger, ConsumerService consumerService, IHostEnvironment env)
         {
             _logger = logger;
             _consumerService = consumerService;
+            _exceptionHandlingService = exceptionHandlingService;
             _exceptionResponse = exceptionResponse;
         }
 
@@ -30,13 +33,9 @@ namespace CoolingGridManager.Controllers.Consumers
                 var newConsumer = await _consumerService.Add(consumer);
                 return ResponseFormatter.FormatSuccessResponse(HttpStatus.OK, new { Consumer = newConsumer }, $"New consumer with name {newConsumer.LastName} and id {newConsumer.ConsumerID} added");
             }
-            catch (System.FormatException ex)
-            {
-                return _exceptionResponse.ExceptionResponseHandle(ex, "Grid name already exists. Choose a different name.", "Choose a different name.", ExceptionType.Format);
-            }
             catch (Exception ex)
             {
-                return _exceptionResponse.ExceptionResponseHandle(ex, $"An unexpected error occurred. {ex.GetType().Name}", "Acction currently not possible.", ExceptionType.General);
+                return _exceptionHandlingService.HandleException(ex, "The system is currently undergoing updates. Our team is working diligently to complete this task as quickly as possible.", "Internal exception. Consumer cannot be added currently.", ExceptionType.General);
             }
 
 

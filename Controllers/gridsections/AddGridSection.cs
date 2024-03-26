@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using CoolingGridManager.Services;
 using CoolingGridManager.Models;
+using CoolingGridManager.ResponseHandler;
 
 
 namespace CoolingGridManager.Controllers.GridSectionController
@@ -11,10 +12,12 @@ namespace CoolingGridManager.Controllers.GridSectionController
     {
         private readonly GridSectionService _gridSectionService;
         private readonly ExceptionResponse _exceptionResponse;
-        public AddGridSectionController(ExceptionResponse exceptionResponse, GridSectionService gridSectionService)
+        private readonly Serilog.ILogger _logger;
+        public AddGridSectionController(ExceptionResponse exceptionResponse, Serilog.ILogger logger, GridSectionService gridSectionService)
         {
             _gridSectionService = gridSectionService;
             _exceptionResponse = exceptionResponse;
+            _logger = logger;
 
         }
         [HttpPost]
@@ -23,11 +26,11 @@ namespace CoolingGridManager.Controllers.GridSectionController
             try
             {
                 var gridSectionId = await _gridSectionService.AddGridSecion(gridSection);
-                return Ok(new { GridSectionId = gridSectionId });
+                return ResponseFormatter.FormatSuccessResponse(HttpStatus.OK, new { GridSectionId = gridSectionId }, $"New grid section with ID {gridSectionId} added.");
             }
             catch (FormatException ex)
             {
-                return _exceptionResponse.ExceptionResponseHandle(ex, "Grid name already exists. Choose a different name.", "Choose a different name.", ExceptionType.Format);
+                return _exceptionResponse.ExceptionResponseHandle(ex, "Error. Grid section name already exists your provided grid ID is not valid.", "Error. Grid section name already exists your provided grid ID is not valid.", ExceptionType.Format);
             }
             catch (Exception ex)
             {

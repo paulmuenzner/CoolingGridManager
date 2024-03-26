@@ -38,7 +38,6 @@ namespace CoolingGridManager.Models
 
         public Consumer()
         {
-            ConsumerID = 0;
             FirstName = string.Empty;
             LastName = string.Empty;
             Email = string.Empty;

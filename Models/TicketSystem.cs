@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CoolingGridManager.Models
 {
-    public class Ticket
+    public class TicketModel
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -26,19 +26,23 @@ namespace CoolingGridManager.Models
         [Required(ErrorMessage = "Reported by is required.")]
         public string ReportedBy { get; set; }
 
+        [Required(ErrorMessage = "Responsible person is required.")]
+        public string Responsible { get; set; }
+
         [Required(ErrorMessage = "Status is required.")]
         public string Status { get; set; }
 
         [Required(ErrorMessage = "Status history is required.")]
         public List<StatusChange> StatusHistory { get; set; } = new List<StatusChange>();
 
-        public Ticket()
+        public TicketModel()
         {
             Title = string.Empty;
             Description = string.Empty;
             Category = string.Empty;
             Priority = string.Empty;
             ReportedBy = string.Empty;
+            Responsible = string.Empty;
             Status = string.Empty;
         }
     }
@@ -53,6 +57,7 @@ namespace CoolingGridManager.Models
         public string Status { get; set; }
 
         [Required(ErrorMessage = "Changed date is required.")]
+        [DataType(DataType.DateTime)]
         public DateTime ChangedDate { get; set; }
 
         public StatusChange()

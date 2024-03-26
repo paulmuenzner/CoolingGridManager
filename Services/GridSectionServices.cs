@@ -9,9 +9,11 @@ namespace CoolingGridManager.Services
     public class GridSectionService
     {
         private readonly AppDbContext _context;
+        private readonly Serilog.ILogger _logger;
 
-        public GridSectionService(AppDbContext context)
+        public GridSectionService(AppDbContext context, Serilog.ILogger logger)
         {
+            _logger = logger;
             _context = context;
         }
 
@@ -20,6 +22,17 @@ namespace CoolingGridManager.Services
         {
             try
             {
+                var existingGrid = await _context.Grids.FindAsync(gridSection.GridID);
+
+                if (existingGrid == null)
+                {
+                    _logger.Information($"Grid with ID {gridSection.GridID} does not exist.");
+                    // Handle the case where the provided grid ID does not exist
+                    throw new FormatException($"Grid with ID {gridSection.GridID} does not exist.");
+                }
+                // Associate the existing grid with the new grid section
+                gridSection.Grid = existingGrid;
+
                 _context.GridSections.Add(gridSection);
                 await _context.SaveChangesAsync();
                 return gridSection.GridSectionID;
@@ -35,5 +48,7 @@ namespace CoolingGridManager.Services
                 throw new TryCatchException(message, "AddGridSection");
             }
         }
+
+
     }
 }

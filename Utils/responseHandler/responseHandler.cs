@@ -7,8 +7,8 @@ namespace CoolingGridManager.ResponseHandler
         OK = 200,
         Created = 201,
         Accepted = 202,
-        NoContent = 204
-        // Add more success status codes as needed
+        NoContent = 204,
+        BadRequest = 400
     }
 
     public static class ResponseFormatter
@@ -23,6 +23,8 @@ namespace CoolingGridManager.ResponseHandler
                     return new CreatedResult("", new { StatusCode = (int)statusCode, Message = message, Data = data });
                 case HttpStatus.Accepted:
                     return new AcceptedResult("", new { StatusCode = (int)statusCode, Message = message, Data = data });
+                case HttpStatus.BadRequest:
+                    return new BadRequestObjectResult(new { StatusCode = (int)statusCode, Message = message, Data = data });
                 case HttpStatus.NoContent:
                     return new NoContentResult();
                 default:

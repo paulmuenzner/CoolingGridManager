@@ -6,7 +6,7 @@ public enum ExceptionType
 {
     NotFound,
     Unauthorized,
-    BadRequest, Format,
+    BadRequest, Format, Argument,
     General
 }
 
@@ -35,6 +35,7 @@ public class ExceptionResponse : ControllerBase
                     return Unauthorized(internalResponseMessage);
                 case ExceptionType.BadRequest:
                 case ExceptionType.Format:
+                case ExceptionType.Argument:
                     Log.Warning("Exception: " + internalResponseMessage);
                     return BadRequest(internalResponseMessage);
                 case ExceptionType.General:
@@ -59,6 +60,7 @@ public class ExceptionResponse : ControllerBase
                     return Unauthorized(officialMessage);
                 case ExceptionType.BadRequest:
                 case ExceptionType.Format:
+                case ExceptionType.Argument:
                     Log.Warning("Exception: " + internalResponseMessage);
                     return BadRequest(officialMessage);
                 case ExceptionType.General:
