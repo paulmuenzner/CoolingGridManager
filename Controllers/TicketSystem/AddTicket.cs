@@ -32,7 +32,7 @@ namespace CoolingGridManager.Controllers.TicketsController
                 {
                     foreach (var error in result.Errors)
                     {
-                        _logger.Error($"Error on the property {error.PropertyName}: {error.ErrorMessage}");
+                        return ResponseFormatter.FormatSuccessResponse(HttpStatus.BadRequest, new { Error = error }, $"{error.ErrorMessage}");
                     }
                 }
                 var newTicket = await _ticketService.AddTicket(ticket);
