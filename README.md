@@ -6,13 +6,13 @@
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
 <!-- [![Golang][golang-shield]][golang-url] -->
-[![Go Report Card](https://goreportcard.com/badge/github.com/paulmuenzner/powerplantmanager)](https://goreportcard.com/report/github.com/paulmuenzner/powerplantmanager)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/b16cd474a2ff4655b973991746193d9c)](https://app.codacy.com/gh/paulmuenzner/powerplantmanager/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![Go Report Card](https://goreportcard.com/badge/github.com/paulmuenzner/coolinggridmanager)](https://goreportcard.com/report/github.com/paulmuenzner/coolinggridmanager)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/b16cd474a2ff4655b973991746193d9c)](https://app.codacy.com/gh/paulmuenzner/coolinggridmanager/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Issues][issues-shield]][issues-url]
-![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/paulmuenzner/powerplantmanager)
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/paulmuenzner/coolinggridmanager)
 [![GNU License][license-shield]][license-url]
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/paulmuenzner/powerplantmanager)
-![GitHub top language](https://img.shields.io/github/languages/top/paulmuenzner/powerplantmanager)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/paulmuenzner/coolinggridmanager)
+![GitHub top language](https://img.shields.io/github/languages/top/paulmuenzner/coolinggridmanager)
  <!-- [![paulmuenzner.com][website-shield]][website-url] -->
 [![paulmuenzner github][github-shield]][github-url] 
 [![Contributors][contributors-shield]][contributors-url]
@@ -22,23 +22,23 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/paulmuenzner/powerplantmanager">
+  <a href="https://github.com/paulmuenzner/coolinggridmanager">
     <img src="assets/golang-manage-renewable-power-plants.png" alt="Logo" width="342" height="210">
   </a>
 
-  <h3 align="center">Golang Photovoltaic Plant Management Server</h3>
+  <h3 align="center">C# Cooling Grid Manager</h3>
 
   <p align="center">
-    Administration - Logging - Statistical Analysis
+    Billing - Ticket System - Consumption - Efficiency
     <br />
     <a href="#about-the-project"><strong>EXPLORE DOCS</strong></a>
     <br />
     <br />
     <a href="#configuration">High Flexibility</a>
     ·
-    <a href="https://github.com/paulmuenzner/powerplantmanager/issues">Report Bug</a>
+    <a href="https://github.com/paulmuenzner/coolinggridmanager/issues">Report Bug</a>
     ·
-    <a href="https://github.com/paulmuenzner/powerplantmanager/issues">Request Feature</a>
+    <a href="https://github.com/paulmuenzner/coolinggridmanager/issues">Request Feature</a>
   </p>
 </div>
 
@@ -65,73 +65,28 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-Introducing the Photovoltaic Plant Management System, a comprehensive software solution designed for seamless management of photovoltaic power plants. Users can register, verify accounts, and leverage a secure authentication system for streamlined access. Plant registration is made easy, allowing users to input technical details and upload related images and files for each power plant.
-
-The system provides a dedicated Logging API for each registered power plant. This API facilitates the logging of various information sent by the power plants at configurable time intervals – a flexible solution for data tracking, whether it be at 15-minute intervals, 1-minute intervals, or a custom setting.
-
-Security is a top priority, and the system implements robust measures to protect APIs. Users can secure their Logging APIs using keys, secrets, and IP filters. IP whitelisting adds an extra layer of security, ensuring that only authorized IP addresses have access.
-
-In addition to efficient data logging, the Photovoltaic Plant Management System incorporates a statistical evaluation and data assessment feature. This functionality allows users, whether individual enthusiasts or businesses managing multiple photovoltaic installations, to analyze and interpret the logged data comprehensively. The system's data assessment tools provide valuable insights, making the management of solar assets straightforward and effective.
+The Cooling Grid Manager is a comprehensive software solution designed to efficiently manage and optimize cooling grid systems. This project leverages the power of C# programming language and .NET technologies to deliver a robust and user-friendly application tailored for the needs of cooling grid operators and managers.
 
 
 ### Features
--   Create and use accounts using registration, verification, signin, signout functionality
--   Register your photovoltaic power plants and related technical information into the system and upload related plant images and files
--   Create individual logging API for each registered power plant to log several information sent from our power plant in configured time intervals (eg. each 15 minuts, each 1 minute, ...) 
--   Protect your APIs with key, secret and IP whitelisting
--   Validation middleware for individual assessments implemented for each route 
--   Validation handler for chained input validation individually customizable according to your own needs
--   Flexible error handler covering 32 HTTP 4** status codes
--   Flexible response handler for positive 2** responses covering 10 HTTP status codes
--   Central collection, overview and management of configuration values in config folder
--   Central Regex Expression library with several predefined and tested expressions
--   Setup of MongoDB connection including prepared templates to query, save and delete
--   Logging with logrus to daily log files in log folder: Logging error, time, log level.
--   Deletion of log files in log folder older than 5 days (default). Can be changed in base_config file with 'DeleteLogsAfterDays'
--   AWS functions to upload and delete files and images for your power plant to S3 change their names
--   Strict file upload validations: number, sizes, type
--   Fully-featured cookie handler
--   This Golang server boasts a robust architecture designed for flexibility, reduced coupling and testibiliy through a dedicated Dependency Injection (DI) setup. The core functionalities of database communications, and AWS operations and sending email notifications are seamlessly integrated, providing a cohesive and modular solution.
--   Context extensions enabling to reuse queried data amongst more than one controller within one route an thus reducing number of database requests
--   JWT setup needed for authentication and authorization
--   Documentation an description of function an controllers
--   Practical examples for testing with [Go Testify](https://github.com/stretchr/testify)
--   Transactions implemented. Transactions in MongoDB ensure the atomicity, consistency, isolation, and durability (ACID) properties for multiple database operations, allowing developers to group multiple statements into a single unit of work that either succeeds entirely or fails without leaving the database in an inconsistent state.
--   Encryption, Decryption, token and hashing functions 
--   Implemented dependency injection to manage dependencies and improve testability.
--   Email setup for sending transactional emails with your provider
+-   ***Ticket Management:*** Streamline ticket creation, tracking, and resolution processes for maintenance, repairs, billing, and other operational tasks.
+-   ***Integration:*** Seamlessly integrate with existing data sources, IoT devices, and monitoring systems to centralize data management and enhance operational efficiency.
+-   ***Loss Logging:*** Track and log losses within the cooling grid system, facilitating loss analysis, root cause identification, and remedial action implementation.
+-   ***Billing:*** Efficiently manage billing processes for cooling grid services, including invoicing, payment tracking, and revenue management.
+-   ***Consumer Management:*** Centralize consumer data and interactions, enabling effective communication, service provisioning, and account management.
+-   ***Consumption Tracking:*** Monitor and analyze cooling grid consumption patterns to optimize resource allocation, identify inefficiencies, and implement cost-saving measures.
 
 
 
-### Security
+### Technologies Used
 
--   Key, Secret & URL ID Protection: Secure Logging APIs using unique keys, secrets and an individual URL id.
--   IP Filtering: Implement IP whitelisting to allow logging access only to authorized IP addresses.
--   Validation Middleware: Validation middleware for individual assessments implemented on each route.
--   Validation Handler: Implement a validation handler for chained input validation, expandable and customizable to specific needs.
--   Error Handling: Flexible error handler covering 32 HTTP 4xx status codes for robust error management.
--   Response Handling: Flexible response handler for positive 2xx responses, covering 10 HTTP status codes.
--   Cookie Security: Fully-featured cookie handler for enhanced security.
--   JWT Authentication: Set up JWT for authentication and authorization.
--   Verification token: Encrypted verification token for verifying email addresses and registrations.
--   Encryption and Hashing: Implement encryption, decryption, and hashing functions for data security.
--   Robust Error Handling Mechanism: Any encountered errors are diligently logged to the designated log folder and simultaneously partly dispatched via email notifications.
--   Method Validation: Custom middleware to check request methods with the allowed methods parameter.
--   Provides partial defense against Slowloris attacks.
--   Rate limiter implemented.
+-   ***C#:*** The primary programming language used for developing the Cooling Grid Manager, providing a powerful and versatile framework for application development.
+-   ***ASP.NET Core:*** Utilized for building scalable and high-performance web applications, enabling cross-platform compatibility and modern web development practices.
+-   ***Entity Framework Core:*** Facilitates object-relational mapping (ORM) for database interaction, simplifying data access and management.
+-   ***FluentValidation:*** Integrated for comprehensive validation of input data, ensuring data integrity and application reliability.
+-   ***Serilog:*** Employed for structured logging, enabling efficient monitoring and troubleshooting of application behavior and errors.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-### Tech Stack <a name="tech-stack"></a>
-
-This project is basically built with and for:
-
-*   [![Aws][aws-shield]][aws-url]
-*   [![Golang][golang-shield]][golang-url]
-*   [![MongoDB][mongodb-shield]][mongodb-url]
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 <!-- GETTING STARTED -->
@@ -149,7 +104,7 @@ Prior to launching the program, clone the repo, install go dependencies and ensu
 
 -   Clone the repo
    ```sh
-   git clone https://github.com/paulmuenzner/powerplantmanager.git
+   git clone https://github.com/paulmuenzner/coolinggridmanager.git
    ```
 -   Install go dependencies by running
    ```sh
@@ -249,18 +204,19 @@ The files API '/files' provides functionality for managing files and documents.
 
 1. **`/api/tickets/addticket`**
    - **Method:** POST
+   - **Validation:** Yes
    - **Description:** For the purpose of Incident Management support tickets can be submitted and managed to keep an eye on and solve adverse events.
    <!-- - **Authentication Required:** Yes -->
     - **Request Body Example:**
      ```json
      {
-     "title": "Example Ticket",
-     "description": "This is an example ticket description.",
-     "category": "General",
-     "priority": "High",
-     "reportedBy": "John Doe",
+     "title": "Stucking valve",
+     "description": "Example description with at least 50 chars for the ticket submitted by me.",
+     "category": "technical",
+     "priority": "high",
+     "reportedBy": "Jon Doe",
      "responsible": "Service worker A",
-     "status": "Open",
+     "status": "open",
      "statusHistory": [
          {
              "status": "Open",
@@ -395,7 +351,7 @@ Possible calculations:
 -   ⬜️ Add option to backup and upload MongoDB database to S3
 
 
-See the [open issues](https://github.com/paulmuenzner/powerplantmanager/issues) to report bugs or request fatures.
+See the [open issues](https://github.com/paulmuenzner/coolinggridmanager/issues) to report bugs or request fatures.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -404,10 +360,9 @@ See the [open issues](https://github.com/paulmuenzner/powerplantmanager/issues) 
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions to the Cooling Grid Manager project are welcome! Whether you're interested in adding new features, fixing bugs, or improving documentation, your contributions are highly valued. To get started, fork the repository, make your changes, and submit a pull request. 
 
-Contributions are more than welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for
-more info.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for more info.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -427,7 +382,7 @@ Distributed under the GNU General Public License v2.0. See [LICENSE](LICENSE.txt
 
 Paul Münzner: [https://paulmuenzner.com](https://paulmuenzner.com) 
 
-Project Link: [https://github.com/paulmuenzner/powerplantmanager](https://github.com/paulmuenzner/powerplantmanager)
+Project Link: [https://github.com/paulmuenzner/coolinggridmanager](https://github.com/paulmuenzner/coolinggridmanager)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -459,12 +414,12 @@ Use this space to list resources you find helpful and would like to give credit 
 [mongodb-url]: https://go.dev/
 [github-shield]: https://img.shields.io/badge/paulmuenzner-black.svg?logo=github&logoColor=ffffff&colorB=000000
 [github-url]: https://github.com/paulmuenzner?tab=repositories
-[contributors-shield]: https://img.shields.io/github/contributors/paulmuenzner/powerplantmanager.svg
-[contributors-url]: https://github.com/paulmuenzner/powerplantmanager/graphs/contributors
-[issues-shield]: https://img.shields.io/github/issues/paulmuenzner/powerplantmanager.svg
-[issues-url]: https://github.com/paulmuenzner/powerplantmanager/issues
+[contributors-shield]: https://img.shields.io/github/contributors/paulmuenzner/coolinggridmanager.svg
+[contributors-url]: https://github.com/paulmuenzner/coolinggridmanager/graphs/contributors
+[issues-shield]: https://img.shields.io/github/issues/paulmuenzner/coolinggridmanager.svg
+[issues-url]: https://github.com/paulmuenzner/coolinggridmanager/issues
 [license-shield]: https://img.shields.io/badge/license-GPL_2.0-orange.svg?colorB=FF5733
-[license-url]: https://github.com/paulmuenzner/powerplantmanager/blob/master/LICENSE.txt
+[license-url]: https://github.com/paulmuenzner/coolinggridmanager/blob/master/LICENSE.txt
 <!-- [website-shield]: https://img.shields.io/badge/www-paulmuenzner.com-blue
 [website-url]: https://paulmuenzner.com -->
 
