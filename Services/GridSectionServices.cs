@@ -18,7 +18,7 @@ namespace CoolingGridManager.Services
         }
 
         // ADD GRID
-        public async Task<int> AddGridSecion(GridSection gridSection)
+        public async Task<int> AddGridSection(GridSection gridSection)
         {
             try
             {

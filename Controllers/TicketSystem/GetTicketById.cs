@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using CoolingGridManager.Services;
 using CoolingGridManager.ResponseHandler;
 using CoolingGridManager.Exceptions;
-
+using FluentValidation.Results;
+using CoolingGridManager.Validators.Tickets;
 
 namespace CoolingGridManager.Controllers.TicketsController
 {
@@ -10,12 +11,14 @@ namespace CoolingGridManager.Controllers.TicketsController
     [Route("api/tickets/[controller]")]
     public partial class GetTicketByIdController : ControllerBase
     {
+        private readonly TicketGetByIdValidator _ticketGetByIdValidator;
         private readonly TicketService _ticketService;
         private readonly ExceptionResponse _exceptionResponse;
         private readonly Serilog.ILogger _logger;
-        public GetTicketByIdController(ExceptionResponse exceptionResponse, Serilog.ILogger logger, TicketService ticketService)
+        public GetTicketByIdController(ExceptionResponse exceptionResponse, TicketGetByIdValidator ticketGetByIdValidator, Serilog.ILogger logger, TicketService ticketService)
         {
             _ticketService = ticketService;
+            _ticketGetByIdValidator = ticketGetByIdValidator;
             _exceptionResponse = exceptionResponse;
             _logger = logger;
         }
@@ -25,22 +28,35 @@ namespace CoolingGridManager.Controllers.TicketsController
         {
             try
             {
-                if (ticketRequest == null || ticketRequest.TicketId == 0)
+                // Validate
+                TicketGetByIdValidator validator = new();
+                ValidationResult result = validator.Validate(ticketRequest);
+                if (!result.IsValid)
                 {
-                    return ResponseFormatter.FormatSuccessResponse(HttpStatus.BadRequest, new { }, $"Invalid request. Valid ticket ID is required.");
+                    foreach (var error in result.Errors)
+                    {
+                        return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { Error = error }, $"{error.ErrorMessage}", $"{error.ErrorMessage}", null);
+                    }
+                }
+                if (!ticketRequest.TicketId.HasValue)
+                {
+                    return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { }, "Ticket ID not valid. Valid ticket ID must be provided.", "No ticket found.", null);
                 }
 
-                var ticket = await _ticketService.GetTicketById(ticketRequest.TicketId);
-
-                return ResponseFormatter.FormatSuccessResponse(HttpStatus.OK, new { Ticket = ticket }, $"Ticket with ID {ticketRequest.TicketId} found.");
+                var ticket = await _ticketService.GetTicketById(ticketRequest.TicketId.Value);
+                return ResponseFormatter.Success(HttpStatusPositive.OK, new { Ticket = ticket }, $"Ticket with ID {ticketRequest.TicketId} found.");
+            }
+            catch (ArgumentNullException ex)
+            {
+                return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { }, "ArgumentNullException. No valid ticket ID registered.", "No ticket found.", ex);
             }
             catch (NotFoundException ex)
             {
-                return _exceptionResponse.ExceptionResponseHandle(ex, "No ticket found.", "No ticket found.", ExceptionType.NotFound);
+                return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { }, $"NotFoundException. No ticket found for ID {ticketRequest.TicketId}", $"No ticket found for ID {ticketRequest.TicketId}", ex);
             }
             catch (Exception ex)
             {
-                return _exceptionResponse.ExceptionResponseHandle(ex, "An unexpected error occurred.", "Action currently not possible.", ExceptionType.General);
+                return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { }, "Exception. No valid ticket ID found.", "No ticket found.", ex);
             }
         }
 
@@ -48,6 +64,6 @@ namespace CoolingGridManager.Controllers.TicketsController
 
     public class TicketRequest
     {
-        public required int TicketId { get; set; }
+        public required int? TicketId { get; set; }
     }
 }

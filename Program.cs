@@ -1,14 +1,13 @@
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using Microsoft.EntityFrameworkCore;
-using static ConfigurationHelper;
 using CoolingGridManager.Services;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Diagnostics;
 using System.Text.Json.Serialization;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using static CoolingGridManager.Controllers.TicketsController.UpdateStatusController;
+using CoolingGridManager.Validators.Tickets;
+using CoolingGridManager.Validators.Grids;
+using CoolingGridManager.Validators.GridSections;
 
 
 // using CoolingGridManager.Services;
@@ -41,10 +40,13 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 
 builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
 
-// Add validation service
-//builder.Services.AddValidatorsFromAssemblyContaining<TicketSolveRequestValidator>();
-builder.Services.AddScoped<TicketSolveRequestValidator>();
 
+builder.Services.AddScoped<TicketAddValidator>();
+builder.Services.AddScoped<TicketGetByIdValidator>();
+builder.Services.AddScoped<AddGridValidator>();
+builder.Services.AddScoped<AddGridSectionValidator>();
+
+// Add services
 builder.Services.AddScoped<ConsumerService>();
 builder.Services.AddScoped<GridService>();
 builder.Services.AddScoped<GridSectionService>();

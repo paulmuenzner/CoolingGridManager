@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using CoolingGridManager.Models;
 using CoolingGridManager.Exceptions;
+using CoolingGridManager.ResponseHandler;
+using Microsoft.EntityFrameworkCore;
 
 namespace CoolingGridManager.Services
 {
@@ -32,15 +34,22 @@ namespace CoolingGridManager.Services
         // GET TICKET
         public async Task<TicketModel> GetTicketById(int ticketId)
         {
-            var ticket = await _context.Tickets.FindAsync(ticketId);
-            if (ticket == null)
+            try
             {
-
-                var message = string.Format($"No ticket found with id {ticketId}.");
-                throw new NotFoundException(message, "AddTicket", ticketId);
-
+                var ticket = await _context.Tickets
+                    .Include(t => t.StatusHistory)
+                    .FirstOrDefaultAsync(t => t.TicketId == ticketId);
+                if (ticket == null)
+                {
+                    var message = string.Format($"No ticket found with ID {ticketId}.");
+                    throw new NotFoundException(message, "GetTicketById", ticketId);
+                }
+                return ticket;
             }
-            return ticket;
+            catch (ArgumentNullException ex)
+            {
+                throw new NotFoundException(ex.Message, "GetTicketById", ticketId);
+            }
         }
 
         // CHANGE STATUS 
@@ -54,6 +63,10 @@ namespace CoolingGridManager.Services
                 {
                     throw new NotFoundException($"Ticket with ID {ticketId} not found.", "UpdateStatusTicket", ticketId);
                 }
+
+                // Update the ticket status
+                ticket.Status = status;
+
                 // Add a new status change object to the status history array
                 ticket.StatusHistory.Add(new StatusChange
                 {
@@ -63,9 +76,7 @@ namespace CoolingGridManager.Services
 
                 // Update the ticket in the database
                 await _context.SaveChangesAsync();
-
                 return ticket;
-
             }
             catch (Exception ex)
             {

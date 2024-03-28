@@ -1,6 +1,6 @@
 using Serilog;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+
 
 public enum ExceptionType
 {

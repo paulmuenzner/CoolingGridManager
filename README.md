@@ -210,18 +210,18 @@ The files API '/files' provides functionality for managing files and documents.
     - **Request Body Example:**
      ```json
      {
-     "title": "Stucking valve",
-     "description": "Example description with at least 50 chars for the ticket submitted by me.",
-     "category": "technical",
-     "priority": "high",
-     "reportedBy": "Jon Doe",
-     "responsible": "Service worker A",
-     "status": "open",
-     "statusHistory": [
-         {
-             "status": "Open",
-             "changedDate": "2024-03-25T10:00:00Z"
-         }
+        "title": "Stucking valve",
+        "description": "Example description with at least 50 chars for the ticket submitted by me.",
+        "category": "technical",
+        "priority": "high",
+        "reportedBy": "Jon Doe",
+        "responsible": "Service worker A",
+        "status": "open",
+        "statusHistory": [
+            {
+                "status": "Open",
+                "changedDate": "2024-03-25T10:00:00Z"
+            }
          ]
      }
      ```
@@ -233,23 +233,25 @@ The files API '/files' provides functionality for managing files and documents.
    - **Request Body Example:**
      ```json
      {
-       "publicFileId": "374755771952217"
+        "publicFileId": "374755771952217"
      }
      ```
 
 
-#### Plant Operations 
+#### Consumption 
 
-The plants API '/plants' offers endpoints for managing plant-related data.
+The plants API '/consumptions' offers endpoints for managing consumption data of consumers.
 
-1. **`/plants/add`**
+1. **`/consumptions/addconsumption`**
    - **Method:** POST
-   - **Description:** A signed-in user can add new power plants as desired by providing a new power plant name. This creates a separate logging collection, configuration document and plant document. Collection and database names can be configured in 'congig/' folder. 
+   - **Description:** Add consumer consumption. 
    - **Authentication Required:** Yes
    - **Request Body Example:**
      ```json
      {
-       "name": "MyPlantName"
+        "ConsumerID": 123,
+        "ConsumptionValue": 45.67,
+        "LogDate": "2024-03-25T10:00:00Z"
      }
      ```
 

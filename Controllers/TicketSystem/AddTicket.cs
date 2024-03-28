@@ -3,6 +3,7 @@ using CoolingGridManager.Services;
 using CoolingGridManager.Models;
 using CoolingGridManager.ResponseHandler;
 using FluentValidation.Results;
+using CoolingGridManager.Validators.Tickets;
 
 
 namespace CoolingGridManager.Controllers.TicketsController
@@ -11,12 +12,14 @@ namespace CoolingGridManager.Controllers.TicketsController
     [Route("api/tickets/[controller]")]
     public partial class AddTicketController : ControllerBase
     {
+        private readonly TicketAddValidator _ticketAddValidator;
         private readonly TicketService _ticketService;
         private readonly ExceptionResponse _exceptionResponse;
         private readonly Serilog.ILogger _logger;
-        public AddTicketController(ExceptionResponse exceptionResponse, Serilog.ILogger logger, TicketService ticketService)
+        public AddTicketController(TicketAddValidator ticketAddValidator, ExceptionResponse exceptionResponse, Serilog.ILogger logger, TicketService ticketService)
         {
             _ticketService = ticketService;
+            _ticketAddValidator = ticketAddValidator;
             _exceptionResponse = exceptionResponse;
             _logger = logger;
         }
@@ -25,17 +28,20 @@ namespace CoolingGridManager.Controllers.TicketsController
         {
             try
             {
-                TicketSolveRequestValidator validator = new();
+                // Validate
+                TicketAddValidator validator = new();
                 ValidationResult result = validator.Validate(ticket);
                 if (!result.IsValid)
                 {
                     foreach (var error in result.Errors)
                     {
-                        return ResponseFormatter.FormatSuccessResponse(HttpStatus.BadRequest, new { Error = error }, $"{error.ErrorMessage}");
+                        return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { Error = error }, $"{error.ErrorMessage}", $"{error.ErrorMessage}", null);
                     }
                 }
+
+                // Retrieve data
                 var newTicket = await _ticketService.AddTicket(ticket);
-                return ResponseFormatter.FormatSuccessResponse(HttpStatus.OK, new { Ticket = newTicket }, $"New ticket with id {newTicket.TicketId} added");
+                return ResponseFormatter.Success(HttpStatusPositive.OK, new { Ticket = newTicket }, $"New ticket with id {newTicket.TicketId} added");
             }
             catch (FormatException ex)
             {

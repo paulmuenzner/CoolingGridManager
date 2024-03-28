@@ -31,7 +31,7 @@ namespace CoolingGridManager.Controllers.Consumers
             try
             {
                 var newConsumer = await _consumerService.Add(consumer);
-                return ResponseFormatter.FormatSuccessResponse(HttpStatus.OK, new { Consumer = newConsumer }, $"New consumer with name {newConsumer.LastName} and id {newConsumer.ConsumerID} added");
+                return ResponseFormatter.Success(HttpStatusPositive.OK, new { Consumer = newConsumer }, $"New consumer with name {newConsumer.LastName} and id {newConsumer.ConsumerID} added");
             }
             catch (Exception ex)
             {

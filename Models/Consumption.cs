@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CoolingGridManager.Models
 {
     [Table("ConsumptionLog")]
-    public class Consumption
+    public class ConsumptionLog
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -24,12 +24,15 @@ namespace CoolingGridManager.Models
         [Required(ErrorMessage = "Date is required.")]
         public DateTime LogDate { get; set; }
 
+        [Required(ErrorMessage = "Consumption date for day of consumption is required.")]
+        public DateTime ConsumptionDate { get; set; }
 
-        public Consumption()
+        public ConsumptionLog()
         {
             Consumer = null;
             ConsumptionValue = 0m;
             LogDate = DateTime.MinValue;
+            ConsumptionDate = DateTime.MinValue;
         }
     }
 }

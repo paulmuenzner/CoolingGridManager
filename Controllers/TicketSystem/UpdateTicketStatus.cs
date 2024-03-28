@@ -15,14 +15,13 @@ namespace CoolingGridManager.Controllers.TicketsController
     {
         private readonly TicketService _ticketService;
         private readonly ExceptionResponse _exceptionResponse;
-        private readonly TicketSolveRequestValidator _validator;
         private readonly Serilog.ILogger _logger;
-        public UpdateStatusController(TicketSolveRequestValidator validator, ExceptionResponse exceptionResponse, Serilog.ILogger logger, TicketService ticketService)
+        public UpdateStatusController(ExceptionResponse exceptionResponse, Serilog.ILogger logger, TicketService ticketService)
         {
             _ticketService = ticketService;
             _exceptionResponse = exceptionResponse;
             _logger = logger;
-            _validator = validator;
+
         }
 
         [HttpPost]
@@ -30,12 +29,9 @@ namespace CoolingGridManager.Controllers.TicketsController
         {
             try
             {
-
-
                 // Update the ticket in the database
                 var updatedTicket = await _ticketService.UpdateStatusTicket(ticketSolveRequest.TicketId, ticketSolveRequest.Status);
-
-                return ResponseFormatter.FormatSuccessResponse(HttpStatus.OK, new { TicketUpdate = updatedTicket }, $"Ticket status updated to '{ticketSolveRequest.Status}'.");
+                return ResponseFormatter.Success(HttpStatusPositive.OK, new { TicketUpdate = updatedTicket }, $"Ticket status updated to '{ticketSolveRequest.Status}'.");
             }
             catch (Exception ex)
             {

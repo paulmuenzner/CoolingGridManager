@@ -16,8 +16,9 @@ public class AppDbContext : DbContext
     public DbSet<Consumer> Consumers { get; set; }
     public DbSet<Grid> Grids { get; set; }
     public DbSet<GridSection> GridSections { get; set; }
-    public DbSet<Consumption> Consumptions { get; set; }
+    public DbSet<ConsumptionLog> ConsumptionLogs { get; set; }
     public DbSet<TicketModel> Tickets { get; set; }
+
 
 
     // Constructor for AppDbContext (optional)
@@ -53,12 +54,12 @@ public class AppDbContext : DbContext
             .Property(mb => mb.BillingAmount)
             .HasColumnType("decimal(18, 2)");
 
-        modelBuilder.Entity<Consumption>()
+        modelBuilder.Entity<ConsumptionLog>()
             .HasOne(gs => gs.Consumer)
             .WithMany()
             .HasForeignKey(gs => gs.ConsumerID);
 
-        modelBuilder.Entity<Consumption>()
+        modelBuilder.Entity<ConsumptionLog>()
             .Property(mb => mb.ConsumptionValue)
             .HasColumnType("decimal(11, 3)");
 

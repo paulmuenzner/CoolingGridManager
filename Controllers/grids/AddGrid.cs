@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using CoolingGridManager.Services;
-using System.ComponentModel.DataAnnotations;
 using CoolingGridManager.ResponseHandler;
+using CoolingGridManager.Validators.Grids;
+using FluentValidation.Results;
 
 public class GridModel
 {
-    [Required]
     public required string GridName { get; set; }
 }
 
@@ -15,11 +15,13 @@ namespace CoolingGridManager.Controllers.GridController
     [Route("api/grids/[controller]")]
     public partial class AddGridController : ControllerBase
     {
+        private readonly AddGridValidator _addGridValidator;
         private readonly GridService _gridService;
         private readonly ExceptionResponse _exceptionResponse;
-        public AddGridController(ExceptionResponse exceptionResponse, GridService gridService)
+        public AddGridController(AddGridValidator addGridValidator, ExceptionResponse exceptionResponse, GridService gridService)
         {
             _gridService = gridService;
+            _addGridValidator = addGridValidator;
             _exceptionResponse = exceptionResponse;
 
         }
@@ -28,8 +30,19 @@ namespace CoolingGridManager.Controllers.GridController
         {
             try
             {
+                // Validate
+                AddGridValidator validator = new();
+                ValidationResult result = validator.Validate(model);
+                if (!result.IsValid)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { Error = error }, $"{error.ErrorMessage}", $"{error.ErrorMessage}", null);
+                    }
+                }
+
                 var gridId = await _gridService.AddGrid(model.GridName);
-                return ResponseFormatter.FormatSuccessResponse(HttpStatus.OK, new { GridID = gridId }, $"New grid with name {model.GridName} and id {gridId} added");
+                return ResponseFormatter.Success(HttpStatusPositive.OK, new { GridID = gridId }, $"New grid with name {model.GridName} and id {gridId} added");
             }
             catch (FormatException ex)
             {
