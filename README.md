@@ -226,6 +226,30 @@ The files API '/files' provides functionality for managing files and documents.
      }
      ```
 
+2. **`/api/tickets/updatestatus`**
+   - **Method:** POST
+   - **Validation:** Yes
+   - **Description:** Update the status of an existing ticket. Currently available options are 'open', 'onhold' and 'solved'.
+    - **Request Body Example:**
+     ```json
+     {
+        "ticketId":17,
+        "status": "solved"
+     }
+     ```
+
+3. **`/api/tickets/getticketbyid`**
+   - **Method:** GET
+   - **Validation:** Yes
+   - **Description:** Request existing ticket by ticket ID.
+    - **Request Body Example:**
+     ```json
+     {
+        "ticketId": 17
+     }
+     ```
+
+
 
 #### Consumption 
 
@@ -244,23 +268,20 @@ API '/consumptions' offers endpoints for managing consumption data of consumers.
      }
      ```
 
-2. **`/plants/log/{apiID:[0-9]+}`**
+#### Billing 
+
+API '/billing' offers endpoints for managing consumption data of consumers.
+
+1. **`/billing/getbill`**
    - **Method:** POST
-   - **Description:** API logging power plant details for a specific plant by providing its ID. Only a numerical ID is accepted.
-   - **Authentication Required:** No. However, valid key, secret and apiID are requiered. Furthermore requesting IP must be whitelisted.
+   - **Validation:** Yes
+   - **Description:** Request bill by consumer ID and month (billing period).
    - **Request Body Example:**
      ```json
      {
-        "key": "7446579140876818687525890004949221730587",
-        "secret": "c2a1d375159502956e552e0e5d57de6735ec",
-        "voltageOutput": 40,
-        "currentOutput": 2.87,
-        "powerOutput": 114.8,
-        "solarRadiation": 246,
-        "tAmbient": 5,
-        "tModule": 5,
-        "relHumidity": 77,
-        "windSpeed": 5
+        "consumerID": 123,
+        "month": 3,
+        "year": 2024
      }
      ```
 
@@ -284,6 +305,36 @@ API '/consumers' offers endpoints for managing consumers.
     }
      ```
 
+#### Grids 
+
+API '/grids' offers endpoints for managing cooling grid systems.
+
+1. **`/grids/addgrid`**
+   - **Method:** POST
+   - **Validation:** Yes
+   - **Description:** Add new grid. Grids are divided in grid sections; managed with a separate API. 
+   - **Request Body Example:**
+     ```json
+     {
+        "gridName": "ABC Grid"
+    }
+     ```
+
+#### Grid Sections 
+
+API '/gridsections' offers endpoints for managing grid sections.
+
+1. **`/gridsections/addgrid`**
+   - **Method:** POST
+   - **Validation:** Yes
+   - **Description:** Add new grid section which belongs to an existing grid. 
+   - **Request Body Example:**
+     ```json
+     {
+        "gridSectionName": "Section East",
+        "gridID": 12
+     }
+     ```
 
 Feel free to explore and integrate these API routes into your applications! If you have any questions or need further assistance, please refer to the detailed documentation for each route.
 

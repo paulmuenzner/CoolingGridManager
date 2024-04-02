@@ -24,7 +24,7 @@ namespace CoolingGridManager.Controllers.TicketsController
             _logger = logger;
         }
 
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> GetTicketById([FromBody] GetTicketByIDRequest ticketRequest)
         {
             try

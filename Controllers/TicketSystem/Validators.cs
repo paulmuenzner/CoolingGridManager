@@ -105,9 +105,9 @@ namespace CoolingGridManager.Validators.Tickets
             _context = context;
 
             RuleFor(request => request.TicketId)
-            .NotEmpty().WithMessage("Ticket ID is required.")
-            .GreaterThan(0).WithMessage("Ticket ID must be greater than 0.")
-            .MustAsync(ExistingTicket).WithMessage("Requested ticket not found.");
+                .NotEmpty().WithMessage("Ticket ID is required.")
+                .GreaterThan(0).WithMessage("Ticket ID must be greater than 0.")
+                .MustAsync(ExistingTicket).WithMessage("Requested ticket not found.");
 
             RuleFor(request => request.Status)
                 .NotEmpty().WithMessage("Status is required.")
