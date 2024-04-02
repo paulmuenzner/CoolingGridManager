@@ -226,32 +226,21 @@ The files API '/files' provides functionality for managing files and documents.
      }
      ```
 
-2. **`/files/delete-file`**
-   - **Method:** DELETE
-   - **Description:** Delete a file from the server. Provide file id in request body.
-   - **Authentication Required:** Yes
-   - **Request Body Example:**
-     ```json
-     {
-        "publicFileId": "374755771952217"
-     }
-     ```
-
 
 #### Consumption 
 
-The plants API '/consumptions' offers endpoints for managing consumption data of consumers.
+API '/consumptions' offers endpoints for managing consumption data of consumers.
 
 1. **`/consumptions/addconsumption`**
    - **Method:** POST
-   - **Description:** Add consumer consumption. 
-   - **Authentication Required:** Yes
+   - **Validation:** Yes
+   - **Description:** Aggregate and accumulate cooling energy consumption per user and day (kWh/user*day). The 'LogDate' denotes the timestamp when the value was recorded, while 'ConsumptionDate' indicates the specific day when this consumption occurred. Consumption date cannot be in the future.
    - **Request Body Example:**
      ```json
      {
         "ConsumerID": 123,
         "ConsumptionValue": 45.67,
-        "LogDate": "2024-03-25T10:00:00Z"
+        "ConsumptionDate": "2024-03-25T10:00:00Z"
      }
      ```
 
@@ -262,65 +251,37 @@ The plants API '/consumptions' offers endpoints for managing consumption data of
    - **Request Body Example:**
      ```json
      {
-       "key": "7446579140876818687525890004949221730587",
-       "secret": "c2a1d375159502956e552e0e5d57de6735ec",
-       "voltageOutput": 40,
-       "currentOutput": 2.87,
-       "powerOutput": 114.8,
-       "solarRadiation": 246,
-       "tAmbient": 5,
-       "tModule": 5,
-       "relHumidity": 77,
-       "windSpeed": 5
+        "key": "7446579140876818687525890004949221730587",
+        "secret": "c2a1d375159502956e552e0e5d57de6735ec",
+        "voltageOutput": 40,
+        "currentOutput": 2.87,
+        "powerOutput": 114.8,
+        "solarRadiation": 246,
+        "tAmbient": 5,
+        "tModule": 5,
+        "relHumidity": 77,
+        "windSpeed": 5
      }
      ```
 
-3. **`/plants/setconfig`**
-   - **Method:** PUT
-   - **Description:** Modify configuration settings for plant.
-   - **Authentication Required:** Yes
-   - **Request Body Example:**
-     ```json
-     {
-       "publicPlantId": "970407102018637",
-       "ipWhiteList": ["2001:0db8:85a3:0000:0000:8a2e:0370:7334"],
-       "intervalSec": 8000
-     } 
-     ```
-   
-4. **`/plants/keysecret`**
-   - **Method:** PUT
-   - **Description:** Create new key and secret needed for utilizing logging API from point 2).
-   - **Authentication Required:** Yes
-   - **Request Body Example:**
-     ```json
-     {
-       "publicPlantId": "970407102018637"
-     }
-     ```
+#### Consumer 
 
-5. **`/plants/delete`**
-   - **Method:** DELETE
-   - **Description:** Delete own plant together with related configuration document and its logging collection created in point 1).
-   - **Authentication Required:** Yes
-   - **Request Body Example:**
-     ```json
-     {
-       "publicPlantId": "970407102018637"
-     }
-     ```
+API '/consumers' offers endpoints for managing consumers.
 
-6. **`/plants/statistics`**
-   - **Method:** GEt
-   - **Description:** Retreaving statistical analysis for a provided period.
-   - **Authentication Required:** Yes
+1. **`/consumers/addconsumer`**
+   - **Method:** POST
+   - **Validation:** Yes
+   - **Description:** Add consumers requesting cooling energy from the cooling grid. Provide ID of existing grid section.
    - **Request Body Example:**
      ```json
      {
-       "dateStart": "2022-12-11T12:23:57.734+00:00",
-       "dateEnd": "2023-12-21T12:23:57.734+00:00",
-       "publicPlantId": "970407102018637"
-     }
+        "firstName": "Jon",
+        "lastName": "Doe",
+        "companyName": "Byte DataCenter Ltd",
+        "email": "email@jondoe.com",
+        "phone": "123456789",
+        "gridSectionID": 17
+    }
      ```
 
 

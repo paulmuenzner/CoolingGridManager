@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 
-namespace CoolingGridManager.Models
+namespace CoolingGridManager.Models.Data
 {
     [Table("Grid")]
     public class Grid

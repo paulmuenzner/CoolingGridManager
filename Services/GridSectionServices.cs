@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using CoolingGridManager.Models;
+using CoolingGridManager.Models.Data;
 using Microsoft.EntityFrameworkCore;
 using CoolingGridManager.Exceptions;
 using FormatException = System.FormatException;

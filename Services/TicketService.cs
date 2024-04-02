@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using CoolingGridManager.Models;
+using CoolingGridManager.Models.Data;
 using CoolingGridManager.Exceptions;
 using CoolingGridManager.ResponseHandler;
 using Microsoft.EntityFrameworkCore;
@@ -70,7 +70,7 @@ namespace CoolingGridManager.Services
                 // Add a new status change object to the status history array
                 ticket.StatusHistory.Add(new StatusChange
                 {
-                    Status = "Solved",
+                    Status = status,
                     ChangedDate = DateTime.UtcNow
                 });
 

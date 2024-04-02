@@ -24,30 +24,16 @@ namespace CoolingGridManager.Controllers.Consumers
             try
             {
                 var consumer = await _consumerService.GetConsumerById(consumerId);
-                return Ok(consumer);
+                return Ok(consumer); // Prepeare formatted response
             }
             catch (NotFoundException ex)
-            {
+            {// Prepeare formatter
                 return _exceptionResponse.ExceptionResponseHandle(ex, "No consumer found.", "No consumer found.", ExceptionType.NotFound);
             }
             catch (Exception ex)
-            {
+            {// Prepeare formatter
                 return _exceptionResponse.ExceptionResponseHandle(ex, "An unexpected error occurred.", "Action currently not possible.", ExceptionType.General);
             }
-            // return Ok(consumer);
-            // return Ok($"Retrieved customer with ID: {consumerId}");
-            // try
-            // {
-            //     var consumer = await _consumerService.GetConsumerById(consumerId);
-            //     return Ok(consumer);
-            // }
-            // catch (Exception ex)
-            // {
-            //     // Log or handle the exception
-            //     _logger.LogError(ex, $"Error retrieving consumer with consumerId: {consumerId}");
-            //     throw new Exception($"Consumer with ID: {consumerId} not found");
-            //     // return StatusCode(500, "An error occurred while retrieving the consumer.");
-            // }
         }
     }
 }

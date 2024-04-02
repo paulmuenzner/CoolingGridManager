@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using CoolingGridManager.Exceptions;
-using CoolingGridManager.Models;
+using CoolingGridManager.Models.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace CoolingGridManager.Services
@@ -18,10 +18,10 @@ namespace CoolingGridManager.Services
         }
 
         // ADD CONSUMER
-        public async Task<Consumer> Add(Consumer model)
+        public async Task<Consumer> Add(Consumer consumer)
         {
             try
-            {
+            { // Prepare as validation
                 // Retrieve an existing grid section from the context
                 var existingGridSection = await _context.GridSections.FirstOrDefaultAsync();
                 if (existingGridSection == null)
@@ -30,10 +30,10 @@ namespace CoolingGridManager.Services
                     throw new InvalidOperationException("No existing grid section found.");
                 }
                 // Assign the existing grid section to the consumer
-                model.GridSection = existingGridSection;
-                _context.Consumers.Add(model);
+                consumer.GridSection = existingGridSection;
+                _context.Consumers.Add(consumer);
                 await _context.SaveChangesAsync();
-                return model;
+                return consumer;
             }
             catch (Exception ex)
             {
@@ -44,36 +44,17 @@ namespace CoolingGridManager.Services
 
 
         // GET CONSUMER
-
-        public async Task<Consumer> GetConsumerById(int consumerId)
+        public async Task<Consumer?> GetConsumerById(int consumerId)
         {
+            // Prepare try catch
             var consumer = await _context.Consumers.FindAsync(consumerId);
             if (consumer == null)
             {
-
+                // return null; // prepare
                 var message = string.Format($"No consumer found with id {consumerId}. Result is null.");
                 throw new NotFoundException(message, "Consumer", consumerId);
-
             }
             return consumer;
-            // try
-            // {
-            //     // Use FindAsync to retrieve the consumer by ID
-            //     var consumer = await _context.Consumers.FindAsync(consumerId);
-
-            //     if (consumer == null)
-            //     {
-            //         // Handle the case where the consumer with the specified ID is not found
-            //         throw new Exception("Consumer not found");
-            //     }
-
-            //     return consumer;
-            // }
-            // catch (Exception ex)
-            // {
-            //     _logger.LogError(ex, $"Error retrieving consumer with consumerId: {consumerId}");
-            //     throw new Exception($"Consumer with ID: {consumerId} not found");
-            // }
         }
 
         // GET CONSUMER WITH RELATED GRID SECTION

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using CoolingGridManager.Services;
-using CoolingGridManager.Models;
+using CoolingGridManager.Models.Data;
 using CoolingGridManager.ResponseHandler;
 using FluentValidation.Results;
 using CoolingGridManager.Validators.Tickets;
@@ -35,7 +35,7 @@ namespace CoolingGridManager.Controllers.TicketsController
                 {
                     foreach (var error in result.Errors)
                     {
-                        return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { Error = error }, $"{error.ErrorMessage}", $"{error.ErrorMessage}", null);
+                        return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { Error = error }, $"{error.ErrorMessage}", $"{error.ErrorMessage}", null);
                     }
                 }
 
@@ -45,15 +45,12 @@ namespace CoolingGridManager.Controllers.TicketsController
             }
             catch (FormatException ex)
             {
-                // Log the exception details
                 _logger.Error(ex, "FormatException occurred while adding a ticket. Ticket: {@ticket}", ticket);
-
-                // Return a more specific error message
-                return _exceptionResponse.ExceptionResponseHandle(ex, "Input string was not in the correct format.", "Check the format of the input data.", ExceptionType.Format);
+                return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { }, "Check the format of the input data.", "Input string was not in the correct format.", ex);
             }
             catch (Exception ex)
             {
-                return _exceptionResponse.ExceptionResponseHandle(ex, "An unexpected error occurred.", "Adding new ticket currently not possible.", ExceptionType.General);
+                return ResponseFormatter.Negative(HttpStatusNegative.InternalServerError, new { }, "An unexpected error occurred.", "Adding new ticket currently not possible.", ex);
             }
 
         }

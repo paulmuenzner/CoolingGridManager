@@ -1,5 +1,5 @@
 using FluentValidation;
-using CoolingGridManager.Models;
+using CoolingGridManager.Models.Data;
 
 
 namespace CoolingGridManager.Validators.GridSections
@@ -21,6 +21,7 @@ namespace CoolingGridManager.Validators.GridSections
             RuleFor(gridSection => gridSection.GridID)
                 .NotEmpty().WithMessage("Valid grid ID must be provided.")
                 .NotNull().WithMessage("Valid grid ID must be provided.")
+                .GreaterThan(0).WithMessage("Grid ID must be greater than 0.")
                 .MustAsync(async (gridId, cancellationToken) =>
             {
                 var existingGrid = await _context.Grids.FindAsync(gridId);

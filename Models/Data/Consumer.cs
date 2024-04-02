@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CoolingGridManager.Models
+namespace CoolingGridManager.Models.Data
 {
     [Table("Consumer")]
     public class Consumer
@@ -21,6 +21,11 @@ namespace CoolingGridManager.Models
         [StringLength(50, MinimumLength = 2, ErrorMessage = "Last name must be between 2 and 50 characters.")]
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
+
+        [Required(ErrorMessage = "Company name is required.")]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "Company name must be between 2 and 50 characters.")]
+        [Display(Name = "Company name")]
+        public string CompanyName { get; set; }
 
         [Required(ErrorMessage = "Email is required.")]
         [EmailAddress(ErrorMessage = "Invalid email format.")]
@@ -40,6 +45,7 @@ namespace CoolingGridManager.Models
         {
             FirstName = string.Empty;
             LastName = string.Empty;
+            CompanyName = string.Empty;
             Email = string.Empty;
             Phone = string.Empty;
             GridSection = new GridSection();

@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using CoolingGridManager.ResponseHandler;
-using CoolingGridManager.Models;
+using CoolingGridManager.Models.Data;
 using CoolingGridManager.Services;
-using Microsoft.EntityFrameworkCore;
-
+using FluentValidation.Results;
+using CoolingGridManager.Validators.Consumers;
 
 
 namespace CoolingGridManager.Controllers.Consumers
@@ -13,16 +13,14 @@ namespace CoolingGridManager.Controllers.Consumers
     public class AddConsumerController : ControllerBase
     {
         private readonly Serilog.ILogger _logger;
-        private readonly IExceptionHandlingService _exceptionHandlingService;
         private readonly ConsumerService _consumerService;
+        private readonly AppDbContext _context;
 
-        private readonly ExceptionResponse _exceptionResponse;
-        public AddConsumerController(IExceptionHandlingService exceptionHandlingService, ExceptionResponse exceptionResponse, Serilog.ILogger logger, ConsumerService consumerService, IHostEnvironment env)
+        public AddConsumerController(AppDbContext context, Serilog.ILogger logger, ConsumerService consumerService, IHostEnvironment env)
         {
             _logger = logger;
+            _context = context;
             _consumerService = consumerService;
-            _exceptionHandlingService = exceptionHandlingService;
-            _exceptionResponse = exceptionResponse;
         }
 
         [HttpPost]
@@ -30,12 +28,27 @@ namespace CoolingGridManager.Controllers.Consumers
         {
             try
             {
+                // Validate
+                AddConsumerValidator validator = new AddConsumerValidator(_context);
+                ValidationResult result = await validator.ValidateAsync(consumer);
+                if (!result.IsValid)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { Error = error }, $"{error.ErrorMessage}", $"{error.ErrorMessage}", null);
+                    }
+                }
+
                 var newConsumer = await _consumerService.Add(consumer);
                 return ResponseFormatter.Success(HttpStatusPositive.OK, new { Consumer = newConsumer }, $"New consumer with name {newConsumer.LastName} and id {newConsumer.ConsumerID} added");
             }
+            catch (ArgumentNullException ex)
+            {
+                return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { }, "Your provided data is not valid or incomplete.", "Your provided data is not valid or incomplete.", ex);
+            }
             catch (Exception ex)
             {
-                return _exceptionHandlingService.HandleException(ex, "The system is currently undergoing updates. Our team is working diligently to complete this task as quickly as possible.", "Internal exception. Consumer cannot be added currently.", ExceptionType.General);
+                return ResponseFormatter.Negative(HttpStatusNegative.InternalServerError, new { }, "Internal exception. Consumer cannot be added currently.", "The system is currently undergoing updates. Our team is working diligently to complete this task as quickly as possible.", ex);
             }
 
 

@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using CoolingGridManager.Models;
+using CoolingGridManager.Models.Data;
 using CoolingGridManager.Exceptions;
 
 namespace CoolingGridManager.Services

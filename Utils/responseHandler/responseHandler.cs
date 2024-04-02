@@ -15,7 +15,13 @@ namespace CoolingGridManager.ResponseHandler
     // Fail
     public enum HttpStatusNegative
     {
-        BadRequest = 400
+        BadRequest = 400,
+        Unauthorized = 401,
+        Forbidden = 403,
+        NotFound = 404,
+        MethodNotAllowed = 405,
+        UnprocessableEntity = 422, // Used for validation error
+        InternalServerError = 500
     }
 
     public static class ResponseFormatter

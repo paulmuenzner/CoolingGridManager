@@ -8,6 +8,9 @@ using FluentValidation.AspNetCore;
 using CoolingGridManager.Validators.Tickets;
 using CoolingGridManager.Validators.Grids;
 using CoolingGridManager.Validators.GridSections;
+using CoolingGridManager.Validators.Consumptions;
+using CoolingGridManager.Validators.Consumers;
+// using CoolingGridManager.Validators.Billing;
 
 
 // using CoolingGridManager.Services;
@@ -45,12 +48,15 @@ builder.Services.AddScoped<TicketAddValidator>();
 builder.Services.AddScoped<TicketGetByIdValidator>();
 builder.Services.AddScoped<AddGridValidator>();
 builder.Services.AddScoped<AddGridSectionValidator>();
+builder.Services.AddScoped<AddConsumerValidator>();
 
 // Add services
 builder.Services.AddScoped<ConsumerService>();
 builder.Services.AddScoped<GridService>();
 builder.Services.AddScoped<GridSectionService>();
 builder.Services.AddScoped<TicketService>();
+builder.Services.AddScoped<ConsumptionService>();
+builder.Services.AddScoped<BillingService>();
 
 var app = builder.Build();
 
@@ -68,8 +74,10 @@ app.UseRouting();
 
 app.MapAreaRoute("consumers", "{controller}/{index}");
 app.MapAreaRoute("gridsections", "{controller}/{index}");
-app.MapAreaRoute("grids", "{controller}/{action=Index}/{consumerId?}");
+app.MapAreaRoute("grids", "{controller}/{action=Index}/{consumerId?}"); // prepare
 app.MapAreaRoute("tickets", "{controller}/{index}");
+app.MapAreaRoute("consumptions", "{controller}/{index}");
+app.MapAreaRoute("billing", "{controller}/{index}");
 
 
 // app.MapAreaControllerRoute(

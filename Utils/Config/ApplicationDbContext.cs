@@ -1,12 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using CoolingGridManager.Models;
+using CoolingGridManager.Models.Data;
 
 // dotnet ef migrations add <MigrationName>
 // dotnet ef database update
 public class AppDbContext : DbContext
 {
-
-
     public AppDbContext()
     {
     }

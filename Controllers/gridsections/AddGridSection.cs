@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using CoolingGridManager.Services;
-using CoolingGridManager.Models;
+using CoolingGridManager.Models.Data;
 using CoolingGridManager.ResponseHandler;
 using CoolingGridManager.Validators.GridSections;
 using FluentValidation.Results;
@@ -16,7 +16,6 @@ namespace CoolingGridManager.Controllers.GridSectionController
         private readonly GridSectionService _gridSectionService;
         private readonly ExceptionResponse _exceptionResponse;
         private readonly Serilog.ILogger _logger;
-
         private readonly AppDbContext _context;
         public AddGridSectionController(AppDbContext context, AddGridSectionValidator addGridSectionValidator, ExceptionResponse exceptionResponse, Serilog.ILogger logger, GridSectionService gridSectionService)
         {
@@ -38,7 +37,7 @@ namespace CoolingGridManager.Controllers.GridSectionController
                 {
                     foreach (var error in result.Errors)
                     {
-                        return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { Error = error }, $"{error.ErrorMessage}", $"{error.ErrorMessage}", null);
+                        return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { Error = error }, $"{error.ErrorMessage}", $"{error.ErrorMessage}", null);
                     }
                 }
 

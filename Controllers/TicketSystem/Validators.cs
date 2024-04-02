@@ -1,15 +1,35 @@
-using System.Text.RegularExpressions;
-using CoolingGridManager.Controllers.TicketsController;
-using CoolingGridManager.Models;
+using Azure.Core;
+using CoolingGridManager.Models.Data;
+using CoolingGridManager.Models.Requests;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 
 
 namespace CoolingGridManager.Validators.Tickets
 {
 
+    // Validation helper
+    public static class TicketValidatorHelper
+    {
+        public static bool BeValidStatus(string description)
+        {
+            return description == "open" || description == "solved" || description == "onhold";
+        }
+
+        public static bool BeValidPriority(string description)
+        {
+            return description == "high" || description == "medium" || description == "low";
+        }
+
+        public static bool BeValidCategory(string description)
+        {
+            return description == "billing" || description == "technical" || description == "miscellaneous";
+        }
+    }
+
     // Get Ticket Validator
-    public class TicketGetByIdValidator : AbstractValidator<TicketRequest>
+    public class TicketGetByIdValidator : AbstractValidator<GetTicketByIDRequest>
     {
         // Get Ticket Validator
         public TicketGetByIdValidator()
@@ -49,15 +69,15 @@ namespace CoolingGridManager.Validators.Tickets
 
             RuleFor(ticketModel => ticketModel.Category)
                .NotEmpty().WithMessage("Category is required.")
-               .Must(BeValidCategory).WithMessage("Invalid category value. Can only be technical, billing or miscellaneous.");
+               .Must(TicketValidatorHelper.BeValidCategory).WithMessage("Invalid category value. Can only be technical, billing or miscellaneous.");
 
             RuleFor(ticketModel => ticketModel.Priority)
                 .NotEmpty().WithMessage("Priority is required.").Must(BeValidPriority)
                 .WithMessage("Invalid priority value. Can only be high, medium or low.");
 
             RuleFor(ticketModel => ticketModel.Status)
-                .NotEmpty().WithMessage("Status is required.").Must(BeValidStatus)
-                .WithMessage("Invalid status value. Can only be open, solved or onhold.");
+                .NotEmpty().WithMessage("Status is required.")
+                .Must(TicketValidatorHelper.BeValidStatus).WithMessage("Invalid status value. Can only be open, solved or onhold.");
         }
 
         private bool BeValidStatus(string description)
@@ -75,4 +95,44 @@ namespace CoolingGridManager.Validators.Tickets
             return description == "billing" || description == "technical" || description == "miscellaneous";
         }
     }
+
+    // Update ticket validation
+    public class UpdateTicketStatusValidator : AbstractValidator<UpdateTicketStatusRequest>
+    {
+        private readonly AppDbContext _context;
+        public UpdateTicketStatusValidator(AppDbContext context)
+        {
+            _context = context;
+
+            RuleFor(request => request.TicketId)
+            .NotEmpty().WithMessage("Ticket ID is required.")
+            .GreaterThan(0).WithMessage("Ticket ID must be greater than 0.")
+            .MustAsync(ExistingTicket).WithMessage("Requested ticket not found.");
+
+            RuleFor(request => request.Status)
+                .NotEmpty().WithMessage("Status is required.")
+                .Must(TicketValidatorHelper.BeValidStatus).WithMessage("Invalid status value. Can only be open, solved or onhold.")
+                .MustAsync(StatusAlreadySet).WithMessage("Ticket status already set.");
+        }
+
+
+        private async Task<bool> ExistingTicket(int ticketId, CancellationToken cancellationToken)
+        {
+            var existingTicket = await _context.Tickets.FindAsync(new object[] { ticketId }, cancellationToken);
+            return existingTicket != null;
+        }
+
+        // Validate if the requested status is equal and has been set already
+        private async Task<bool> StatusAlreadySet(UpdateTicketStatusRequest request, string newStatus, CancellationToken cancellationToken)
+        {
+            var existingTicketStatus = await _context.Tickets
+                .Where(t => t.TicketId == request.TicketId)
+                .Select(t => t.Status)
+                .SingleOrDefaultAsync(cancellationToken);
+
+            return existingTicketStatus != request.Status;
+        }
+
+    }
+
 }

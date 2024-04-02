@@ -1,4 +1,3 @@
-using CoolingGridManager.Controllers.TicketsController;
 using FluentValidation;
 
 

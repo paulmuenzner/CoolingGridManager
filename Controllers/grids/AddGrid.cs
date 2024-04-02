@@ -37,7 +37,7 @@ namespace CoolingGridManager.Controllers.GridController
                 {
                     foreach (var error in result.Errors)
                     {
-                        return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { Error = error }, $"{error.ErrorMessage}", $"{error.ErrorMessage}", null);
+                        return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { Error = error }, $"{error.ErrorMessage}", $"{error.ErrorMessage}", null);
                     }
                 }
 
