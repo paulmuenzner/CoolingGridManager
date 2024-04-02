@@ -273,15 +273,54 @@ API '/consumptions' offers endpoints for managing consumption data of consumers.
 API '/billing' offers endpoints for managing consumption data of consumers.
 
 1. **`/billing/getbill`**
-   - **Method:** POST
+   - **Method:** GET
    - **Validation:** Yes
-   - **Description:** Request bill by consumer ID and month (billing period).
+   - **Description:** Request bill for consumer and month (billing period).
    - **Request Body Example:**
      ```json
      {
         "consumerID": 123,
         "month": 3,
         "year": 2024
+     }
+     ```
+
+2. **`/billing/addbill`**
+   - **Method:** POST
+   - **Validation:** Yes
+   - **Description:** Add bill for consumer ID and month (billing period).
+   - **Request Body Example:**
+     ```json
+     {
+        "consumerID": 123,
+        "billingMonth": 3,
+        "billingYear": 2024,
+        "totalConsumption": 150.5,
+        "isPaid": false,
+        "billingAmount": 250.75
+     }
+     ```
+
+3. **`/billing/deletebill`**
+   - **Method:** DELETE
+   - **Validation:** Yes
+   - **Description:** Delete bill.
+   - **Request Body Example:**
+     ```json
+     {
+        "billingId": 2
+     }
+     ```
+
+4. **`/billing/updatestatus`**
+   - **Method:** PUT
+   - **Validation:** Yes
+   - **Description:** Update payment status for bill.
+   - **Request Body Example:**
+     ```json
+     {
+        "billingId": 2,
+        "isPaid": true
      }
      ```
 

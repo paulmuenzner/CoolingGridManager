@@ -27,7 +27,6 @@ namespace CoolingGridManager.Services
                 if (existingGrid == null)
                 {
                     _logger.Information($"Grid with ID {gridSection.GridID} does not exist.");
-                    // Handle the case where the provided grid ID does not exist
                     throw new FormatException($"Grid with ID {gridSection.GridID} does not exist.");
                 }
                 // Associate the existing grid with the new grid section

@@ -1,10 +1,9 @@
-// MonthlyBilling.cs
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CoolingGridManager.Models.Data
 {
-    [Table("MonthlyBilling")]
+    [Table("Bills")]
     public class Billing
     {
         [Key]
@@ -12,9 +11,8 @@ namespace CoolingGridManager.Models.Data
         public int BillingId { get; set; }
 
         [Required(ErrorMessage = "Consumer is required.")]
-        public int ConsumerID { get; set; }
-
         [ForeignKey("ConsumerID")]
+        public int ConsumerID { get; set; }
         public Consumer? Consumer { get; set; }
 
 
@@ -27,10 +25,12 @@ namespace CoolingGridManager.Models.Data
         [Required(ErrorMessage = "Total Consumption is required.")]
         public decimal TotalConsumption { get; set; }
 
+        [Required(ErrorMessage = "Provide information if bill is paid.")]
+        public bool IsPaid { get; set; }
+
         [Required(ErrorMessage = "Billing Amount is required.")]
         public decimal BillingAmount { get; set; }
 
-        // Additional attributes...
 
         public Billing()
         {
@@ -38,6 +38,7 @@ namespace CoolingGridManager.Models.Data
             BillingMonth = 0;
             BillingYear = 0;
             TotalConsumption = 0m;
+            IsPaid = false;
             BillingAmount = 0m;
         }
 

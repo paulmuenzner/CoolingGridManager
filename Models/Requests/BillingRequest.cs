@@ -7,4 +7,16 @@ namespace CoolingGridManager.Models.Requests
         public required int? Year { get; set; }
     }
 
+    public class DeleteBillRequest
+    {
+        public int? BillingId { get; set; }
+    }
+
+    public class BillStatusRequest
+    {
+        public int? BillingId { get; set; }
+        public bool? Status { get; set; }
+    }
+
+
 }

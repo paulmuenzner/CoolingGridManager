@@ -10,7 +10,7 @@ public class AppDbContext : DbContext
     }
 
     // DbSet property
-    public DbSet<Billing> MonthlyBillings { get; set; }
+    public DbSet<Billing> Bills { get; set; }
     public DbSet<Consumer> Consumers { get; set; }
     public DbSet<Grid> Grids { get; set; }
     public DbSet<GridSection> GridSections { get; set; }

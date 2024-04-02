@@ -8,7 +8,6 @@ namespace CoolingGridManager.Services
     public class ConsumerService
     {
         private readonly AppDbContext _context;
-
         private readonly Serilog.ILogger _logger;
 
         public ConsumerService(AppDbContext context, Serilog.ILogger logger)

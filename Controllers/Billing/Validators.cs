@@ -1,12 +1,60 @@
 using FluentValidation;
 using CoolingGridManager.Models.Requests;
 using CoolingGridManager.Models.Data;
+using Microsoft.EntityFrameworkCore;
 
 
-namespace CoolingGridManager.Validators.Consumers
+namespace CoolingGridManager.Validators.Bills
 {
+    // Update Bill Payment Status
+    public class BillStatusValidator : AbstractValidator<BillStatusRequest>
+    {
+        private readonly AppDbContext _context;
+        public BillStatusValidator(AppDbContext context)
+        {
+            _context = context;
 
-    // Add Consumer Validator
+            RuleFor(bill => bill.BillingId)
+                .NotEmpty().WithMessage("Billing ID is required.")
+                .GreaterThan(0).WithMessage("Billing ID must be greater than 0.")
+                .MustAsync(ExistingBill).WithMessage("Bill not found with provided bill ID.");
+
+            RuleFor(bill => bill.Status)
+                .NotEmpty().WithMessage("Status is required.");
+        }
+
+        private async Task<bool> ExistingBill(int? billingId, CancellationToken cancellationToken)
+        {
+            if (billingId == null) return false;
+            var existingBill = await _context.Bills.FindAsync(new object[] { billingId }, cancellationToken);
+            return existingBill != null;
+        }
+    }
+
+
+    // Delete Bill Validator
+    public class DeleteBillValidator : AbstractValidator<int?>
+    {
+        private readonly AppDbContext _context;
+        public DeleteBillValidator(AppDbContext context)
+        {
+            _context = context;
+
+            RuleFor(billingId => billingId)
+                .NotEmpty().WithMessage("Billing ID is required.")
+                .GreaterThan(0).WithMessage("Billing ID must be greater than 0.")
+                .MustAsync(ExistingBill).WithMessage("Bill not found with provided bill ID.");
+        }
+
+        private async Task<bool> ExistingBill(int? billingId, CancellationToken cancellationToken)
+        {
+            if (billingId == null) return false;
+            var existingBill = await _context.Bills.FindAsync(new object[] { billingId }, cancellationToken);
+            return existingBill != null;
+        }
+    }
+
+    // Add Bill Validator
     public class GetBillValidator : AbstractValidator<GetBillRequest>
     {
         private readonly AppDbContext _context;
@@ -21,11 +69,12 @@ namespace CoolingGridManager.Validators.Consumers
 
             RuleFor(bill => bill.Month)
                 .NotNull().WithMessage("Month is required.")
-                .InclusiveBetween(1, 12).WithMessage("Month must be between January and December.");
+                .InclusiveBetween(1, 12).WithMessage("No valid month selected.");
 
             RuleFor(bill => bill.Year)
                 .NotNull().WithMessage("Year is required.")
-                .GreaterThanOrEqualTo(2020).WithMessage("Year must be greater than or equal to 2020.");
+                .GreaterThanOrEqualTo(2020).WithMessage("Year must be greater than or equal to 2020.")
+                .LessThan(2035).WithMessage("No valid year selected.");
         }
 
         private async Task<bool> ExistingConsumer(int? consumerID, CancellationToken cancellationToken)
@@ -33,6 +82,60 @@ namespace CoolingGridManager.Validators.Consumers
             if (consumerID == null) return false;
             var existingConsumer = await _context.Consumers.FindAsync(new object[] { consumerID }, cancellationToken);
             return existingConsumer != null;
+        }
+    }
+
+    // Add Bill Validator
+    public class AddBillValidator : AbstractValidator<Billing>
+    {
+        private readonly AppDbContext _context;
+        public AddBillValidator(AppDbContext context)
+        {
+            _context = context;
+
+            RuleFor(billing => billing.ConsumerID)
+                .NotEmpty().WithMessage("Consumer ID is required.")
+                .GreaterThan(0).WithMessage("Consumer ID must be greater than 0.")
+                .MustAsync(ConsumerExists).WithMessage("Consumer not found. You can only add bills to existing consumers.");
+
+            RuleFor(billing => billing.BillingMonth)
+                .NotEmpty().WithMessage("Month is required.")
+                .InclusiveBetween(1, 12).WithMessage("Valid month must be provided.");
+
+            RuleFor(billing => billing.BillingYear)
+                .NotEmpty().WithMessage("Year is required.")
+                .GreaterThanOrEqualTo(2020).WithMessage("Year must be greater than or equal to 2020.")
+                .LessThan(2035).WithMessage("Select valid year.");
+
+            RuleFor(billing => billing.TotalConsumption)
+                .NotEmpty().WithMessage("Total consumption is required.")
+                .GreaterThanOrEqualTo(0).WithMessage("Total consumption cannot be negative.");
+
+            RuleFor(billing => billing.IsPaid)
+                .NotNull().WithMessage("Provide information if bill is paid.");
+
+            RuleFor(billing => billing.BillingAmount)
+                .NotEmpty().WithMessage("Billing amount is required.")
+                .GreaterThanOrEqualTo(0).WithMessage("Billing amount cannot be negative.");
+
+            RuleFor(billing => billing)
+                .MustAsync(BeUniqueBilling).WithMessage("A bill already exists for the same user, month, and year combination.");
+        }
+
+        private async Task<bool> ConsumerExists(int consumerID, CancellationToken cancellationToken)
+        {
+            var consumer = await _context.Consumers.FindAsync(consumerID);
+
+            return consumer != null;
+        }
+
+        private async Task<bool> BeUniqueBilling(Billing billing, CancellationToken cancellationToken)
+        {
+            var existingBill = await _context.Bills
+                .Where(b => b.ConsumerID == billing.ConsumerID && b.BillingMonth == billing.BillingMonth && b.BillingYear == billing.BillingYear)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return existingBill == null || existingBill.BillingId == billing.BillingId;
         }
     }
 }

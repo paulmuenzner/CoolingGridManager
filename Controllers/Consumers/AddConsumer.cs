@@ -16,7 +16,7 @@ namespace CoolingGridManager.Controllers.Consumers
         private readonly ConsumerService _consumerService;
         private readonly AppDbContext _context;
 
-        public AddConsumerController(AppDbContext context, Serilog.ILogger logger, ConsumerService consumerService, IHostEnvironment env)
+        public AddConsumerController(AppDbContext context, Serilog.ILogger logger, ConsumerService consumerService)
         {
             _logger = logger;
             _context = context;

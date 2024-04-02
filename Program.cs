@@ -10,6 +10,7 @@ using CoolingGridManager.Validators.Grids;
 using CoolingGridManager.Validators.GridSections;
 using CoolingGridManager.Validators.Consumptions;
 using CoolingGridManager.Validators.Consumers;
+using CoolingGridManager.Validators.Bills;
 // using CoolingGridManager.Validators.Billing;
 
 
@@ -49,6 +50,7 @@ builder.Services.AddScoped<TicketGetByIdValidator>();
 builder.Services.AddScoped<AddGridValidator>();
 builder.Services.AddScoped<AddGridSectionValidator>();
 builder.Services.AddScoped<AddConsumerValidator>();
+builder.Services.AddScoped<AddBillValidator>();
 
 // Add services
 builder.Services.AddScoped<ConsumerService>();
