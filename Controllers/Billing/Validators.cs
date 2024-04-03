@@ -19,8 +19,8 @@ namespace CoolingGridManager.Validators.Bills
                 .GreaterThan(0).WithMessage("Billing ID must be greater than 0.")
                 .MustAsync(ExistingBill).WithMessage("Bill not found with provided bill ID.");
 
-            RuleFor(bill => bill.Status)
-                .NotEmpty().WithMessage("Status is required.");
+            RuleFor(bill => bill.IsPaid)
+                .NotEmpty().WithMessage("Payment status is required.");
         }
 
         private async Task<bool> ExistingBill(int? billingId, CancellationToken cancellationToken)

@@ -4,6 +4,7 @@ using CoolingGridManager.Models.Data;
 using CoolingGridManager.Services;
 using FluentValidation.Results;
 using CoolingGridManager.Validators.Bills;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace CoolingGridManager.Controllers.Bills
@@ -24,13 +25,13 @@ namespace CoolingGridManager.Controllers.Bills
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddBill([FromBody] Billing bill)
+        public async Task<IActionResult> AddBill([FromBody] Billing body)
         {
             try
             {
                 // Validate
                 AddBillValidator validator = new AddBillValidator(_context);
-                ValidationResult result = await validator.ValidateAsync(bill);
+                ValidationResult result = await validator.ValidateAsync(body);
                 if (!result.IsValid)
                 {
                     foreach (var error in result.Errors)
@@ -39,12 +40,16 @@ namespace CoolingGridManager.Controllers.Bills
                     }
                 }
 
-                var newBill = await _billingService.AddBill(bill);
+                var newBill = await _billingService.AddBill(body);
                 return ResponseFormatter.Success(HttpStatusPositive.OK, new { Bill = newBill }, $"New bill added");
             }
             catch (ArgumentNullException ex)
             {
                 return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { }, "Your provided data is not valid or incomplete.", "Your provided data is not valid or incomplete.", ex);
+            }
+            catch (DbUpdateException ex)
+            {
+                return ResponseFormatter.Negative(HttpStatusNegative.InternalServerError, new { }, "Internal database error. Bill cannot be added.", "The system encountered an issue. Our team is working on resolving it.", ex);
             }
             catch (Exception ex)
             {

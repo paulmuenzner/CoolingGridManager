@@ -5,6 +5,7 @@ using CoolingGridManager.Services;
 using FluentValidation.Results;
 using CoolingGridManager.Validators.Bills;
 using CoolingGridManager.Models.Requests;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace CoolingGridManager.Controllers.Bills
@@ -25,17 +26,17 @@ namespace CoolingGridManager.Controllers.Bills
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteBill([FromBody] DeleteBillRequest billingRequest)
+        public async Task<IActionResult> DeleteBill([FromBody] DeleteBillRequest body)
         {
             try
             {
-                if (billingRequest.BillingId == null)
+                if (body.BillingId == null)
                 {
                     return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, "No billing ID provided.", "No billing ID provided.", null);
                 }
 
                 DeleteBillValidator validator = new DeleteBillValidator(_context);
-                ValidationResult result = await validator.ValidateAsync(billingRequest.BillingId);
+                ValidationResult result = await validator.ValidateAsync(body.BillingId);
                 if (!result.IsValid)
                 {
                     foreach (var error in result.Errors)
@@ -44,12 +45,16 @@ namespace CoolingGridManager.Controllers.Bills
                     }
                 }
 
-                var bill = await _billingService.DeleteBill((int)billingRequest.BillingId);
-                return ResponseFormatter.Success(HttpStatusPositive.OK, new { Bill = bill }, $"Bill with id {billingRequest.BillingId} deleted.");
+                var bill = await _billingService.DeleteBill((int)body.BillingId);
+                return ResponseFormatter.Success(HttpStatusPositive.OK, new { Bill = bill }, $"Bill with id {body.BillingId} deleted.");
             }
             catch (ArgumentNullException ex)
             {
                 return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { }, "Your provided data is not valid or incomplete.", "Your provided data is not valid or incomplete.", ex);
+            }
+            catch (DbUpdateException ex)
+            {
+                return ResponseFormatter.Negative(HttpStatusNegative.InternalServerError, new { }, "Internal database error. Bill cannot be deleted.", "The system encountered an issue. Our team is working on resolving it.", ex);
             }
             catch (Exception ex)
             {

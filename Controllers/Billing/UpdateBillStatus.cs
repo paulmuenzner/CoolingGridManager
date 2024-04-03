@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using CoolingGridManager.ResponseHandler;
-using CoolingGridManager.Models.Data;
 using CoolingGridManager.Services;
 using FluentValidation.Results;
 using CoolingGridManager.Validators.Bills;
 using CoolingGridManager.Models.Requests;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace CoolingGridManager.Controllers.Bills
@@ -25,18 +25,18 @@ namespace CoolingGridManager.Controllers.Bills
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateStatus([FromBody] BillStatusRequest request)
+        public async Task<IActionResult> UpdateBillStatus([FromBody] BillStatusRequest body)
         {
             try
             {
                 // Validate
-                if (request.BillingId == null || request.Status == null)
+                if (body.BillingId == null || body.IsPaid == null)
                 {
-                    return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, $"Not all required information provided. Billing ID: {request.BillingId}, Status: {request.Status}", "Request currently not possible.", null);
+                    return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, $"Not all required information provided. Billing ID: {body.BillingId}, Payment Status: {body.IsPaid}", "Request currently not possible.", null);
                 }
 
                 BillStatusValidator validator = new BillStatusValidator(_context);
-                ValidationResult result = await validator.ValidateAsync(request);
+                ValidationResult result = await validator.ValidateAsync(body);
                 if (!result.IsValid)
                 {
                     foreach (var error in result.Errors)
@@ -45,19 +45,21 @@ namespace CoolingGridManager.Controllers.Bills
                     }
                 }
 
-                var bill = await _billingService.PaymentStatus((int)request.BillingId, (bool)request.Status);
+                var bill = await _billingService.PaymentStatus((int)body.BillingId, (bool)body.IsPaid);
                 return ResponseFormatter.Success(HttpStatusPositive.OK, new { Bill = bill }, "Bill updated.");
             }
             catch (ArgumentNullException ex)
             {
-                return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { }, "Your provided data is not valid or incomplete.", "Your provided data is not valid or incomplete.", ex);
+                return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { }, "ArgumentNullException occurred. The provided data is not valid or incomplete.", "Your provided data is not valid or incomplete.", ex);
+            }
+            catch (DbUpdateException ex)
+            {
+                return ResponseFormatter.Negative(HttpStatusNegative.InternalServerError, new { }, "Internal database error. Bill cannot be updated.", "The system encountered an issue. Our team is working on resolving it.", ex);
             }
             catch (Exception ex)
             {
                 return ResponseFormatter.Negative(HttpStatusNegative.InternalServerError, new { }, "Internal exception. Bill cannot be updated.", "The system is currently undergoing updates. Our team is working diligently to complete this task as quickly as possible.", ex);
             }
-
-
         }
     }
 

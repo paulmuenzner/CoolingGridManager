@@ -44,7 +44,7 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 
 builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
 
-
+// Add Validators
 builder.Services.AddScoped<TicketAddValidator>();
 builder.Services.AddScoped<TicketGetByIdValidator>();
 builder.Services.AddScoped<AddGridValidator>();
@@ -80,23 +80,6 @@ app.MapAreaRoute("grids", "{controller}/{action=Index}/{consumerId?}"); // prepa
 app.MapAreaRoute("tickets", "{controller}/{index}");
 app.MapAreaRoute("consumptions", "{controller}/{index}");
 app.MapAreaRoute("billing", "{controller}/{index}");
-
-
-// app.MapAreaControllerRoute(
-//     name: "consumption",
-//     areaName: "consumption",
-//     pattern: "api/consumption/{controller}/{action=Index}/{id?}");
-
-// app.MapAreaControllerRoute(
-//     name: "billing",
-//     areaName: "billing",
-//     pattern: "api/billing/{controller}/{action=Index}/{id?}");
-
-
-// app.MapAreaControllerRoute(
-//     name: "gridsections",
-//     areaName: "gridsections",
-//     pattern: "api/gridsections/{controller}/{action=Index}/{id?}");
 
 
 

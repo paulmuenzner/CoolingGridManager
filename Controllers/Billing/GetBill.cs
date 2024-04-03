@@ -5,6 +5,7 @@ using CoolingGridManager.Services;
 using FluentValidation.Results;
 using CoolingGridManager.Validators.Bills;
 using CoolingGridManager.Models.Requests;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace CoolingGridManager.Controllers.Bills
@@ -25,18 +26,18 @@ namespace CoolingGridManager.Controllers.Bills
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetBill([FromBody] GetBillRequest getBillRequest)
+        public async Task<IActionResult> GetBill([FromBody] GetBillRequest body)
         {
             try
             {
                 // Validate
-                if (getBillRequest.ConsumerID == null || getBillRequest.Month == null || getBillRequest.Year == null)
+                if (body.ConsumerID == null || body.Month == null || body.Year == null)
                 {
                     return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, "Consumer ID, month, and year must be provided.", "Consumer ID, month, and year must be provided.", null);
                 }
 
                 GetBillValidator validator = new GetBillValidator(_context);
-                ValidationResult result = await validator.ValidateAsync(getBillRequest);
+                ValidationResult result = await validator.ValidateAsync(body);
                 if (!result.IsValid)
                 {
                     foreach (var error in result.Errors)
@@ -45,12 +46,16 @@ namespace CoolingGridManager.Controllers.Bills
                     }
                 }
 
-                var bill = await _billingService.GetBill(getBillRequest);
+                var bill = await _billingService.GetBill(body);
                 return ResponseFormatter.Success(HttpStatusPositive.OK, new { Bill = bill }, $"Requested bill retrieved.");
             }
             catch (ArgumentNullException ex)
             {
                 return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { }, "Your provided data is not valid or incomplete.", "Your provided data is not valid or incomplete.", ex);
+            }
+            catch (DbUpdateException ex)
+            {
+                return ResponseFormatter.Negative(HttpStatusNegative.InternalServerError, new { }, "Internal database error. Bill cannot be retrieved.", "The system encountered an issue. Our team is working on resolving it.", ex);
             }
             catch (Exception ex)
             {
