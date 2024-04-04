@@ -8,11 +8,8 @@ using CoolingGridManager.Validators.Grids;
 using CoolingGridManager.Validators.GridSections;
 using CoolingGridManager.Validators.Consumers;
 using CoolingGridManager.Validators.Bills;
-using Infrastructure;
 using CoolingGridManager.Extensions;
 
-
-// using CoolingGridManager.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +24,7 @@ builder.Host.UseSerilog((context, configuration) =>
 // Register the logger as a service
 builder.Services.AddSingleton<Serilog.ILogger>(_ => Log.Logger);
 
+// Register Exception responses
 builder.Services.AddSingleton<ExceptionResponse>();
 
 
@@ -84,6 +82,7 @@ app.MapAreaRoute("grids", "{controller}/{action=Index}/{consumerId?}"); // prepa
 app.MapAreaRoute("tickets", "{controller}/{index}");
 app.MapAreaRoute("consumptions", "{controller}/{index}");
 app.MapAreaRoute("billing", "{controller}/{index}");
+app.MapAreaRoute("gridparameters", "{controller}/{index}");
 
 
 

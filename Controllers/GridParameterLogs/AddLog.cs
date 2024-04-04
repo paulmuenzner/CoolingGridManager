@@ -8,15 +8,15 @@ using CoolingGridManager.Models.Requests;
 
 namespace CoolingGridManager.Controllers.ConsumptionController
 {
-    [Area("consumptions")]
-    [Route("api/consumptions/[controller]")]
-    public partial class AddConsumptionController : ControllerBase
+    [Area("gridparameters")]
+    [Route("api/gridparameters/[controller]")]
+    public partial class AddParameterLogController : ControllerBase
     {
         private readonly AddConsumptionValidator _addConsumptionValidator;
         private readonly ConsumptionService _consumptionService;
         private readonly ExceptionResponse _exceptionResponse;
         private readonly AppDbContext _context;
-        public AddConsumptionController(AppDbContext context, AddConsumptionValidator addConsumptionValidator, ExceptionResponse exceptionResponse, ConsumptionService consumptionService)
+        public AddParameterLogController(AppDbContext context, AddConsumptionValidator addConsumptionValidator, ExceptionResponse exceptionResponse, ConsumptionService consumptionService)
         {
             _consumptionService = consumptionService;
             _addConsumptionValidator = addConsumptionValidator;

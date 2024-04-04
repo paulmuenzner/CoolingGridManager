@@ -1,6 +1,7 @@
 ﻿using Quartz;
 using Microsoft.Extensions.DependencyInjection;
-using Infrastructure;
+using CoolingGridManager.Utils.CronJobs;
+
 
 namespace CoolingGridManager.Extensions
 {
@@ -16,7 +17,7 @@ namespace CoolingGridManager.Extensions
                 options.WaitForJobsToComplete = true;
             });
 
-            services.ConfigureOptions<LoggingBackgroundJobSetup>();
+            services.ConfigureOptions<AddBillsSetup>();
         }
     }
 }

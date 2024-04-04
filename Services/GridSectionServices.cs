@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+using ILogger = Serilog.ILogger;
 using CoolingGridManager.Models.Data;
 using Microsoft.EntityFrameworkCore;
 using CoolingGridManager.Exceptions;
@@ -9,9 +9,9 @@ namespace CoolingGridManager.Services
     public class GridSectionService
     {
         private readonly AppDbContext _context;
-        private readonly Serilog.ILogger _logger;
+        private readonly ILogger<GridSectionService> _logger;
 
-        public GridSectionService(AppDbContext context, Serilog.ILogger logger)
+        public GridSectionService(AppDbContext context, ILogger<GridSectionService> logger)
         {
             _logger = logger;
             _context = context;
@@ -26,7 +26,7 @@ namespace CoolingGridManager.Services
 
                 if (existingGrid == null)
                 {
-                    _logger.Information($"Grid with ID {gridSection.GridID} does not exist.");
+                    _logger.LogInformation($"Grid with ID {gridSection.GridID} does not exist.");
                     throw new FormatException($"Grid with ID {gridSection.GridID} does not exist.");
                 }
                 // Associate the existing grid with the new grid section

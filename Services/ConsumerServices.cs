@@ -56,6 +56,36 @@ namespace CoolingGridManager.Services
             return consumer;
         }
 
+        // Get Consumers in Batches
+        public async Task<List<Consumer>> GetConsumerBatch(int skip, int size)
+        {
+            try
+            {
+                var consumers = await _context.Consumers
+                        .OrderBy(c => c.ConsumerID) // Order by primary key or other unique column
+                        .Skip(skip * size)
+                        .Take(size)
+                        .ToListAsync();
+                if (consumers != null)
+                {
+                    return consumers;
+                }
+                else
+                {
+                    var message = $"Non-existing users requested in batches. Error retrieving consumers in batches. Size: {size}, Skip: {skip}";
+                    _logger.Error(message);
+                    throw new Exception(message);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                var message = $"Error retrieving consumers in batches. Size: {size}, Skip: {skip}";
+                _logger.Error(ex, message);
+                throw new Exception(message);
+            }
+        }
+
         // GET CONSUMER WITH RELATED GRID SECTION
         public async Task<Consumer> GetConsumerWithGridSection(int id)
         {

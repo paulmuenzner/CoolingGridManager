@@ -341,7 +341,7 @@ API '/consumers' offers endpoints for managing consumers.
         "email": "email@jondoe.com",
         "phone": "123456789",
         "gridSectionID": 17
-    }
+     }
      ```
 
 #### Grids 
@@ -356,8 +356,31 @@ API '/grids' offers endpoints for managing cooling grid systems.
      ```json
      {
         "gridName": "ABC Grid"
-    }
+     }
      ```
+
+#### Grid Parameters 
+
+API '/grids' offers endpoints for managing cooling grid systems.
+
+1. **`/grids/addgrid`**
+   - **Method:** POST
+   - **Validation:** Yes
+   - **Description:** Add new grid parameter log, such as mass flow rate (in kg/s), specific heat capacity of the heating fluid (in J/kg⋅K) as well as temperature inlet and outlet (K) which is needed to calculate the temperature difference ΔT = T_inlet - T_outlet.
+   Determine the appropriate frequency for data collection based on your monitoring needs. A higher frequency provides more detailed information but requires more storage and processing resources.
+   - **Request Body Example:**
+     ```json
+     {
+        "massFlowRate": 21.5,
+        "specificHeatCapacity": 4.18,
+        "temperatureIn": 2.2,
+        "temperatureOut": 15.2,
+        "startDate": "2024-04-10T00:00:00Z",
+        "endDate": "2024-04-11T00:00:00Z",
+        "gridId": 1
+     }
+     ```
+
 
 #### Grid Sections 
 
