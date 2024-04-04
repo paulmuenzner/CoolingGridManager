@@ -22,14 +22,14 @@ namespace CoolingGridManager.Services
         {
             try
             {
-                var consumptionLog = new CoolingGridManager.Models.Data.ConsumptionLog
+                var consumptionLog = new CoolingGridManager.Models.Data.ConsumptionConsumer
                 {
                     ConsumerID = request.ConsumerID,
                     ConsumptionValue = request.ConsumptionValue,
                     LogDate = DateTime.Today,
                     ConsumptionDate = request.ConsumptionDate
                 };
-                _context.ConsumptionLogs.Add(consumptionLog);
+                _context.ConsumptionConsumers.Add(consumptionLog);
                 await _context.SaveChangesAsync();
 
                 return consumptionLog.LogId;
@@ -42,7 +42,7 @@ namespace CoolingGridManager.Services
         }
 
         // GET ALL CONSUMPTION ENTRIES PER USER AND MONTH
-        public async Task<List<ConsumptionLog>> GetConsumptionForUserByMonth(int consumerId, int month)
+        public async Task<List<ConsumptionConsumer>> GetConsumptionForUserByMonth(int consumerId, int month)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace CoolingGridManager.Services
                 var startDate = new DateTimeOffset(DateTime.Now.Year, month, 1, 0, 0, 0, TimeSpan.Zero);
                 var endDate = startDate.AddMonths(1).AddTicks(-1);
 
-                var logs = await _context.ConsumptionLogs
+                var logs = await _context.ConsumptionConsumers
                     .Where(log =>
                         log.ConsumerID == consumerId &&
                         log.ConsumptionDate >= startDate &&

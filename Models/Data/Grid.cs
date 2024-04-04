@@ -21,12 +21,14 @@ namespace CoolingGridManager.Models.Data
 
         public ICollection<GridSection> GridSection { get; set; }
         public ICollection<CoolingGridParameterLog> CoolingGridParameterLog { get; set; }
+        public ICollection<ConsumptionGrid> ConsumptionGrid { get; set; }
 
         public Grid()
         {
             GridName = string.Empty;
             GridSection = new List<GridSection>();
             CoolingGridParameterLog = new List<CoolingGridParameterLog>();
+            ConsumptionGrid = new List<ConsumptionGrid>();
         }
     }
 }

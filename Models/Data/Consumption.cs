@@ -5,8 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CoolingGridManager.Models.Data
 {
-    [Table("ConsumptionLog")]
-    public class ConsumptionLog
+    [Table("ConsumptionConsumer")]
+    public class ConsumptionConsumer
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -26,7 +26,7 @@ namespace CoolingGridManager.Models.Data
         public int ConsumerID { get; set; }
         public Consumer Consumer { get; set; }
 
-        public ConsumptionLog()
+        public ConsumptionConsumer()
         {
             ConsumptionValue = 0m;
             LogDate = DateTime.Today;

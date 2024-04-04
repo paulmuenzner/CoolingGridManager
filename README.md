@@ -361,12 +361,12 @@ API '/grids' offers endpoints for managing cooling grid systems.
 
 #### Grid Parameters 
 
-API '/grids' offers endpoints for managing cooling grid systems.
+API '/gridparameters' offers endpoints for managing cooling grid systems.
 
-1. **`/grids/addgrid`**
+1. **`/gridparameters/addparameterlog`**
    - **Method:** POST
    - **Validation:** Yes
-   - **Description:** Add new grid parameter log, such as mass flow rate (in kg/s), specific heat capacity of the heating fluid (in J/kg⋅K) as well as temperature inlet and outlet (K) which is needed to calculate the temperature difference ΔT = T_inlet - T_outlet.
+   - **Description:** Add new grid parameter log, such as mass flow rate (in kg/s), specific heat capacity of the heating fluid (in J/kg⋅K) as well as temperature inlet and outlet (K) which is needed to calculate the temperature difference ΔT = T_inlet - T_outlet. The following formula can be used to calculate the energy flow (cooling heat transfer rate) through the pipe: Energy Flow (Q) = Mass Flow Rate (m) * Specific Heat Capacity (Cp) * Temperature Difference (ΔT).
    Determine the appropriate frequency for data collection based on your monitoring needs. A higher frequency provides more detailed information but requires more storage and processing resources.
    - **Request Body Example:**
      ```json
@@ -378,6 +378,23 @@ API '/grids' offers endpoints for managing cooling grid systems.
         "startDate": "2024-04-10T00:00:00Z",
         "endDate": "2024-04-11T00:00:00Z",
         "gridId": 1
+     }
+     ```
+
+
+#### Grid Energy Consumption 
+
+API '/consumptiongrid' offers endpoints for managing the consumption log for the entire year. Based on on the logged parameters of the grid, the entire energy consumption is calculated for each month based on E_month = Σ (Q_avg_i * Δt_i). The difference is composed of grid losses and consumer consumption.
+
+1. **`/consumptiongrid/get`**
+   - **Method:** GET
+   - **Validation:** Yes
+   - **Description:** Retrieve the grid's consumption of cooling energy for a certain month.
+   - **Request Body Example:**
+     ```json
+     {
+        "month": 4,
+        "year": 2024
      }
      ```
 

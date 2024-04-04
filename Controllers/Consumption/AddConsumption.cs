@@ -8,8 +8,8 @@ using CoolingGridManager.Models.Requests;
 
 namespace CoolingGridManager.Controllers.ConsumptionController
 {
-    [Area("consumptions")]
-    [Route("api/consumptions/[controller]")]
+    [Area("consumptionconsumers")]
+    [Route("api/consumptionconsumers/[controller]")]
     public partial class AddConsumptionController : ControllerBase
     {
         private readonly AddConsumptionValidator _addConsumptionValidator;

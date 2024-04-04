@@ -6,48 +6,51 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CoolingGridManager.Services
 {
-    public class CoolingGridParameterLogService
+    public class ConsumptionGridService
     {
         private readonly AppDbContext _context;
 
         private readonly Serilog.ILogger _logger;
-        public CoolingGridParameterLogService(AppDbContext context, Serilog.ILogger logger)
+        public ConsumptionGridService(AppDbContext context, Serilog.ILogger logger)
         {
             _logger = logger;
             _context = context;
         }
 
         // ADD CONSUMPTION VALUE
-        public async Task<CoolingGridParameterLog> AddCoolingGridParameterLog(CoolingGridParameterLog log)
+        public async Task<ConsumptionGrid> AddGridConsumption(ConsumptionGrid request)
         {
             try
             {
-                _context.CoolingGridParameterLogs.Add(log);
+                var consumptionLog = new ConsumptionGrid
+                {
+                    Month = request.Month,
+                    Year = request.Year,
+                    Consumption = request.Consumption
+                };
+                _context.ConsumptionGrids.Add(request);
                 await _context.SaveChangesAsync();
 
-                return log;
+                return consumptionLog;
             }
             catch (Exception ex)
             {
                 var message = string.Format("Exception: {ex}", ex.ToString());
-                throw new TryCatchException(message, "AddConsumption");
+                throw new TryCatchException(message, "AddGridConsumption");
             }
         }
 
         // GET ALL CONSUMPTION ENTRIES PER USER AND MONTH
-        public async Task<List<ConsumptionConsumer>> GetConsumptionForUserByMonth(int consumerId, int month)
+        public async Task<ConsumptionGrid> GetConsumptionForGridByDate(int gridID, int month, int year)
         {
             try
             {
                 // All entries of current month
-                var startDate = new DateTimeOffset(DateTime.Now.Year, month, 1, 0, 0, 0, TimeSpan.Zero);
-                var endDate = startDate.AddMonths(1).AddTicks(-1);
-
-                var logs = await _context.ConsumptionConsumers
-                    .Where(log =>
-                        log.ConsumerID == consumerId &&
-                        log.ConsumptionDate >= startDate &&
-                        log.ConsumptionDate <= endDate).ToListAsync();
+                var logs = await _context.ConsumptionGrids
+                    .FirstOrDefaultAsync(log =>
+                        log.GridID == gridID &&
+                        log.Month == month &&
+                        log.Year == year);
 
                 if (logs != null)
                 {
@@ -55,7 +58,7 @@ namespace CoolingGridManager.Services
                 }
                 else
                 {
-                    var message = $"Not possible to retrieve consumption logs with 'GetConsumptionForUserByMonth'. Month: {month}, Skip: {consumerId}";
+                    var message = $"Not possible to retrieve grid consumption logs with 'GetConsumptionForGridByDate'. Month: {month}, Year: {year}, GridID: {gridID}";
                     _logger.Error(message);
                     throw new Exception(message);
                 }
@@ -64,7 +67,7 @@ namespace CoolingGridManager.Services
             catch (Exception ex)
             {
                 var message = string.Format("Exception: {ex}", ex.ToString());
-                throw new TryCatchException(message, "GetConsumptionForUserByMonth");
+                throw new TryCatchException(message, "GetConsumptionForGridByDate");
             }
         }
     }

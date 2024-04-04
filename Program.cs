@@ -80,9 +80,10 @@ app.MapAreaRoute("consumers", "{controller}/{index}");
 app.MapAreaRoute("gridsections", "{controller}/{index}");
 app.MapAreaRoute("grids", "{controller}/{action=Index}/{consumerId?}"); // prepare
 app.MapAreaRoute("tickets", "{controller}/{index}");
-app.MapAreaRoute("consumptions", "{controller}/{index}");
+app.MapAreaRoute("consumptionconsumers", "{controller}/{index}");
 app.MapAreaRoute("billing", "{controller}/{index}");
 app.MapAreaRoute("gridparameters", "{controller}/{index}");
+app.MapAreaRoute("consumptiongrid", "{controller}/{index}");
 
 
 
