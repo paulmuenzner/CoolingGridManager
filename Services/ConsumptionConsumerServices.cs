@@ -18,7 +18,7 @@ namespace CoolingGridManager.Services
         }
 
         // ADD CONSUMPTION VALUE
-        public async Task<int> AddConsumption(AddConsumptionRequest request)
+        public async Task<int> AddConsumption(AddConsumerConsumptionRequest request)
         {
             try
             {

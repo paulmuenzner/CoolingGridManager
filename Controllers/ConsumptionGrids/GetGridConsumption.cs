@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using CoolingGridManager.Services;
 using CoolingGridManager.ResponseHandler;
-using CoolingGridManager.Models.Data;
 using FluentValidation.Results;
 using CoolingGridManager.Validators.ConsumptionGrids;
+using CoolingGridManager.Models.Requests;
 
 namespace CoolingGridManager.Controllers.ConsumptionGridController
 {
@@ -30,7 +30,7 @@ namespace CoolingGridManager.Controllers.ConsumptionGridController
             {
                 if (request == null)
                 {
-                    return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, "Consumer ID not valid. Valid consumer ID must be provided.", "Related consumer not found.", null);
+                    return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, "Request null and not valid. Valid request must be provided.", "Requested data not found.", null);
                 }
 
                 // Validate
@@ -44,7 +44,7 @@ namespace CoolingGridManager.Controllers.ConsumptionGridController
                     }
                 }
 
-                var consumptionId = await _consumptionGridService.AddGridConsumption(request);
+                var consumptionId = await _consumptionGridService.GetConsumptionForGridByDate(request);
                 return ResponseFormatter.Success(HttpStatusPositive.OK, new { ConsumptionID = consumptionId }, $"New consumption entry with id {consumptionId} added.");
             }
             catch (FormatException ex)

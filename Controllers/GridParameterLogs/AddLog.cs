@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using CoolingGridManager.Services;
 using CoolingGridManager.ResponseHandler;
-using CoolingGridManager.Validators.Consumptions;
 using CoolingGridManager.Models.Data;
 using FluentValidation.Results;
-using CoolingGridManager.Models.Requests;
+using CoolingGridManager.Validators.GridParameterLogs;
 
 namespace CoolingGridManager.Controllers.ConsumptionController
 {
@@ -12,20 +11,20 @@ namespace CoolingGridManager.Controllers.ConsumptionController
     [Route("api/gridparameters/[controller]")]
     public partial class AddParameterLogController : ControllerBase
     {
-        private readonly AddConsumptionValidator _addConsumptionValidator;
-        private readonly ConsumptionService _consumptionService;
+        private readonly AddGridParameterLogValidator _addGridParameterLogValidator;
+        private readonly GridParameterLogService _gridParameterLogService;
         private readonly ExceptionResponse _exceptionResponse;
         private readonly AppDbContext _context;
-        public AddParameterLogController(AppDbContext context, AddConsumptionValidator addConsumptionValidator, ExceptionResponse exceptionResponse, ConsumptionService consumptionService)
+        public AddParameterLogController(AppDbContext context, AddGridParameterLogValidator addGridParameterLogValidator, ExceptionResponse exceptionResponse, GridParameterLogService gridParameterLogService)
         {
-            _consumptionService = consumptionService;
-            _addConsumptionValidator = addConsumptionValidator;
+            _gridParameterLogService = gridParameterLogService;
+            _addGridParameterLogValidator = addGridParameterLogValidator;
             _exceptionResponse = exceptionResponse;
             _context = context;
 
         }
         [HttpPost]
-        public async Task<IActionResult> AddConsumption([FromBody] AddConsumptionRequest request)
+        public async Task<IActionResult> AddParameterLog([FromBody] GridParameterLog request)
         {
             try
             {
@@ -35,7 +34,7 @@ namespace CoolingGridManager.Controllers.ConsumptionController
                 }
 
                 // Validate
-                AddConsumptionValidator validator = new AddConsumptionValidator(_context);
+                AddGridParameterLogValidator validator = new AddGridParameterLogValidator(_context);
                 ValidationResult result = validator.Validate(request);
                 if (!result.IsValid)
                 {

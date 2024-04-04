@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CoolingGridManager.Models.Data
 {
     [Table("CoolingGridParameterLog")]
-    public class CoolingGridParameterLog
+    public class GridParameterLog
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -23,11 +23,11 @@ namespace CoolingGridManager.Models.Data
         [Required(ErrorMessage = "Temperature outlet is required.")]
         public decimal TemperatureOut { get; set; }
 
-        [Required(ErrorMessage = "Start date is required.")]
-        public DateTimeOffset StartDate { get; set; }
+        [Required(ErrorMessage = "Start time is required.")]
+        public DateTimeOffset TimeStart { get; set; }
 
-        [Required(ErrorMessage = "End date is required.")]
-        public DateTimeOffset EndDate { get; set; }
+        [Required(ErrorMessage = "End time is required.")]
+        public DateTimeOffset TimeEnd { get; set; }
 
 
         public int GridID { get; set; } // Foreign key property
@@ -36,14 +36,14 @@ namespace CoolingGridManager.Models.Data
         public Grid Grid { get; set; }
 
 
-        public CoolingGridParameterLog()
+        public GridParameterLog()
         {
             MassFlowRate = 0;
             SpecificHeatCapacity = 0;
             TemperatureIn = 0m;
             TemperatureOut = 0m;
-            StartDate = DateTimeOffset.MinValue;
-            EndDate = DateTimeOffset.MinValue;
+            TimeStart = DateTimeOffset.MinValue;
+            TimeEnd = DateTimeOffset.MinValue;
             Grid = new Grid();
         }
     }

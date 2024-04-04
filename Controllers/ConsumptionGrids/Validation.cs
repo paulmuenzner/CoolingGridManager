@@ -1,12 +1,13 @@
 using FluentValidation;
 using CoolingGridManager.Models.Data;
+using CoolingGridManager.Models.Requests;
 
 
 namespace CoolingGridManager.Validators.ConsumptionGrids
 {
 
     // Add Consumption Validator
-    public class AddConsumptionGridValidator : AbstractValidator<ConsumptionGrid>
+    public class AddConsumptionGridValidator : AbstractValidator<GetGridConsumptionRequest>
     {
         private readonly AppDbContext _context;
         public AddConsumptionGridValidator(AppDbContext context)

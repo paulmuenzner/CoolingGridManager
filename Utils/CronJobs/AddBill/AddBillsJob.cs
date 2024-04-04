@@ -10,17 +10,17 @@ namespace CoolingGridManager.Utils.CronJobs
     public class AddBills : IJob
     {
         private const int PageSize = 100;
-        private readonly ConsumptionService _consumptionService;
+        private readonly ConsumptionConsumerService _consumptionConsumerService;
         private readonly ILogger _logger;
         private readonly BillingService _billingService;
         private readonly ConsumerService _consumerService;
 
-        public AddBills(ILogger logger, BillingService billingService, ConsumerService consumerService, ConsumptionService consumptionService)
+        public AddBills(ILogger logger, BillingService billingService, ConsumerService consumerService, ConsumptionConsumerService consumptionConsumerService)
         {
             _logger = logger;
             _billingService = billingService;
             _consumerService = consumerService;
-            _consumptionService = consumptionService;
+            _consumptionConsumerService = consumptionConsumerService;
         }
 
 
@@ -45,7 +45,7 @@ namespace CoolingGridManager.Utils.CronJobs
                         foreach (var consumer in consumers)
                         {
 
-                            var logs = await _consumptionService.GetConsumptionForUserByMonth(consumer.ConsumerID, currentMonth);
+                            var logs = await _consumptionConsumerService.GetConsumptionForUserByMonth(consumer.ConsumerID, currentMonth);
                             _logger.Information("Batch Consumer: {@Consumer}", logs);
                         }
 

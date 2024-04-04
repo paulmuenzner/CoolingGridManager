@@ -13,7 +13,7 @@ public class AppDbContext : DbContext
     public DbSet<Billing> Bills { get; set; }
     public DbSet<Consumer> Consumers { get; set; }
     public DbSet<Grid> Grids { get; set; }
-    public DbSet<CoolingGridParameterLog> CoolingGridParameterLogs { get; set; }
+    public DbSet<GridParameterLog> GridParameterLog { get; set; }
     public DbSet<GridSection> GridSections { get; set; }
     public DbSet<ConsumptionConsumer> ConsumptionConsumers { get; set; }
     public DbSet<ConsumptionGrid> ConsumptionGrids { get; set; }
@@ -41,24 +41,24 @@ public class AppDbContext : DbContext
             .WithMany(g => g.GridSection)
             .HasForeignKey(gs => gs.GridID);
 
-        modelBuilder.Entity<CoolingGridParameterLog>()
-            .HasIndex(g => g.EndDate)
+        modelBuilder.Entity<GridParameterLog>()
+            .HasIndex(g => g.TimeEnd)
             .IsUnique();
 
-        modelBuilder.Entity<CoolingGridParameterLog>()
-            .HasIndex(g => g.StartDate)
+        modelBuilder.Entity<GridParameterLog>()
+            .HasIndex(g => g.TimeStart)
             .IsUnique();
 
-        modelBuilder.Entity<CoolingGridParameterLog>()
+        modelBuilder.Entity<GridParameterLog>()
             .HasOne(gs => gs.Grid)
-            .WithMany(g => g.CoolingGridParameterLog)
+            .WithMany(g => g.GridParameterLog)
             .HasForeignKey(gs => gs.GridID);
 
-        modelBuilder.Entity<CoolingGridParameterLog>()
+        modelBuilder.Entity<GridParameterLog>()
             .Property(mb => mb.TemperatureIn)
             .HasColumnType("decimal(2, 5)");
 
-        modelBuilder.Entity<CoolingGridParameterLog>()
+        modelBuilder.Entity<GridParameterLog>()
             .Property(mb => mb.TemperatureOut)
             .HasColumnType("decimal(2, 5)");
 

@@ -41,16 +41,16 @@ namespace CoolingGridManager.Services
         }
 
         // GET ALL CONSUMPTION ENTRIES PER USER AND MONTH
-        public async Task<ConsumptionGrid> GetConsumptionForGridByDate(int gridID, int month, int year)
+        public async Task<ConsumptionGrid> GetConsumptionForGridByDate(GetGridConsumptionRequest request)
         {
             try
             {
                 // All entries of current month
                 var logs = await _context.ConsumptionGrids
                     .FirstOrDefaultAsync(log =>
-                        log.GridID == gridID &&
-                        log.Month == month &&
-                        log.Year == year);
+                        log.GridID == request.GridID &&
+                        log.Month == request.Month &&
+                        log.Year == request.Year);
 
                 if (logs != null)
                 {
@@ -58,7 +58,7 @@ namespace CoolingGridManager.Services
                 }
                 else
                 {
-                    var message = $"Not possible to retrieve grid consumption logs with 'GetConsumptionForGridByDate'. Month: {month}, Year: {year}, GridID: {gridID}";
+                    var message = $"Not possible to retrieve grid consumption logs with 'GetConsumptionForGridByDate'. Month: {request.Month}, Year: {request.Year}, GridID: {request.GridID}";
                     _logger.Error(message);
                     throw new Exception(message);
                 }

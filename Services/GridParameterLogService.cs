@@ -6,23 +6,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CoolingGridManager.Services
 {
-    public class CoolingGridParameterLogService
+    public class GridParameterLogService
     {
         private readonly AppDbContext _context;
 
         private readonly Serilog.ILogger _logger;
-        public CoolingGridParameterLogService(AppDbContext context, Serilog.ILogger logger)
+        public GridParameterLogService(AppDbContext context, Serilog.ILogger logger)
         {
             _logger = logger;
             _context = context;
         }
 
         // ADD CONSUMPTION VALUE
-        public async Task<CoolingGridParameterLog> AddCoolingGridParameterLog(CoolingGridParameterLog log)
+        public async Task<GridParameterLog> AddCoolingGridParameterLog(GridParameterLog log)
         {
             try
             {
-                _context.CoolingGridParameterLogs.Add(log);
+                _context.GridParameterLog.Add(log);
                 await _context.SaveChangesAsync();
 
                 return log;
