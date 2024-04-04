@@ -6,12 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CoolingGridManager.Services
 {
-    public class ConsumptionService
+    public class ConsumptionConsumerService
     {
         private readonly AppDbContext _context;
 
         private readonly Serilog.ILogger _logger;
-        public ConsumptionService(AppDbContext context, Serilog.ILogger logger)
+        public ConsumptionConsumerService(AppDbContext context, Serilog.ILogger logger)
         {
             _logger = logger;
             _context = context;

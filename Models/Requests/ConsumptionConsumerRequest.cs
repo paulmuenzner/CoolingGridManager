@@ -1,6 +1,6 @@
 namespace CoolingGridManager.Models.Requests
 {
-    public class AddConsumptionRequest
+    public class AddConsumerConsumptionRequest
     {
         public int ConsumerID { get; set; }
         public decimal ConsumptionValue { get; set; }

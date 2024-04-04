@@ -1,31 +1,31 @@
 using Microsoft.AspNetCore.Mvc;
 using CoolingGridManager.Services;
 using CoolingGridManager.ResponseHandler;
-using CoolingGridManager.Validators.Consumptions;
+using CoolingGridManager.Validators.ConsumptionConsumers;
 using CoolingGridManager.Models.Data;
 using FluentValidation.Results;
 using CoolingGridManager.Models.Requests;
 
-namespace CoolingGridManager.Controllers.ConsumptionController
+namespace CoolingGridManager.Controllers.ConsumptionConsumerController
 {
     [Area("consumptionconsumers")]
     [Route("api/consumptionconsumers/[controller]")]
     public partial class AddConsumptionController : ControllerBase
     {
         private readonly AddConsumptionValidator _addConsumptionValidator;
-        private readonly ConsumptionService _consumptionService;
+        private readonly ConsumptionConsumerService _consumptionConsumerService;
         private readonly ExceptionResponse _exceptionResponse;
         private readonly AppDbContext _context;
-        public AddConsumptionController(AppDbContext context, AddConsumptionValidator addConsumptionValidator, ExceptionResponse exceptionResponse, ConsumptionService consumptionService)
+        public AddConsumptionController(AppDbContext context, AddConsumptionValidator addConsumptionValidator, ExceptionResponse exceptionResponse, ConsumptionConsumerService consumptionConsumerService)
         {
-            _consumptionService = consumptionService;
+            _consumptionConsumerService = consumptionConsumerService;
             _addConsumptionValidator = addConsumptionValidator;
             _exceptionResponse = exceptionResponse;
             _context = context;
 
         }
         [HttpPost]
-        public async Task<IActionResult> AddConsumption([FromBody] AddConsumptionRequest request)
+        public async Task<IActionResult> AddConsumption([FromBody] AddConsumerConsumptionRequest request)
         {
             try
             {
@@ -45,7 +45,7 @@ namespace CoolingGridManager.Controllers.ConsumptionController
                     }
                 }
 
-                var consumptionId = await _consumptionService.AddConsumption(request);
+                var consumptionId = await _consumptionConsumerService.AddConsumption(request);
                 return ResponseFormatter.Success(HttpStatusPositive.OK, new { ConsumptionID = consumptionId }, $"New consumption entry with id {consumptionId} added.");
             }
             catch (FormatException ex)

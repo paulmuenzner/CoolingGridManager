@@ -2,11 +2,11 @@ using FluentValidation;
 using CoolingGridManager.Models.Requests;
 
 
-namespace CoolingGridManager.Validators.Consumptions
+namespace CoolingGridManager.Validators.ConsumptionConsumers
 {
 
     // Add Consumption Validator
-    public class AddConsumptionValidator : AbstractValidator<AddConsumptionRequest>
+    public class AddConsumptionValidator : AbstractValidator<AddConsumerConsumptionRequest>
     {
         private readonly AppDbContext _context;
         public AddConsumptionValidator(AppDbContext context)
