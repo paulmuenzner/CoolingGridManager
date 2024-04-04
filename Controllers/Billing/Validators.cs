@@ -14,13 +14,13 @@ namespace CoolingGridManager.Validators.Bills
         {
             _context = context;
 
-            RuleFor(bill => bill.BillingId)
+            RuleFor(bill => bill.billingId)
                 .NotEmpty().WithMessage("Billing ID is required.")
                 .GreaterThan(0).WithMessage("Billing ID must be greater than 0.")
                 .MustAsync(ExistingBill).WithMessage("Bill not found with provided bill ID.");
 
-            RuleFor(bill => bill.IsPaid)
-                .NotEmpty().WithMessage("Payment status is required.");
+            RuleFor(bill => bill.isPaid)
+                .NotNull().WithMessage("Payment status is required.");
         }
 
         private async Task<bool> ExistingBill(int? billingId, CancellationToken cancellationToken)

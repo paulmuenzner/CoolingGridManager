@@ -1,17 +1,15 @@
-using Microsoft.Extensions.Configuration;
 using Serilog;
 using Microsoft.EntityFrameworkCore;
 using CoolingGridManager.Services;
 using System.Text.Json.Serialization;
-using FluentValidation;
 using FluentValidation.AspNetCore;
 using CoolingGridManager.Validators.Tickets;
 using CoolingGridManager.Validators.Grids;
 using CoolingGridManager.Validators.GridSections;
-using CoolingGridManager.Validators.Consumptions;
 using CoolingGridManager.Validators.Consumers;
 using CoolingGridManager.Validators.Bills;
-// using CoolingGridManager.Validators.Billing;
+using Infrastructure;
+using CoolingGridManager.Extensions;
 
 
 // using CoolingGridManager.Services;
@@ -44,6 +42,9 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 
 builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
 
+
+builder.Services.AddCustomCronJobs();
+
 // Add Validators
 builder.Services.AddScoped<TicketAddValidator>();
 builder.Services.AddScoped<TicketGetByIdValidator>();
@@ -60,6 +61,7 @@ builder.Services.AddScoped<TicketService>();
 builder.Services.AddScoped<ConsumptionService>();
 builder.Services.AddScoped<BillingService>();
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -68,6 +70,8 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
+
+
 
 //Add support to logging request with SERILOG
 app.UseSerilogRequestLogging();

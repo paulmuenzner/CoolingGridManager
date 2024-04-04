@@ -30,9 +30,9 @@ namespace CoolingGridManager.Controllers.Bills
             try
             {
                 // Validate
-                if (body.BillingId == null || body.IsPaid == null)
+                if (body == null || body.billingId == null || body.isPaid == null)
                 {
-                    return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, $"Not all required information provided. Billing ID: {body.BillingId}, Payment Status: {body.IsPaid}", "Request currently not possible.", null);
+                    return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, $"Not all required information provided. Billing ID and/or Payment Status not provided or wrong type.", "Request currently not possible.", null);
                 }
 
                 BillStatusValidator validator = new BillStatusValidator(_context);
@@ -45,12 +45,12 @@ namespace CoolingGridManager.Controllers.Bills
                     }
                 }
 
-                var bill = await _billingService.PaymentStatus((int)body.BillingId, (bool)body.IsPaid);
+                var bill = await _billingService.PaymentStatus((int)body.billingId, (bool)body.isPaid);
                 return ResponseFormatter.Success(HttpStatusPositive.OK, new { Bill = bill }, "Bill updated.");
             }
             catch (ArgumentNullException ex)
             {
-                return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { }, "ArgumentNullException occurred. The provided data is not valid or incomplete.", "Your provided data is not valid or incomplete.", ex);
+                return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, "ArgumentNullException occurred. The provided data is not valid or incomplete.", "Your provided data is not valid or incomplete.", ex);
             }
             catch (DbUpdateException ex)
             {

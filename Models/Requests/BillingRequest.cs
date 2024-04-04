@@ -14,9 +14,7 @@ namespace CoolingGridManager.Models.Requests
 
     public class BillStatusRequest
     {
-        public int? BillingId { get; set; }
-        public bool? IsPaid { get; set; }
+        public int? billingId { get; set; }
+        public bool? isPaid { get; set; }
     }
-
-
 }
