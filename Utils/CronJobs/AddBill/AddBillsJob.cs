@@ -49,7 +49,7 @@ namespace CoolingGridManager.Utils.CronJobs
                 {
                     // Retrieve consumers for the current page (pageNumber)
                     var skip = (pageNumber - 1) * PageSize;
-                    var consumers = await _consumerService.GetConsumerBatch(skip, PageSize);
+                    List<Consumer> consumers = await _consumerService.GetConsumerBatch(skip, PageSize);
 
 
                     if (consumers.Any())
@@ -61,7 +61,26 @@ namespace CoolingGridManager.Utils.CronJobs
                             List<ConsumptionConsumer> logs = await _consumptionConsumerService.GetConsumptionForUserByMonth(consumer.ConsumerID, previousMonth, previousYear);
                             // Sum up all ConsumptionValue properties
                             decimal totalConsumption = logs.Sum(log => log.ConsumptionValue);
-                            _logger.Information($"Total consumption value: {totalConsumption}");
+
+                            // Get consumer contract data
+                            decimal unitPrice = consumer.UnitPrice;
+                            decimal monthlyBaseFee = consumer.MonthlyBaseFee;
+
+                            // Calculate billing amount 
+                            decimal billingAmount = totalConsumption * unitPrice + monthlyBaseFee;
+                            _logger.Information($"Total consumption value: {billingAmount}");
+
+                            var bill = new Billing
+                            {
+                                ConsumerID = consumer.ConsumerID,
+                                BillingMonth = previousMonth,
+                                BillingYear = previousYear,
+                                TotalConsumption = totalConsumption,
+                                IsPaid = false,
+                                BillingAmount = billingAmount,
+                                Consumer = consumer
+                            };
+                            var consumptionId = await _billingService.AddBill(bill);
                         }
 
                         pageNumber++;
