@@ -16,13 +16,15 @@ namespace CoolingGridManager.Models.Data
         public decimal ConsumptionValue { get; set; }
 
         [Required(ErrorMessage = "Log Date is required.")]
+        [DataType(DataType.DateTime)]
         public DateTime LogDate { get; set; }
 
         [Required(ErrorMessage = "Start time is required.")]
-        public DateTimeOffset DateTimeStart { get; set; }
+        [DataType(DataType.DateTime)]
+        public DateTime DateTimeStart { get; set; }
 
         [Required(ErrorMessage = "End time is required.")]
-        public DateTimeOffset DateTimeEnd { get; set; }
+        public DateTime DateTimeEnd { get; set; }
 
         [Required(ErrorMessage = "Consumer ID is required.")]
         [ForeignKey("ConsumerID")]
@@ -32,11 +34,11 @@ namespace CoolingGridManager.Models.Data
         public ConsumptionConsumer()
         {
             ConsumptionValue = 0m;
-            LogDate = DateTime.Today;
+            LogDate = DateTime.MinValue;
             // Defining the related time period where the value was measured for
             // This maintains the flexibility of the table. The associated data is not tied to a specific time frame.
-            DateTimeStart = DateTimeOffset.MinValue;
-            DateTimeEnd = DateTimeOffset.MinValue;
+            DateTimeStart = DateTime.MinValue;
+            DateTimeEnd = DateTime.MinValue;
             Consumer = new Consumer();
         }
     }

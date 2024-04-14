@@ -36,7 +36,7 @@ namespace CoolingGridManager.Controllers.ConsumptionConsumerController
 
                 // Validate
                 AddConsumptionValidator validator = new AddConsumptionValidator(_context);
-                ValidationResult result = validator.Validate(request);
+                ValidationResult result = await validator.ValidateAsync(request);
                 if (!result.IsValid)
                 {
                     foreach (var error in result.Errors)

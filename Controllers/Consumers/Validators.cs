@@ -39,6 +39,16 @@ namespace CoolingGridManager.Validators.Consumers
                 .Matches(@"^\d+$").WithMessage("Phone number must contain only numbers.")
                 .Length(5, 18).WithMessage("Phone number must be between 5 and 18 characters.");
 
+            RuleFor(consumer => consumer.MonthlyBaseFee)
+                .NotEmpty().WithMessage("Monthly base fee for grid connection required.")
+                .GreaterThanOrEqualTo(0).WithMessage("Grid connection is not for free. Monthly base fee must be greater than 0.")
+                .Must(value => BeAValidPrecision(value, 2)).WithMessage("The monthly base fee must be rounded to a maximum of two decimal places.");
+
+            RuleFor(consumer => consumer.UnitPrice)
+                .NotEmpty().WithMessage("Unit price per kWh cooling energy required.")
+                .GreaterThanOrEqualTo(0).WithMessage("Unit price per kWh cooling energy must be greater than 0.")
+                .Must(value => BeAValidPrecision(value, 2)).WithMessage("The unit price for cooling energy per kWh must be rounded to a maximum of two decimal places.");
+
             RuleFor(consumer => consumer.GridSectionID)
                 .NotEmpty().WithMessage("Grid section ID is required.")
                 .GreaterThan(0).WithMessage("Grid Section ID must be greater than 0.")
@@ -48,6 +58,23 @@ namespace CoolingGridManager.Validators.Consumers
                 return existingGrid != null;
             })
             .WithMessage("Declared grid section does not exist.");
+        }
+
+        private bool BeAValidPrecision(decimal value, int maxDecimalPlaces)
+        {
+            // Convert the decimal to a string
+            var valueAsString = value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            // Check if the string contains a decimal point
+            if (valueAsString.Contains('.'))
+            {
+                // Get the number of digits after the decimal point
+                var digitsAfterDecimalPoint = valueAsString.Split('.')[1].Length;
+
+                // Return true if there are the maximum allowed or fewer digits after the decimal point, otherwise false
+                return digitsAfterDecimalPoint <= maxDecimalPlaces;
+            }
+
+            return true;
         }
 
     }

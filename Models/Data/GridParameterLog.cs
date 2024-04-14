@@ -24,15 +24,14 @@ namespace CoolingGridManager.Models.Data
         public decimal MeanTemperatureOut { get; set; }
 
         [Required(ErrorMessage = "Start time is required.")]
-        public DateTimeOffset DateTimeStart { get; set; }
+        public DateTime DateTimeStart { get; set; }
 
         [Required(ErrorMessage = "End time is required.")]
-        public DateTimeOffset DateTimeEnd { get; set; }
-
-
-        public int GridID { get; set; } // Foreign key property
+        public DateTime DateTimeEnd { get; set; }
 
         [ForeignKey("GridID")]
+        public int GridID { get; set; } // Foreign key property
+
         public Grid Grid { get; set; }
 
 
@@ -44,8 +43,8 @@ namespace CoolingGridManager.Models.Data
             MeanTemperatureOut = 0m;
             // Defining the related time period where the value was measured for
             // The associated log data is not tied to a specific time frame. This maintains the flexibility of the table. 
-            DateTimeStart = DateTimeOffset.MinValue;
-            DateTimeEnd = DateTimeOffset.MinValue;
+            DateTimeStart = DateTime.MinValue;
+            DateTimeEnd = DateTime.MinValue;
             Grid = new Grid();
         }
     }

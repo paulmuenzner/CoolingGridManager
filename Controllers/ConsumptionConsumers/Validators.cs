@@ -1,5 +1,6 @@
 using FluentValidation;
 using CoolingGridManager.Models.Requests;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace CoolingGridManager.Validators.ConsumptionConsumers
@@ -21,13 +22,13 @@ namespace CoolingGridManager.Validators.ConsumptionConsumers
                 .NotNull().WithMessage("Date time for time frame start is required.")
                 .Must(date => date != default(DateTime)).WithMessage("Date time for time frame start is required.")
                 // Assumption that sender and receiver recide in same time zone. Otherwise LessThanOrEqualTo may lead to false negative results.
-                .LessThanOrEqualTo(DateTime.Today).WithMessage("Date time for time frame start must not be in the future.");
+                .LessThanOrEqualTo(DateTime.UtcNow).WithMessage("Date time for time frame start must not be in the future.");
 
             RuleFor(consumption => consumption.DateTimeEnd)
                 .NotNull().WithMessage("Date time for time frame end is required.")
                 .Must(date => date != default(DateTime)).WithMessage("Date time for time frame end is required.")
                 // Assumption that sender and receiver recide in same time zone. Otherwise LessThanOrEqualTo may lead to false negative results.
-                .LessThanOrEqualTo(DateTime.Today).WithMessage("Date time for time frame end must not be in the future.");
+                .LessThanOrEqualTo(DateTime.UtcNow).WithMessage("Date time for time frame end must not be in the future.");
 
             RuleFor(consumption => consumption.ConsumptionValue)
                 .NotNull().WithMessage("Consumption value is required.")
@@ -44,6 +45,24 @@ namespace CoolingGridManager.Validators.ConsumptionConsumers
                 return existingConsumer != null;
             })
             .WithMessage("Requested consumer does not exist.");
+
+            RuleFor(consumption => consumption)
+               .MustAsync(async (consumption, cancellationToken) =>
+                {
+                    return await ValidateTimeOverlap(consumption.DateTimeStart, consumption.DateTimeEnd, consumption.ConsumerID);
+                }).WithMessage("Your provided time frame overlaps with existing data. Log data cannot be stored under these conditions as it would compromise data consistency.");
+        }
+
+        public async Task<bool> ValidateTimeOverlap(DateTime DateTimeStart, DateTime DateTimeEnd, int consumerID)
+        {
+            var hasOverlap = await _context.ConsumptionConsumers
+                    .Where(log => log.ConsumerID == consumerID)
+                    .AnyAsync(log =>
+                        (log.DateTimeStart < DateTimeEnd && log.DateTimeEnd > DateTimeEnd) ||
+                        (DateTimeStart < log.DateTimeEnd && DateTimeStart > log.DateTimeStart)
+                    );
+
+            return !hasOverlap;
         }
 
         private bool HaveSameMonth(DateTime dateTimeStart, DateTime dateTimeEnd)

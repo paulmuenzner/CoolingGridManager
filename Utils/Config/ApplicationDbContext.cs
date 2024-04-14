@@ -56,11 +56,11 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<GridParameterLog>()
             .Property(mb => mb.MeanTemperatureIn)
-            .HasColumnType("decimal(2, 2)");
+            .HasColumnType("decimal(4, 2)");
 
         modelBuilder.Entity<GridParameterLog>()
             .Property(mb => mb.MeanTemperatureOut)
-            .HasColumnType("decimal(2, 2)");
+            .HasColumnType("decimal(4, 2)");
 
         modelBuilder.Entity<ConsumptionGrid>()
             .HasOne(gs => gs.Grid)
@@ -69,7 +69,7 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<ConsumptionGrid>()
             .Property(mb => mb.Consumption)
-            .HasColumnType("decimal(15, 4)");
+            .HasColumnType("decimal(19, 4)");
 
         modelBuilder.Entity<Billing>()
             .HasOne(gs => gs.Consumer)
@@ -91,7 +91,7 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<ConsumptionConsumer>()
             .Property(mb => mb.ConsumptionValue)
-            .HasColumnType("decimal(11, 3)");
+            .HasColumnType("decimal(12, 3)");
 
         modelBuilder.Entity<Consumer>()
             .HasOne(gs => gs.GridSection)
@@ -100,11 +100,11 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Consumer>()
             .Property(mb => mb.MonthlyBaseFee)
-            .HasColumnType("decimal(5, 2)");
+            .HasColumnType("decimal(7, 2)");
 
         modelBuilder.Entity<Consumer>()
             .Property(mb => mb.UnitPrice)
-            .HasColumnType("decimal(5, 2)");
+            .HasColumnType("decimal(7, 2)");
 
         base.OnModelCreating(modelBuilder);
     }

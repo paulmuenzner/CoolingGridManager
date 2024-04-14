@@ -1,6 +1,7 @@
 using FluentValidation;
 using CoolingGridManager.Models.Data;
 using CoolingGridManager.Models.Requests;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace CoolingGridManager.Validators.GridParameterLogs
@@ -91,6 +92,24 @@ namespace CoolingGridManager.Validators.GridParameterLogs
                     return await GridExists(gridId);
                 })
                 .WithMessage("Requested grid does not exist.");
+
+            RuleFor(request => request)
+               .MustAsync(async (request, cancellationToken) =>
+                {
+                    return await ValidateTimeOverlap(request.DateTimeStart, request.DateTimeEnd, request.GridID);
+                }).WithMessage("The time frame you provided overlaps with existing data. We cannot store this log data as it would compromise data consistency.");
+        }
+
+        public async Task<bool> ValidateTimeOverlap(DateTime DateTimeStart, DateTime DateTimeEnd, int gridID)
+        {
+            var hasOverlap = await _context.GridParameterLog
+                    .Where(log => log.GridID == gridID)
+                    .AnyAsync(log =>
+                        (log.DateTimeStart < DateTimeEnd && log.DateTimeEnd > DateTimeEnd) ||
+                        (DateTimeStart < log.DateTimeEnd && DateTimeStart > log.DateTimeStart)
+                    );
+
+            return !hasOverlap;
         }
 
         private bool BeAValidPrecision(decimal value, int maxDecimalPlaces)

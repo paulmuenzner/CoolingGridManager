@@ -11,6 +11,7 @@ using CoolingGridManager.Validators.Bills;
 using CoolingGridManager.Extensions;
 using CoolingGridManager.Validators.GridParameterLogs;
 using CoolingGridManager.Validators.ConsumptionGrids;
+using CoolingGridManager.Validators.ConsumptionConsumers;
 
 
 
@@ -55,6 +56,7 @@ builder.Services.AddScoped<AddBillValidator>();
 builder.Services.AddScoped<AddGridParameterLogValidator>();
 builder.Services.AddScoped<GetGridParameterLogValidator>();
 builder.Services.AddScoped<AddConsumptionGridValidator>();
+builder.Services.AddScoped<AddConsumptionValidator>();
 
 // Add services
 builder.Services.AddScoped<ConsumerService>();

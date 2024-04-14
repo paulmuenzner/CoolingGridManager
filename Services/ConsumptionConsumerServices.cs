@@ -3,6 +3,8 @@ using CoolingGridManager.Models.Data;
 using CoolingGridManager.Exceptions;
 using CoolingGridManager.Models.Requests;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using FormatException = CoolingGridManager.Exceptions.FormatException;
 
 namespace CoolingGridManager.Services
 {
@@ -22,14 +24,26 @@ namespace CoolingGridManager.Services
         {
             try
             {
-                var consumptionLog = new CoolingGridManager.Models.Data.ConsumptionConsumer
+                var consumptionLog = new ConsumptionConsumer
                 {
                     ConsumerID = request.ConsumerID,
                     ConsumptionValue = request.ConsumptionValue,
-                    LogDate = DateTime.Today,
+                    LogDate = DateTime.UtcNow,
                     DateTimeStart = request.DateTimeStart,
                     DateTimeEnd = request.DateTimeEnd
                 };
+
+                // Consider related consumer (foreign key relation)
+                var existingConsumer = await _context.Consumers.FindAsync(request.ConsumerID);
+
+                if (existingConsumer == null)
+                {
+                    _logger.Warning($"Consumer with ID {request.ConsumerID} does not exist.");
+                    throw new FormatException($"Consumer with ID {request.ConsumerID} does not exist.", "AddCoolingGridParameterLog");
+                }
+                // Associate the existing grid with the new grid section
+                consumptionLog.Consumer = existingConsumer;
+
                 _context.ConsumptionConsumers.Add(consumptionLog);
                 await _context.SaveChangesAsync();
 
@@ -37,7 +51,8 @@ namespace CoolingGridManager.Services
             }
             catch (Exception ex)
             {
-                var message = string.Format("Exception: {ex}", ex.ToString());
+                var message = $"**Full details:** {ex}";
+                Log.Error("AddConsumption try catch error", message);
                 throw new TryCatchException(message, "AddConsumption");
             }
         }

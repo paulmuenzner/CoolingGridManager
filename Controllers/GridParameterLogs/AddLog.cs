@@ -30,12 +30,12 @@ namespace CoolingGridManager.Controllers.GridParameters
             {
                 if (request == null)
                 {
-                    return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, "Consumer ID not valid. Valid consumer ID must be provided.", "Related consumer not found.", null);
+                    return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, "Request data not fully provided.", "Action currently not possible.", null);
                 }
 
                 // Validate
                 AddGridParameterLogValidator validator = new AddGridParameterLogValidator(_context);
-                ValidationResult result = validator.Validate(request);
+                ValidationResult result = await validator.ValidateAsync(request);
                 if (!result.IsValid)
                 {
                     foreach (var error in result.Errors)

@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using CoolingGridManager.Models.Data;
 using CoolingGridManager.Exceptions;
-using CoolingGridManager.Models.Requests;
 using Microsoft.EntityFrameworkCore;
+using FormatException = CoolingGridManager.Exceptions.FormatException;
 
 namespace CoolingGridManager.Services
 {
@@ -22,6 +22,17 @@ namespace CoolingGridManager.Services
         {
             try
             {
+
+                var existingGrid = await _context.Grids.FindAsync(log.GridID);
+
+                if (existingGrid == null)
+                {
+                    _logger.Warning($"Grid with ID {log.GridID} does not exist.");
+                    throw new FormatException($"Grid with ID {log.GridID} does not exist.", "AddCoolingGridParameterLog");
+                }
+                // Associate the existing grid with the new grid section
+                log.Grid = existingGrid;
+
                 _context.GridParameterLog.Add(log);
                 await _context.SaveChangesAsync();
 
