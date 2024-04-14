@@ -98,6 +98,14 @@ public class AppDbContext : DbContext
             .WithMany()
             .HasForeignKey(gs => gs.GridSectionID);
 
+        modelBuilder.Entity<Consumer>()
+            .Property(mb => mb.MonthlyBaseFee)
+            .HasColumnType("decimal(5, 2)");
+
+        modelBuilder.Entity<Consumer>()
+            .Property(mb => mb.UnitPrice)
+            .HasColumnType("decimal(5, 2)");
+
         base.OnModelCreating(modelBuilder);
     }
 

@@ -28,7 +28,20 @@ namespace CoolingGridManager.Utils.CronJobs
         {
             try
             {
-                int currentMonth = DateTime.Now.Month;
+                // Billing period is previous month
+                // Define month and year of previous calender month
+                // Current date
+                DateTime date = DateTime.Now;
+                // Get the previous month and year
+                int previousMonth = date.Month - 1;
+                int previousYear = date.Year;
+
+                // Adjust the year if the previous month is December
+                if (previousMonth == 0)
+                {
+                    previousMonth = 12;
+                    previousYear--;
+                }
                 var pageNumber = 1;
                 bool hasNextPage = true;
 
@@ -41,12 +54,14 @@ namespace CoolingGridManager.Utils.CronJobs
 
                     if (consumers.Any())
                     {
-                        // Log each consumer in the batch
+                        // Handle each consumer in the batch
                         foreach (var consumer in consumers)
                         {
 
-                            var logs = await _consumptionConsumerService.GetConsumptionForUserByMonth(consumer.ConsumerID, currentMonth);
-                            _logger.Information("Batch Consumer: {@Consumer}", logs);
+                            List<ConsumptionConsumer> logs = await _consumptionConsumerService.GetConsumptionForUserByMonth(consumer.ConsumerID, previousMonth, previousYear);
+                            // Sum up all ConsumptionValue properties
+                            decimal totalConsumption = logs.Sum(log => log.ConsumptionValue);
+                            _logger.Information($"Total consumption value: {totalConsumption}");
                         }
 
                         pageNumber++;

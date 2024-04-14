@@ -35,6 +35,12 @@ namespace CoolingGridManager.Models.Data
         [StringLength(15, MinimumLength = 8, ErrorMessage = "Phone number must be between 8 and 15 characters.")]
         public string Phone { get; set; }
 
+        [Required(ErrorMessage = "Monthly base fee as per contract is required.")]
+        public decimal MonthlyBaseFee { get; set; }
+
+        [Required(ErrorMessage = "Unit price as per contract is required.")]
+        public decimal UnitPrice { get; set; }
+
         [ForeignKey("GridSectionID")]
         public int GridSectionID { get; set; }
         public GridSection GridSection { get; set; }
@@ -48,6 +54,8 @@ namespace CoolingGridManager.Models.Data
             CompanyName = string.Empty;
             Email = string.Empty;
             Phone = string.Empty;
+            MonthlyBaseFee = 0m; // monthly base fee for grid connection as per contract
+            UnitPrice = 0m; // price for kwh cooling energy as per contract
             GridSection = new GridSection();
         }
     }

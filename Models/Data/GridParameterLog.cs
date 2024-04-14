@@ -43,7 +43,7 @@ namespace CoolingGridManager.Models.Data
             MeanTemperatureIn = 0m;
             MeanTemperatureOut = 0m;
             // Defining the related time period where the value was measured for
-            // This maintains the flexibility of the table. The associated data is not tied to a specific time frame.
+            // The associated log data is not tied to a specific time frame. This maintains the flexibility of the table. 
             DateTimeStart = DateTimeOffset.MinValue;
             DateTimeEnd = DateTimeOffset.MinValue;
             Grid = new Grid();

@@ -43,12 +43,12 @@ namespace CoolingGridManager.Services
         }
 
         // GET ALL CONSUMPTION ENTRIES PER USER AND MONTH
-        public async Task<List<ConsumptionConsumer>> GetConsumptionForUserByMonth(int consumerId, int month)
+        public async Task<List<ConsumptionConsumer>> GetConsumptionForUserByMonth(int consumerId, int month, int year)
         {
             try
             {
                 // All entries of current month
-                var startDate = new DateTimeOffset(DateTime.Now.Year, month, 1, 0, 0, 0, TimeSpan.Zero);
+                var startDate = new DateTimeOffset(year, month, 1, 0, 0, 0, TimeSpan.Zero);
                 var endDate = startDate.AddMonths(1).AddTicks(-1);
 
                 var logs = await _context.ConsumptionConsumers
@@ -71,7 +71,7 @@ namespace CoolingGridManager.Services
             }
             catch (Exception ex)
             {
-                var message = string.Format("Exception: {ex}", ex.ToString());
+                var message = string.Format($"Exception: {ex}", ex.ToString());
                 throw new TryCatchException(message, "GetConsumptionForUserByMonth");
             }
         }
