@@ -26,7 +26,7 @@ namespace CoolingGridManager.Controllers.Bills
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteBill([FromBody] DeleteBillRequest body)
+        public async Task<IActionResult> DeleteBill([FromBody] IDeleteBillRequest body)
         {
             try
             {

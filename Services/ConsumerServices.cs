@@ -36,7 +36,7 @@ namespace CoolingGridManager.Services
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Error creating user");
+                _logger.Error(ex, "Error creating user"); // Prepare
                 throw;
             }
         }
@@ -115,26 +115,4 @@ namespace CoolingGridManager.Services
 }
 
 
-// using CoolingGridManager.Models;
 
-// namespace CoolingGridManager.Services
-// {
-//     public class ConsumerService
-//     {
-//         private readonly AppDbContext _dbContext;
-//         private readonly ILogger<AppDbContext> _logger;
-//         public ConsumerService(AppDbContext dbContext, ILogger<AppDbContext> logger)
-//         {
-//             _dbContext = dbContext;
-//             _logger = logger;
-//         }
-
-//         public int CreateConsumer(Consumer consumer)
-//         {
-//             _logger.LogInformation("Executing SomeMethod...");
-//             _dbContext.Consumers.Add(consumer);
-//             _dbContext.SaveChanges();
-//             return consumer.ConsumerID; // Return the ID of the newly created consumer
-//         }
-//     }
-// }

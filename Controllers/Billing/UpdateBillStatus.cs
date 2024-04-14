@@ -25,7 +25,7 @@ namespace CoolingGridManager.Controllers.Bills
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateBillStatus([FromBody] BillStatusRequest body)
+        public async Task<IActionResult> UpdateBillStatus([FromBody] IBillStatusRequest body)
         {
             try
             {

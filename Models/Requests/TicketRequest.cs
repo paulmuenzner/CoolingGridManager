@@ -1,11 +1,11 @@
 namespace CoolingGridManager.Models.Requests
 {
-    public class GetTicketByIDRequest
+    public class IGetTicketByIDRequest
     {
         public required int? TicketId { get; set; }
     }
 
-    public class UpdateTicketStatusRequest
+    public class IUpdateTicketStatusRequest
     {
         public required int TicketId { get; set; }
         public required string Status { get; set; }

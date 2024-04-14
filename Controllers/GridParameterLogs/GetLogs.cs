@@ -4,38 +4,39 @@ using CoolingGridManager.ResponseHandler;
 using CoolingGridManager.Models.Data;
 using FluentValidation.Results;
 using CoolingGridManager.Validators.GridParameterLogs;
+using CoolingGridManager.Models.Requests;
 
 namespace CoolingGridManager.Controllers.GridParameters
 {
     [Area("gridparameters")]
     [Route("api/gridparameters/[controller]")]
-    public partial class AddParameterLogController : ControllerBase
+    public partial class GetParameterLogsController : ControllerBase
     {
-        private readonly AddGridParameterLogValidator _addGridParameterLogValidator;
+        private readonly GetGridParameterLogValidator _getGridParameterLogValidator;
         private readonly GridParameterLogService _gridParameterLogService;
         private readonly ExceptionResponse _exceptionResponse;
         private readonly AppDbContext _context;
-        public AddParameterLogController(AppDbContext context, AddGridParameterLogValidator addGridParameterLogValidator, ExceptionResponse exceptionResponse, GridParameterLogService gridParameterLogService)
+        public GetParameterLogsController(AppDbContext context, GetGridParameterLogValidator getGridParameterLogValidator, ExceptionResponse exceptionResponse, GridParameterLogService gridParameterLogService)
         {
             _gridParameterLogService = gridParameterLogService;
-            _addGridParameterLogValidator = addGridParameterLogValidator;
+            _getGridParameterLogValidator = getGridParameterLogValidator;
             _exceptionResponse = exceptionResponse;
             _context = context;
 
         }
-        [HttpPost]
-        public async Task<IActionResult> AddParameterLog([FromBody] GridParameterLog request)
+        [HttpGet]
+        public async Task<IActionResult> GetParameterLogs([FromBody] IGetParameterLogsRequest request)
         {
             try
             {
                 if (request == null)
                 {
-                    return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, "Consumer ID not valid. Valid consumer ID must be provided.", "Related consumer not found.", null);
+                    return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, "Request not valid. Valid grid ID, year and month must be provided.", "Requested paramter logs not found.", null);
                 }
 
                 // Validate
-                AddGridParameterLogValidator validator = new AddGridParameterLogValidator(_context);
-                ValidationResult result = validator.Validate(request);
+                GetGridParameterLogValidator validator = new GetGridParameterLogValidator(_context);
+                ValidationResult result = await validator.ValidateAsync(request);
                 if (!result.IsValid)
                 {
                     foreach (var error in result.Errors)
@@ -44,8 +45,8 @@ namespace CoolingGridManager.Controllers.GridParameters
                     }
                 }
 
-                var consumptionId = await _gridParameterLogService.AddCoolingGridParameterLog(request);
-                return ResponseFormatter.Success(HttpStatusPositive.OK, new { ConsumptionID = consumptionId }, $"New consumption entry with id {consumptionId} added.");
+                List<GridParameterLog> gridParameter = await _gridParameterLogService.GetGridParameterByMonth(request.GridID, request.Month, request.Year);
+                return ResponseFormatter.Success(HttpStatusPositive.OK, new { GridParameter = gridParameter }, $"Found {gridParameter.Count} entries for grid id {request.GridID} in selected time frame.");
             }
             catch (FormatException ex)
             {

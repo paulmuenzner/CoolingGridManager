@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CoolingGridManager.Validators.Bills
 {
     // Update Bill Payment Status
-    public class BillStatusValidator : AbstractValidator<BillStatusRequest>
+    public class BillStatusValidator : AbstractValidator<IBillStatusRequest>
     {
         private readonly AppDbContext _context;
         public BillStatusValidator(AppDbContext context)
@@ -55,7 +55,7 @@ namespace CoolingGridManager.Validators.Bills
     }
 
     // Add Bill Validator
-    public class GetBillValidator : AbstractValidator<GetBillRequest>
+    public class GetBillValidator : AbstractValidator<IGetBillRequest>
     {
         private readonly AppDbContext _context;
         public GetBillValidator(AppDbContext context)
@@ -104,8 +104,7 @@ namespace CoolingGridManager.Validators.Bills
 
             RuleFor(billing => billing.BillingYear)
                 .NotEmpty().WithMessage("Year is required.")
-                .GreaterThanOrEqualTo(2020).WithMessage("Year must be greater than or equal to 2020.")
-                .LessThan(2035).WithMessage("Select valid year.");
+                .InclusiveBetween(AppData.TimeFrameYearMin, AppData.TimeFrameYearMax).WithMessage($"Year must be between or equal to {AppData.TimeFrameYearMin} and {AppData.TimeFrameYearMax}.");
 
             RuleFor(billing => billing.TotalConsumption)
                 .NotEmpty().WithMessage("Total consumption is required.")

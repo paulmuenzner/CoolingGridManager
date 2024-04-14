@@ -18,7 +18,7 @@ namespace CoolingGridManager.Services
         }
 
         // ADD CONSUMPTION VALUE
-        public async Task<int> AddConsumption(AddConsumerConsumptionRequest request)
+        public async Task<int> AddConsumption(IAddConsumerConsumptionRequest request)
         {
             try
             {
@@ -27,7 +27,8 @@ namespace CoolingGridManager.Services
                     ConsumerID = request.ConsumerID,
                     ConsumptionValue = request.ConsumptionValue,
                     LogDate = DateTime.Today,
-                    ConsumptionDate = request.ConsumptionDate
+                    DateTimeStart = request.DateTimeStart,
+                    DateTimeEnd = request.DateTimeEnd
                 };
                 _context.ConsumptionConsumers.Add(consumptionLog);
                 await _context.SaveChangesAsync();
@@ -53,8 +54,8 @@ namespace CoolingGridManager.Services
                 var logs = await _context.ConsumptionConsumers
                     .Where(log =>
                         log.ConsumerID == consumerId &&
-                        log.ConsumptionDate >= startDate &&
-                        log.ConsumptionDate <= endDate).ToListAsync();
+                        log.DateTimeStart >= startDate &&
+                        log.DateTimeEnd <= endDate).ToListAsync();
 
                 if (logs != null)
                 {

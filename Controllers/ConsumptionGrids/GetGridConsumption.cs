@@ -24,7 +24,7 @@ namespace CoolingGridManager.Controllers.ConsumptionGridController
 
         }
         [HttpPost]
-        public async Task<IActionResult> GetGridConsumption([FromBody] GetGridConsumptionRequest request)
+        public async Task<IActionResult> GetGridConsumption([FromBody] IGetGridConsumptionRequest request)
         {
             try
             {

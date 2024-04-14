@@ -25,7 +25,7 @@ namespace CoolingGridManager.Controllers.ConsumptionConsumerController
 
         }
         [HttpPost]
-        public async Task<IActionResult> AddConsumption([FromBody] AddConsumerConsumptionRequest request)
+        public async Task<IActionResult> AddConsumption([FromBody] IAddConsumerConsumptionRequest request)
         {
             try
             {

@@ -6,18 +6,28 @@ namespace CoolingGridManager.Validators.ConsumptionConsumers
 {
 
     // Add Consumption Validator
-    public class AddConsumptionValidator : AbstractValidator<AddConsumerConsumptionRequest>
+    public class AddConsumptionValidator : AbstractValidator<IAddConsumerConsumptionRequest>
     {
         private readonly AppDbContext _context;
         public AddConsumptionValidator(AppDbContext context)
         {
             _context = context;
 
-            RuleFor(consumption => consumption.ConsumptionDate)
-                .NotNull().WithMessage("Consumption date is required.")
-                .Must(date => date != default(DateTime)).WithMessage("Consumption date is required.")
-                // If sender and receiver in same time zone, LessThan is recommended
-                .LessThanOrEqualTo(DateTime.Today).WithMessage("Consumption date must not be in the future.");
+            RuleFor(consumption => consumption)
+                .Must(consumption => HaveSameMonth(consumption.DateTimeStart, consumption.DateTimeEnd))
+                .WithMessage("For data consistency, start and end dates must be in the same month.");
+
+            RuleFor(consumption => consumption.DateTimeStart)
+                .NotNull().WithMessage("Date time for time frame start is required.")
+                .Must(date => date != default(DateTime)).WithMessage("Date time for time frame start is required.")
+                // Assumption that sender and receiver recide in same time zone. Otherwise LessThanOrEqualTo may lead to false negative results.
+                .LessThanOrEqualTo(DateTime.Today).WithMessage("Date time for time frame start must not be in the future.");
+
+            RuleFor(consumption => consumption.DateTimeEnd)
+                .NotNull().WithMessage("Date time for time frame end is required.")
+                .Must(date => date != default(DateTime)).WithMessage("Date time for time frame end is required.")
+                // Assumption that sender and receiver recide in same time zone. Otherwise LessThanOrEqualTo may lead to false negative results.
+                .LessThanOrEqualTo(DateTime.Today).WithMessage("Date time for time frame end must not be in the future.");
 
             RuleFor(consumption => consumption.ConsumptionValue)
                 .NotNull().WithMessage("Consumption value is required.")
@@ -34,6 +44,16 @@ namespace CoolingGridManager.Validators.ConsumptionConsumers
                 return existingConsumer != null;
             })
             .WithMessage("Requested consumer does not exist.");
+        }
+
+        private bool HaveSameMonth(DateTime dateTimeStart, DateTime dateTimeEnd)
+        {
+            // Extract month and year components from the start and end dates
+            var startMonthYear = new DateTime(dateTimeStart.Year, dateTimeStart.Month, 1);
+            var endMonthYear = new DateTime(dateTimeEnd.Year, dateTimeEnd.Month, 1);
+
+            // Compare if the month and year components are the same
+            return startMonthYear == endMonthYear;
         }
 
     }

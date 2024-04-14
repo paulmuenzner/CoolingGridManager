@@ -34,7 +34,7 @@ namespace CoolingGridManager.Utils.CronJobs
 
                 while (hasNextPage)
                 {
-                    // Retrieve consumers for the current page
+                    // Retrieve consumers for the current page (pageNumber)
                     var skip = (pageNumber - 1) * PageSize;
                     var consumers = await _consumerService.GetConsumerBatch(skip, PageSize);
 

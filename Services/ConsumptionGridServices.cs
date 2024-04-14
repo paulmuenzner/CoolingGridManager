@@ -41,7 +41,7 @@ namespace CoolingGridManager.Services
         }
 
         // GET ALL CONSUMPTION ENTRIES PER USER AND MONTH
-        public async Task<ConsumptionGrid> GetConsumptionForGridByDate(GetGridConsumptionRequest request)
+        public async Task<ConsumptionGrid> GetConsumptionForGridByDate(IGetGridConsumptionRequest request)
         {
             try
             {

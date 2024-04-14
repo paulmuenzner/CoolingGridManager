@@ -53,6 +53,7 @@ builder.Services.AddScoped<AddGridSectionValidator>();
 builder.Services.AddScoped<AddConsumerValidator>();
 builder.Services.AddScoped<AddBillValidator>();
 builder.Services.AddScoped<AddGridParameterLogValidator>();
+builder.Services.AddScoped<GetGridParameterLogValidator>();
 builder.Services.AddScoped<AddConsumptionGridValidator>();
 
 // Add services

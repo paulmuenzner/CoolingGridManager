@@ -25,7 +25,7 @@ namespace CoolingGridManager.Controllers.TicketsController
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetTicketById([FromBody] GetTicketByIDRequest ticketRequest)
+        public async Task<IActionResult> GetTicketById([FromBody] IGetTicketByIDRequest ticketRequest)
         {
             try
             {

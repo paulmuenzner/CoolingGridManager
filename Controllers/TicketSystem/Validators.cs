@@ -29,7 +29,7 @@ namespace CoolingGridManager.Validators.Tickets
     }
 
     // Get Ticket Validator
-    public class TicketGetByIdValidator : AbstractValidator<GetTicketByIDRequest>
+    public class TicketGetByIdValidator : AbstractValidator<IGetTicketByIDRequest>
     {
         // Get Ticket Validator
         public TicketGetByIdValidator()
@@ -97,7 +97,7 @@ namespace CoolingGridManager.Validators.Tickets
     }
 
     // Update ticket validation
-    public class UpdateTicketStatusValidator : AbstractValidator<UpdateTicketStatusRequest>
+    public class UpdateTicketStatusValidator : AbstractValidator<IUpdateTicketStatusRequest>
     {
         private readonly AppDbContext _context;
         public UpdateTicketStatusValidator(AppDbContext context)
@@ -123,7 +123,7 @@ namespace CoolingGridManager.Validators.Tickets
         }
 
         // Validate if the requested status is equal and has been set already
-        private async Task<bool> StatusAlreadySet(UpdateTicketStatusRequest request, string newStatus, CancellationToken cancellationToken)
+        private async Task<bool> StatusAlreadySet(IUpdateTicketStatusRequest request, string newStatus, CancellationToken cancellationToken)
         {
             var existingTicketStatus = await _context.Tickets
                 .Where(t => t.TicketId == request.TicketId)

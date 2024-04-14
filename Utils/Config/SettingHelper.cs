@@ -56,6 +56,7 @@ public static class ConfigurationHelper
         {
             // Handle the case where the connection string is null
             // Stop program in this case!
+            // prepare propper DI IOC logging
             Log.Logger.Error("DefaultConnection connection string is not found in the configuration.");
             throw new InvalidOperationException("DefaultConnection connection string is not found in the configuration.");
         }

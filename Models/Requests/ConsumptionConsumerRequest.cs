@@ -1,9 +1,10 @@
 namespace CoolingGridManager.Models.Requests
 {
-    public class AddConsumerConsumptionRequest
+    public class IAddConsumerConsumptionRequest
     {
         public int ConsumerID { get; set; }
         public decimal ConsumptionValue { get; set; }
-        public DateTime ConsumptionDate { get; set; }
+        public DateTime DateTimeStart { get; set; }
+        public DateTime DateTimeEnd { get; set; }
     }
 }

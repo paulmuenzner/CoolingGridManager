@@ -1,6 +1,6 @@
 namespace CoolingGridManager.Models.Requests
 {
-    public class GetGridConsumptionRequest
+    public class IGetGridConsumptionRequest
     {
         public int GridID { get; set; }
         public int Year { get; set; }

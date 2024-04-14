@@ -7,7 +7,7 @@ namespace CoolingGridManager.Validators.ConsumptionGrids
 {
 
     // Add Consumption Validator
-    public class AddConsumptionGridValidator : AbstractValidator<GetGridConsumptionRequest>
+    public class AddConsumptionGridValidator : AbstractValidator<IGetGridConsumptionRequest>
     {
         private readonly AppDbContext _context;
         public AddConsumptionGridValidator(AppDbContext context)
@@ -20,7 +20,7 @@ namespace CoolingGridManager.Validators.ConsumptionGrids
 
             RuleFor(consumption => consumption.Year)
                 .NotEmpty().WithMessage("Year value is required.")
-                .InclusiveBetween(2020, 2040).WithMessage("Year must be between 2020 and 2040.");
+                .InclusiveBetween(AppData.TimeFrameYearMin, AppData.TimeFrameYearMax).WithMessage("Year must be between 2020 and 2040.");
 
             RuleFor(consumption => consumption.GridID)
                 .NotEmpty().WithMessage("Valid grid ID must be provided.")

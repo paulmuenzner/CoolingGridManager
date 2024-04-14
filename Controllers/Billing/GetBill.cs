@@ -26,7 +26,7 @@ namespace CoolingGridManager.Controllers.Bills
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetBill([FromBody] GetBillRequest body)
+        public async Task<IActionResult> GetBill([FromBody] IGetBillRequest body)
         {
             try
             {

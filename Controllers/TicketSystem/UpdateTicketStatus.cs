@@ -28,7 +28,7 @@ namespace CoolingGridManager.Controllers.TicketsController
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateStatus([FromBody] UpdateTicketStatusRequest ticketStatusRequest)
+        public async Task<IActionResult> UpdateStatus([FromBody] IUpdateTicketStatusRequest ticketStatusRequest)
         {
             try
             {

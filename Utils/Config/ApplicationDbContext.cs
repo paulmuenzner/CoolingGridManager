@@ -42,11 +42,11 @@ public class AppDbContext : DbContext
             .HasForeignKey(gs => gs.GridID);
 
         modelBuilder.Entity<GridParameterLog>()
-            .HasIndex(g => g.TimeEnd)
+            .HasIndex(g => g.DateTimeEnd)
             .IsUnique();
 
         modelBuilder.Entity<GridParameterLog>()
-            .HasIndex(g => g.TimeStart)
+            .HasIndex(g => g.DateTimeStart)
             .IsUnique();
 
         modelBuilder.Entity<GridParameterLog>()
@@ -55,12 +55,12 @@ public class AppDbContext : DbContext
             .HasForeignKey(gs => gs.GridID);
 
         modelBuilder.Entity<GridParameterLog>()
-            .Property(mb => mb.TemperatureIn)
-            .HasColumnType("decimal(2, 5)");
+            .Property(mb => mb.MeanTemperatureIn)
+            .HasColumnType("decimal(2, 2)");
 
         modelBuilder.Entity<GridParameterLog>()
-            .Property(mb => mb.TemperatureOut)
-            .HasColumnType("decimal(2, 5)");
+            .Property(mb => mb.MeanTemperatureOut)
+            .HasColumnType("decimal(2, 2)");
 
         modelBuilder.Entity<ConsumptionGrid>()
             .HasOne(gs => gs.Grid)

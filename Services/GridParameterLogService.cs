@@ -30,24 +30,24 @@ namespace CoolingGridManager.Services
             catch (Exception ex)
             {
                 var message = string.Format("Exception: {ex}", ex.ToString());
-                throw new TryCatchException(message, "AddConsumption");
+                throw new TryCatchException(message, "AddCoolingGridParameterLog");
             }
         }
 
         // GET ALL CONSUMPTION ENTRIES PER USER AND MONTH
-        public async Task<List<ConsumptionConsumer>> GetConsumptionForUserByMonth(int consumerId, int month)
+        public async Task<List<GridParameterLog>> GetGridParameterByMonth(int gridId, int month, int year)
         {
             try
             {
                 // All entries of current month
-                var startDate = new DateTimeOffset(DateTime.Now.Year, month, 1, 0, 0, 0, TimeSpan.Zero);
+                var startDate = new DateTimeOffset(year, month, 1, 0, 0, 0, TimeSpan.Zero);
                 var endDate = startDate.AddMonths(1).AddTicks(-1);
 
-                var logs = await _context.ConsumptionConsumers
+                var logs = await _context.GridParameterLog
                     .Where(log =>
-                        log.ConsumerID == consumerId &&
-                        log.ConsumptionDate >= startDate &&
-                        log.ConsumptionDate <= endDate).ToListAsync();
+                        log.GridID == gridId &&
+                        log.DateTimeStart >= startDate &&
+                        log.DateTimeEnd <= endDate).ToListAsync();
 
                 if (logs != null)
                 {
@@ -55,7 +55,7 @@ namespace CoolingGridManager.Services
                 }
                 else
                 {
-                    var message = $"Not possible to retrieve consumption logs with 'GetConsumptionForUserByMonth'. Month: {month}, Skip: {consumerId}";
+                    var message = $"Not possible to retrieve consumption logs with 'GetConsumptionForUserByMonth'. Month: {month}, Skip: {gridId}";
                     _logger.Error(message);
                     throw new Exception(message);
                 }
@@ -64,7 +64,7 @@ namespace CoolingGridManager.Services
             catch (Exception ex)
             {
                 var message = string.Format("Exception: {ex}", ex.ToString());
-                throw new TryCatchException(message, "GetConsumptionForUserByMonth");
+                throw new TryCatchException(message, "GetGridParameterByMonth");
             }
         }
     }

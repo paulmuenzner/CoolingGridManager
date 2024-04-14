@@ -34,7 +34,7 @@ namespace CoolingGridManager.Services
         }
 
         // Get bill 
-        public async Task<Billing> GetBill(GetBillRequest getBillRequest)
+        public async Task<Billing> GetBill(IGetBillRequest getBillRequest)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace CoolingGridManager.Services
             }
             catch (Exception ex)
             {
-                _logger.Error($"Exception. Non-existing bill requested. Consumer ID: {getBillRequest.ConsumerID}, Month: {getBillRequest.Month}, Year: {getBillRequest.Year}");
+                _logger.Error(ex, $"Exception. Non-existing bill requested. Consumer ID: {getBillRequest.ConsumerID}, Month: {getBillRequest.Month}, Year: {getBillRequest.Year}");
                 throw new TryCatchException($"Bill for consumer ID {getBillRequest.ConsumerID} not found", "GetBill");
             }
         }
