@@ -19,7 +19,7 @@ namespace CoolingGridManager.Services
 
         ///////////////////////////////////////////
         // CREATE NEW CONSUMER
-        public async Task<Consumer> CreateConsumerRecord(Consumer request)
+        public async Task<Consumer> CreateConsumerRecord(ICreateConsumerRecordRequest request)
         {
             try
             { // Prepare as validation
@@ -77,7 +77,7 @@ namespace CoolingGridManager.Services
 
         ///////////////////////////////////////////
         // Get Consumers in Batches
-        public async Task<List<Consumer>> GetConsumerBatch(IGetConsumerBatch request)
+        public async Task<List<Consumer>> GetConsumerBatch(IGetConsumerBatchRecord request)
         {
             try
             {

@@ -4,33 +4,33 @@ using CoolingGridManager.Models.Data;
 using CoolingGridManager.Services;
 using FluentValidation.Results;
 using CoolingGridManager.Validators.Consumers;
+using CoolingGridManager.IRequests;
 
 
 namespace CoolingGridManager.Controllers.Consumers
 {
     [Area("consumers")]
     [Route("api/consumers/[controller]")]
-    public class AddConsumerController : ControllerBase
+    public class CreateConsumerRecordController : ControllerBase
     {
         private readonly Serilog.ILogger _logger;
+        private readonly CreateConsumerRecordValidator _createConsumerRecordValidator;
         private readonly ConsumerService _consumerService;
-        private readonly AppDbContext _context;
 
-        public AddConsumerController(AppDbContext context, Serilog.ILogger logger, ConsumerService consumerService)
+        public CreateConsumerRecordController(CreateConsumerRecordValidator createConsumerRecordValidator, Serilog.ILogger logger, ConsumerService consumerService)
         {
             _logger = logger;
-            _context = context;
+            _createConsumerRecordValidator = createConsumerRecordValidator;
             _consumerService = consumerService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddConsumer([FromBody] Consumer consumer)
+        public async Task<IActionResult> CreateConsumerRecord([FromBody] ICreateConsumerRecordRequest consumer)
         {
             try
             {
                 // Validate
-                AddConsumerValidator validator = new AddConsumerValidator(_context);
-                ValidationResult result = await validator.ValidateAsync(consumer);
+                ValidationResult result = await _createConsumerRecordValidator.ValidateAsync(consumer);
                 if (!result.IsValid)
                 {
                     foreach (var error in result.Errors)
@@ -39,8 +39,8 @@ namespace CoolingGridManager.Controllers.Consumers
                     }
                 }
 
-                var newConsumer = await _consumerService.Add(consumer);
-                return ResponseFormatter.Success(HttpStatusPositive.OK, new { Consumer = newConsumer }, $"New consumer with name {newConsumer.LastName} and id {newConsumer.ConsumerID} added");
+                Consumer newConsumer = await _consumerService.CreateConsumerRecord(consumer);
+                return ResponseFormatter.Success(HttpStatusPositive.OK, new { Consumer = newConsumer }, $"New consumer with name {newConsumer.LastName} and id {newConsumer.ConsumerID} created.");
             }
             catch (ArgumentNullException ex)
             {

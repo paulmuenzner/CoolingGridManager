@@ -13,29 +13,27 @@ namespace CoolingGridManager.Controllers.Bills
     [Route("api/billing/[controller]")]
     public class AddBillController : ControllerBase
     {
-        private readonly Serilog.ILogger _logger;
+        private readonly CreateBillRecordValidator _createBillRecordValidator;
         private readonly BillingService _billingService;
-        private readonly AppDbContext _context;
 
-        public AddBillController(AppDbContext context, Serilog.ILogger logger, BillingService billingService)
+        public AddBillController(CreateBillRecordValidator createBillRecordValidator, BillingService billingService)
         {
-            _logger = logger;
-            _context = context;
+            _createBillRecordValidator = createBillRecordValidator;
             _billingService = billingService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateBillingRecord([FromBody] Billing body)
+        public async Task<IActionResult> CreateBillingRecord([FromBody] Billing request)
         {
             try
             {
                 // Validate
-                if (body == null)
+                if (request == null)
                 {
                     return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, "Request data is either improperly formatted or contains missing data. No new billing record created.", "Creating new billing records currently not possible.", null);
                 }
-                AddBillValidator validator = new AddBillValidator(_context);
-                ValidationResult result = await validator.ValidateAsync(body);
+
+                ValidationResult result = await _createBillRecordValidator.ValidateAsync(request);
                 if (!result.IsValid)
                 {
                     foreach (var error in result.Errors)
@@ -44,8 +42,8 @@ namespace CoolingGridManager.Controllers.Bills
                     }
                 }
 
-                var newBill = await _billingService.CreateBillingRecord(body);
-                return ResponseFormatter.Success(HttpStatusPositive.OK, new { Bill = newBill }, $"New bill added");
+                int newBillID = await _billingService.CreateBillingRecord(request);
+                return ResponseFormatter.Success(HttpStatusPositive.OK, new { BillID = newBillID }, $"New bill with ID {newBillID} added");
             }
             catch (ArgumentNullException ex)
             {

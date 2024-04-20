@@ -3,7 +3,8 @@ using CoolingGridManager.Services;
 using CoolingGridManager.Validators.Tickets;
 using CoolingGridManager.ResponseHandler;
 using FluentValidation.Results;
-using CoolingGridManager.Models.Requests;
+using CoolingGridManager.IRequests;
+using CoolingGridManager.Models.Data;
 
 
 
@@ -14,27 +15,22 @@ namespace CoolingGridManager.Controllers.TicketsController
     public partial class UpdateStatusController : ControllerBase
     {
         private readonly TicketService _ticketService;
-        private readonly ExceptionResponse _exceptionResponse;
+        private readonly UpdateTicketStatusValidator _updateTicketStatusValidator;
         private readonly Serilog.ILogger _logger;
-
-        private readonly AppDbContext _context;
-        public UpdateStatusController(AppDbContext context, ExceptionResponse exceptionResponse, Serilog.ILogger logger, TicketService ticketService)
+        public UpdateStatusController(UpdateTicketStatusValidator updateTicketStatusValidator, Serilog.ILogger logger, TicketService ticketService)
         {
             _ticketService = ticketService;
-            _exceptionResponse = exceptionResponse;
+            _updateTicketStatusValidator = updateTicketStatusValidator;
             _logger = logger;
-            _context = context;
-
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateStatus([FromBody] IUpdateTicketStatusRequest ticketStatusRequest)
+        public async Task<IActionResult> UpdateStatus([FromBody] IUpdateTicketStatusRequest request)
         {
             try
             {
                 // Validate
-                UpdateTicketStatusValidator validator = new UpdateTicketStatusValidator(_context);
-                ValidationResult result = await validator.ValidateAsync(ticketStatusRequest);
+                ValidationResult result = await _updateTicketStatusValidator.ValidateAsync(request);
                 if (!result.IsValid)
                 {
                     foreach (var error in result.Errors)
@@ -44,8 +40,8 @@ namespace CoolingGridManager.Controllers.TicketsController
                 }
 
                 // Update the ticket in the database
-                var updatedTicket = await _ticketService.UpdateStatusTicket(ticketStatusRequest.TicketId, ticketStatusRequest.Status);
-                return ResponseFormatter.Success(HttpStatusPositive.OK, new { TicketUpdate = updatedTicket }, $"Ticket status updated to '{ticketStatusRequest.Status}'.");
+                TicketModel update = await _ticketService.UpdateTicketStatus(request);
+                return ResponseFormatter.Success(HttpStatusPositive.OK, new { TicketUpdate = update }, $"Ticket status updated to '{update.Status}'.");
             }
             catch (Exception ex)
             {

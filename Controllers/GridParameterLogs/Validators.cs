@@ -1,13 +1,12 @@
 using FluentValidation;
-using CoolingGridManager.Models.Data;
-using CoolingGridManager.Models.Requests;
 using Microsoft.EntityFrameworkCore;
+using CoolingGridManager.IRequests;
 
 
 namespace CoolingGridManager.Validators.GridParameterLogs
 {
     // GetGridParameterLog Validator
-    public class GetGridParameterLogValidator : AbstractValidator<IGetParameterLogsRequest>
+    public class GetGridParameterLogValidator : AbstractValidator<IGetMonthlyGridParameterDetailsRequest>
     {
         private readonly AppDbContext _context;
         public GetGridParameterLogValidator(AppDbContext context)
@@ -42,11 +41,11 @@ namespace CoolingGridManager.Validators.GridParameterLogs
 
     }
 
-    // AddGridParameterLog Validator
-    public class AddGridParameterLogValidator : AbstractValidator<GridParameterLog>
+    // CreateGridParameterLog Validator
+    public class CreateGridParameterLogValidator : AbstractValidator<ICreateGridParameterLogRecordRequest>
     {
         private readonly AppDbContext _context;
-        public AddGridParameterLogValidator(AppDbContext context)
+        public CreateGridParameterLogValidator(AppDbContext context)
         {
             _context = context;
             // Prepare must be same month

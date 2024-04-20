@@ -14,29 +14,28 @@ namespace CoolingGridManager.Controllers.Bills
     [Route("api/billing/[controller]")]
     public class DeleteBillController : ControllerBase
     {
-        private readonly Serilog.ILogger _logger;
+        private readonly DeleteBillValidator _deleteBillValidator;
         private readonly BillingService _billingService;
         private readonly AppDbContext _context;
 
-        public DeleteBillController(AppDbContext context, Serilog.ILogger logger, BillingService billingService)
+        public DeleteBillController(AppDbContext context, DeleteBillValidator deleteBillValidator, BillingService billingService)
         {
-            _logger = logger;
             _context = context;
+            _deleteBillValidator = deleteBillValidator;
             _billingService = billingService;
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteBill([FromBody] IDeleteBillRequest body)
+        public async Task<IActionResult> DeleteBill([FromBody] IDeleteBillRequest request)
         {
             try
             {
-                if (body == null)
+                if (request == null)
                 {
                     return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, "No billing ID provided.", "No billing ID provided.", null);
                 }
 
-                DeleteBillValidator validator = new DeleteBillValidator(_context);
-                ValidationResult result = await validator.ValidateAsync(body.BillingId);
+                ValidationResult result = await _deleteBillValidator.ValidateAsync(request.BillingId);
                 if (!result.IsValid)
                 {
                     foreach (var error in result.Errors)
@@ -45,8 +44,8 @@ namespace CoolingGridManager.Controllers.Bills
                     }
                 }
 
-                var bill = await _billingService.DeleteBillingEntry((int)body.BillingId);
-                return ResponseFormatter.Success(HttpStatusPositive.OK, new { Bill = bill }, $"Bill with id {body.BillingId} deleted.");
+                var bill = await _billingService.DeleteBillingEntry((int)request.BillingId);
+                return ResponseFormatter.Success(HttpStatusPositive.OK, new { Bill = bill }, $"Bill with id {request.BillingId} deleted.");
             }
             catch (ArgumentNullException ex)
             {

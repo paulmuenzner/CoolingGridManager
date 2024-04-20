@@ -21,11 +21,11 @@ namespace CoolingGridManager.Services
 
         ///////////////////////////////////////////
         // ADD CONSUMPTION VALUE
-        public async Task<int> CreateConsumerConsumptionRecord(IAddConsumerConsumptionRequest request)
+        public async Task<ConsumptionConsumer> CreateConsumerConsumptionRecord(ICreateConsumerConsumptionRequest request)
         {
             try
             {
-                var consumptionLog = new ConsumptionConsumer
+                var consumptionRecord = new ConsumptionConsumer
                 {
                     ConsumerID = request.ConsumerID,
                     ConsumptionValue = request.ConsumptionValue,
@@ -43,12 +43,12 @@ namespace CoolingGridManager.Services
                     throw new FormatException($"Consumer with ID {request.ConsumerID} does not exist.", "AddCoolingGridParameterLog");
                 }
                 // Associate the existing grid with the new grid section
-                consumptionLog.Consumer = existingConsumer;
+                consumptionRecord.Consumer = existingConsumer;
 
-                _context.ConsumptionConsumers.Add(consumptionLog);
+                _context.ConsumptionConsumers.Add(consumptionRecord);
                 await _context.SaveChangesAsync();
 
-                return consumptionLog.LogId;
+                return consumptionRecord;
             }
             catch (Exception ex)
             {

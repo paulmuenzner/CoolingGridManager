@@ -1,6 +1,5 @@
 using Azure.Core;
-using CoolingGridManager.Models.Data;
-using CoolingGridManager.Models.Requests;
+using CoolingGridManager.IRequests;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,12 +28,12 @@ namespace CoolingGridManager.Validators.Tickets
     }
 
     // Get Ticket Validator
-    public class TicketGetByIdValidator : AbstractValidator<IGetTicketByIDRequest>
+    public class GetTicketByIdValidator : AbstractValidator<int>
     {
         // Get Ticket Validator
-        public TicketGetByIdValidator()
+        public GetTicketByIdValidator()
         {
-            RuleFor(ticketRequest => ticketRequest.TicketId)
+            RuleFor(request => request)
                .NotEmpty().WithMessage("Valid ticket ID must be provided.")
                .NotNull().WithMessage("Valid ticket ID must be provided.")
                .GreaterThan(0).WithMessage("Ticket ID must be greater than 0.");
@@ -42,10 +41,10 @@ namespace CoolingGridManager.Validators.Tickets
     }
 
     // Add ticket validation
-    public class TicketAddValidator : AbstractValidator<TicketModel>
+    public class CreateTicketValidator : AbstractValidator<ICreateTicketRecordRequest>
     {
         // Add ticket validation
-        public TicketAddValidator()
+        public CreateTicketValidator()
         {
             RuleFor(ticketModel => ticketModel.ReportedBy)
                .NotEmpty().WithMessage("Name for reporting person is required.")
@@ -96,6 +95,7 @@ namespace CoolingGridManager.Validators.Tickets
         }
     }
 
+    //////////////////////////////////////
     // Update ticket validation
     public class UpdateTicketStatusValidator : AbstractValidator<IUpdateTicketStatusRequest>
     {
@@ -104,12 +104,12 @@ namespace CoolingGridManager.Validators.Tickets
         {
             _context = context;
 
-            RuleFor(request => request.TicketId)
+            RuleFor(request => request.TicketID)
                 .NotEmpty().WithMessage("Ticket ID is required.")
                 .GreaterThan(0).WithMessage("Ticket ID must be greater than 0.")
                 .MustAsync(ExistingTicket).WithMessage("Requested ticket not found.");
 
-            RuleFor(request => request.Status)
+            RuleFor(request => request.NewStatus)
                 .NotEmpty().WithMessage("Status is required.")
                 .Must(TicketValidatorHelper.BeValidStatus).WithMessage("Invalid status value. Can only be open, solved or onhold.")
                 .MustAsync(StatusAlreadySet).WithMessage("Ticket status already set.");
@@ -126,11 +126,11 @@ namespace CoolingGridManager.Validators.Tickets
         private async Task<bool> StatusAlreadySet(IUpdateTicketStatusRequest request, string newStatus, CancellationToken cancellationToken)
         {
             var existingTicketStatus = await _context.Tickets
-                .Where(t => t.TicketId == request.TicketId)
+                .Where(t => t.TicketId == request.TicketID)
                 .Select(t => t.Status)
                 .SingleOrDefaultAsync(cancellationToken);
 
-            return existingTicketStatus != request.Status;
+            return existingTicketStatus != request.NewStatus;
         }
 
     }

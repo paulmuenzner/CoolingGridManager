@@ -4,7 +4,8 @@ using CoolingGridManager.ResponseHandler;
 using CoolingGridManager.Exceptions;
 using FluentValidation.Results;
 using CoolingGridManager.Validators.Tickets;
-using CoolingGridManager.Models.Requests;
+using CoolingGridManager.Models.Data;
+
 
 namespace CoolingGridManager.Controllers.TicketsController
 {
@@ -12,26 +13,23 @@ namespace CoolingGridManager.Controllers.TicketsController
     [Route("api/tickets/[controller]")]
     public partial class GetTicketByIdController : ControllerBase
     {
-        private readonly TicketGetByIdValidator _ticketGetByIdValidator;
+        private readonly GetTicketByIdValidator _getTicketByIdValidator;
         private readonly TicketService _ticketService;
-        private readonly ExceptionResponse _exceptionResponse;
         private readonly Serilog.ILogger _logger;
-        public GetTicketByIdController(ExceptionResponse exceptionResponse, TicketGetByIdValidator ticketGetByIdValidator, Serilog.ILogger logger, TicketService ticketService)
+        public GetTicketByIdController(GetTicketByIdValidator getTicketByIdValidator, Serilog.ILogger logger, TicketService ticketService)
         {
             _ticketService = ticketService;
-            _ticketGetByIdValidator = ticketGetByIdValidator;
-            _exceptionResponse = exceptionResponse;
+            _getTicketByIdValidator = getTicketByIdValidator;
             _logger = logger;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetTicketById([FromBody] IGetTicketByIDRequest ticketRequest)
+        public async Task<IActionResult> GetTicketById([FromBody] int request)
         {
             try
             {
                 // Validate
-                TicketGetByIdValidator validator = new();
-                ValidationResult result = validator.Validate(ticketRequest);
+                ValidationResult result = _getTicketByIdValidator.Validate(request);
                 if (!result.IsValid)
                 {
                     foreach (var error in result.Errors)
@@ -39,13 +37,9 @@ namespace CoolingGridManager.Controllers.TicketsController
                         return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { Error = error }, $"{error.ErrorMessage}", $"{error.ErrorMessage}", null);
                     }
                 }
-                if (!ticketRequest.TicketId.HasValue)
-                {
-                    return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, "Ticket ID not valid. Valid ticket ID must be provided.", "No ticket found.", null);
-                }
 
-                var ticket = await _ticketService.GetTicketById(ticketRequest.TicketId.Value);
-                return ResponseFormatter.Success(HttpStatusPositive.OK, new { Ticket = ticket }, $"Ticket with ID {ticketRequest.TicketId} found.");
+                TicketModel ticket = await _ticketService.GetTicketDetails(request);
+                return ResponseFormatter.Success(HttpStatusPositive.OK, new { Ticket = ticket }, $"Ticket with ID {request} found.");
             }
             catch (ArgumentNullException ex)
             {
@@ -53,7 +47,7 @@ namespace CoolingGridManager.Controllers.TicketsController
             }
             catch (NotFoundException ex)
             {
-                return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { }, $"NotFoundException. No ticket found for ID {ticketRequest.TicketId}", $"No ticket found for ID {ticketRequest.TicketId}", ex);
+                return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { }, $"NotFoundException. No ticket found for ID {request}", $"No ticket found for ID {request}", ex);
             }
             catch (Exception ex)
             {

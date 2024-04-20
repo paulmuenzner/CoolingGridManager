@@ -4,6 +4,7 @@ using CoolingGridManager.Models.Data;
 using CoolingGridManager.ResponseHandler;
 using FluentValidation.Results;
 using CoolingGridManager.Validators.Tickets;
+using CoolingGridManager.IRequests;
 
 
 namespace CoolingGridManager.Controllers.TicketsController
@@ -12,25 +13,22 @@ namespace CoolingGridManager.Controllers.TicketsController
     [Route("api/tickets/[controller]")]
     public partial class AddTicketController : ControllerBase
     {
-        private readonly TicketAddValidator _ticketAddValidator;
+        private readonly CreateTicketValidator _createTicketValidator;
         private readonly TicketService _ticketService;
-        private readonly ExceptionResponse _exceptionResponse;
         private readonly Serilog.ILogger _logger;
-        public AddTicketController(TicketAddValidator ticketAddValidator, ExceptionResponse exceptionResponse, Serilog.ILogger logger, TicketService ticketService)
+        public AddTicketController(CreateTicketValidator createTicketValidator, Serilog.ILogger logger, TicketService ticketService)
         {
             _ticketService = ticketService;
-            _ticketAddValidator = ticketAddValidator;
-            _exceptionResponse = exceptionResponse;
+            _createTicketValidator = createTicketValidator;
             _logger = logger;
         }
         [HttpPost]
-        public async Task<IActionResult> AddTicket([FromBody] TicketModel ticket)
+        public async Task<IActionResult> AddTicket([FromBody] ICreateTicketRecordRequest request)
         {
             try
             {
                 // Validate
-                TicketAddValidator validator = new();
-                ValidationResult result = validator.Validate(ticket);
+                ValidationResult result = _createTicketValidator.Validate(request);
                 if (!result.IsValid)
                 {
                     foreach (var error in result.Errors)
@@ -40,12 +38,12 @@ namespace CoolingGridManager.Controllers.TicketsController
                 }
 
                 // Retrieve data
-                var newTicket = await _ticketService.AddTicket(ticket);
+                TicketModel newTicket = await _ticketService.CreateTicketRecord(request);
                 return ResponseFormatter.Success(HttpStatusPositive.OK, new { Ticket = newTicket }, $"New ticket with id {newTicket.TicketId} added");
             }
             catch (FormatException ex)
             {
-                _logger.Error(ex, "FormatException occurred while adding a ticket. Ticket: {@ticket}", ticket);
+                _logger.Error(ex, "FormatException occurred while adding a ticket. Ticket: {@ticket}", request);
                 return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { }, "Check the format of the input data.", "Input string was not in the correct format.", ex);
             }
             catch (Exception ex)

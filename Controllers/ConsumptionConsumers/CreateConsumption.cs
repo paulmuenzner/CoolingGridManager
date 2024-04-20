@@ -4,38 +4,36 @@ using CoolingGridManager.ResponseHandler;
 using CoolingGridManager.Validators.ConsumptionConsumers;
 using FluentValidation.Results;
 using CoolingGridManager.IRequests;
+using CoolingGridManager.Models.Data;
 
 namespace CoolingGridManager.Controllers.ConsumptionConsumerController
 {
     [Area("consumptionconsumers")]
     [Route("api/consumptionconsumers/[controller]")]
-    public partial class AddConsumptionController : ControllerBase
+    public partial class CreateConsumerConsumptionController : ControllerBase
     {
-        private readonly AddConsumptionValidator _addConsumptionValidator;
+        private readonly CreateConsumptionRecordValidator _createConsumptionRecordValidator;
         private readonly ConsumptionConsumerService _consumptionConsumerService;
         private readonly ExceptionResponse _exceptionResponse;
-        private readonly AppDbContext _context;
-        public AddConsumptionController(AppDbContext context, AddConsumptionValidator addConsumptionValidator, ExceptionResponse exceptionResponse, ConsumptionConsumerService consumptionConsumerService)
+
+        public CreateConsumerConsumptionController(CreateConsumptionRecordValidator createConsumptionRecordValidator, ExceptionResponse exceptionResponse, ConsumptionConsumerService consumptionConsumerService)
         {
             _consumptionConsumerService = consumptionConsumerService;
-            _addConsumptionValidator = addConsumptionValidator;
+            _createConsumptionRecordValidator = createConsumptionRecordValidator;
             _exceptionResponse = exceptionResponse;
-            _context = context;
-
         }
         [HttpPost]
-        public async Task<IActionResult> AddConsumption([FromBody] IAddConsumerConsumptionRequest request)
+        public async Task<IActionResult> CreateConsumptionRecord([FromBody] ICreateConsumerConsumptionRequest request)
         {
             try
             {
                 if (request == null)
                 {
-                    return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, "Consumer ID not valid. Valid consumer ID must be provided.", "Related consumer not found.", null);
+                    return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, "Request not valid.", "Related consumer not found.", null);
                 }
 
                 // Validate
-                AddConsumptionValidator validator = new AddConsumptionValidator(_context);
-                ValidationResult result = await validator.ValidateAsync(request);
+                ValidationResult result = await _createConsumptionRecordValidator.ValidateAsync(request);
                 if (!result.IsValid)
                 {
                     foreach (var error in result.Errors)
@@ -44,8 +42,8 @@ namespace CoolingGridManager.Controllers.ConsumptionConsumerController
                     }
                 }
 
-                var consumptionId = await _consumptionConsumerService.AddConsumption(request);
-                return ResponseFormatter.Success(HttpStatusPositive.OK, new { ConsumptionID = consumptionId }, $"New consumption entry with id {consumptionId} added.");
+                ConsumptionConsumer consumptionRecord = await _consumptionConsumerService.CreateConsumerConsumptionRecord(request);
+                return ResponseFormatter.Success(HttpStatusPositive.OK, new { ConsumptionID = consumptionRecord }, $"New consumption entry with id {consumptionRecord.LogId} added.");
             }
             catch (FormatException ex)
             {

@@ -4,35 +4,34 @@ using CoolingGridManager.Models.Data;
 using CoolingGridManager.ResponseHandler;
 using CoolingGridManager.Validators.GridSections;
 using FluentValidation.Results;
+using CoolingGridManager.IRequests;
 
 
 namespace CoolingGridManager.Controllers.GridSectionController
 {
     [Area("gridsections")]
     [Route("api/gridsections/[controller]")]
-    public partial class AddGridSectionController : ControllerBase
+    public partial class CreateGridSectionController : ControllerBase
     {
         private readonly AddGridSectionValidator _addGridSectionValidator;
         private readonly GridSectionService _gridSectionService;
         private readonly ExceptionResponse _exceptionResponse;
         private readonly Serilog.ILogger _logger;
-        private readonly AppDbContext _context;
-        public AddGridSectionController(AppDbContext context, AddGridSectionValidator addGridSectionValidator, ExceptionResponse exceptionResponse, Serilog.ILogger logger, GridSectionService gridSectionService)
+
+        public CreateGridSectionController(AddGridSectionValidator addGridSectionValidator, ExceptionResponse exceptionResponse, Serilog.ILogger logger, GridSectionService gridSectionService)
         {
             _addGridSectionValidator = addGridSectionValidator;
             _gridSectionService = gridSectionService;
             _exceptionResponse = exceptionResponse;
             _logger = logger;
-            _context = context;
         }
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] GridSection gridSection)
+        public async Task<IActionResult> Add([FromBody] ICreateGridSectionRecordRequest request)
         {
             try
             {
                 // Validate
-                AddGridSectionValidator validator = new AddGridSectionValidator(_context);
-                ValidationResult result = await validator.ValidateAsync(gridSection);
+                ValidationResult result = await _addGridSectionValidator.ValidateAsync(request);
                 if (!result.IsValid)
                 {
                     foreach (var error in result.Errors)
@@ -41,7 +40,7 @@ namespace CoolingGridManager.Controllers.GridSectionController
                     }
                 }
 
-                var gridSectionId = await _gridSectionService.AddGridSection(gridSection);
+                var gridSectionId = await _gridSectionService.CreateGridSectionRecord(request);
                 return ResponseFormatter.Success(HttpStatusPositive.OK, new { GridSectionId = gridSectionId }, $"New grid section with ID {gridSectionId} added.");
             }
             catch (FormatException ex)

@@ -1,12 +1,13 @@
 using FluentValidation;
 using CoolingGridManager.Models.Data;
+using CoolingGridManager.IRequests;
 
 
 namespace CoolingGridManager.Validators.GridSections
 {
 
     // Add Grid Section Validator
-    public class AddGridSectionValidator : AbstractValidator<GridSection>
+    public class AddGridSectionValidator : AbstractValidator<ICreateGridSectionRecordRequest>
     {
         private readonly AppDbContext _context;
         public AddGridSectionValidator(AppDbContext context)

@@ -4,7 +4,7 @@ using CoolingGridManager.ResponseHandler;
 using CoolingGridManager.Models.Data;
 using FluentValidation.Results;
 using CoolingGridManager.Validators.GridParameterLogs;
-using CoolingGridManager.Models.Requests;
+using CoolingGridManager.IRequests;
 
 namespace CoolingGridManager.Controllers.GridParameters
 {
@@ -15,17 +15,14 @@ namespace CoolingGridManager.Controllers.GridParameters
         private readonly GetGridParameterLogValidator _getGridParameterLogValidator;
         private readonly GridParameterLogService _gridParameterLogService;
         private readonly ExceptionResponse _exceptionResponse;
-        private readonly AppDbContext _context;
-        public GetParameterLogsController(AppDbContext context, GetGridParameterLogValidator getGridParameterLogValidator, ExceptionResponse exceptionResponse, GridParameterLogService gridParameterLogService)
+        public GetParameterLogsController(GetGridParameterLogValidator getGridParameterLogValidator, ExceptionResponse exceptionResponse, GridParameterLogService gridParameterLogService)
         {
             _gridParameterLogService = gridParameterLogService;
             _getGridParameterLogValidator = getGridParameterLogValidator;
             _exceptionResponse = exceptionResponse;
-            _context = context;
-
         }
         [HttpGet]
-        public async Task<IActionResult> GetParameterLogs([FromBody] IGetParameterLogsRequest request)
+        public async Task<IActionResult> GetParameterLogs([FromBody] IGetMonthlyGridParameterDetailsRequest request)
         {
             try
             {
@@ -35,8 +32,7 @@ namespace CoolingGridManager.Controllers.GridParameters
                 }
 
                 // Validate
-                GetGridParameterLogValidator validator = new GetGridParameterLogValidator(_context);
-                ValidationResult result = await validator.ValidateAsync(request);
+                ValidationResult result = await _getGridParameterLogValidator.ValidateAsync(request);
                 if (!result.IsValid)
                 {
                     foreach (var error in result.Errors)
@@ -45,7 +41,7 @@ namespace CoolingGridManager.Controllers.GridParameters
                     }
                 }
 
-                List<GridParameterLog> gridParameter = await _gridParameterLogService.GetGridParameterByMonth(request.GridID, request.Month, request.Year);
+                List<GridParameterLog> gridParameter = await _gridParameterLogService.GetMonthlyGridParameterDetails(request);
                 return ResponseFormatter.Success(HttpStatusPositive.OK, new { GridParameter = gridParameter }, $"Found {gridParameter.Count} entries for grid id {request.GridID} in selected time frame.");
             }
             catch (FormatException ex)

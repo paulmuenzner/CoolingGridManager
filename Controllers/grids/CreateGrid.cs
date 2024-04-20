@@ -3,11 +3,8 @@ using CoolingGridManager.Services;
 using CoolingGridManager.ResponseHandler;
 using CoolingGridManager.Validators.Grids;
 using FluentValidation.Results;
+using CoolingGridManager.Models.Data;
 
-public class GridModel
-{
-    public required string GridName { get; set; }
-}
 
 namespace CoolingGridManager.Controllers.GridController
 {
@@ -15,24 +12,22 @@ namespace CoolingGridManager.Controllers.GridController
     [Route("api/grids/[controller]")]
     public partial class AddGridController : ControllerBase
     {
-        private readonly AddGridValidator _addGridValidator;
+        private readonly CreateGridValidator _createGridValidator;
         private readonly GridService _gridService;
         private readonly ExceptionResponse _exceptionResponse;
-        public AddGridController(AddGridValidator addGridValidator, ExceptionResponse exceptionResponse, GridService gridService)
+        public AddGridController(CreateGridValidator createGridValidator, ExceptionResponse exceptionResponse, GridService gridService)
         {
             _gridService = gridService;
-            _addGridValidator = addGridValidator;
+            _createGridValidator = createGridValidator;
             _exceptionResponse = exceptionResponse;
-
         }
         [HttpPost]
-        public async Task<IActionResult> AddGrid([FromBody] GridModel model)
+        public async Task<IActionResult> CreateGridRecord([FromBody] string request)
         {
             try
             {
                 // Validate
-                AddGridValidator validator = new();
-                ValidationResult result = validator.Validate(model);
+                ValidationResult result = _createGridValidator.Validate(request);
                 if (!result.IsValid)
                 {
                     foreach (var error in result.Errors)
@@ -41,8 +36,8 @@ namespace CoolingGridManager.Controllers.GridController
                     }
                 }
 
-                var gridId = await _gridService.AddGrid(model.GridName);
-                return ResponseFormatter.Success(HttpStatusPositive.OK, new { GridID = gridId }, $"New grid with name {model.GridName} and id {gridId} added");
+                Grid grid = await _gridService.CreateGridRecord(request);
+                return ResponseFormatter.Success(HttpStatusPositive.OK, new { GridID = grid.GridID }, $"New grid with name {grid.GridName} and id {grid.GridID} added");
             }
             catch (FormatException ex)
             {
@@ -50,7 +45,7 @@ namespace CoolingGridManager.Controllers.GridController
             }
             catch (Exception ex)
             {
-                return _exceptionResponse.ExceptionResponseHandle(ex, "An unexpected error occurred.", "Adding new grid currently not possible.", ExceptionType.General);
+                return _exceptionResponse.ExceptionResponseHandle(ex, "An unexpected error occurred when creating new grid.", "Adding new grid currently not possible.", ExceptionType.General);
             }
 
         }

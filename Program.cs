@@ -10,8 +10,8 @@ using CoolingGridManager.Validators.Consumers;
 using CoolingGridManager.Validators.Bills;
 using CoolingGridManager.Extensions;
 using CoolingGridManager.Validators.GridParameterLogs;
-using CoolingGridManager.Validators.ConsumptionGrids;
 using CoolingGridManager.Validators.ConsumptionConsumers;
+using CoolingGridManager.Validators.GridConsumptions;
 
 
 
@@ -46,19 +46,23 @@ builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsi
 
 builder.Services.AddCustomCronJobs();
 
-// Add Validators
-builder.Services.AddScoped<TicketAddValidator>();
-builder.Services.AddScoped<TicketGetByIdValidator>();
-builder.Services.AddScoped<AddGridValidator>();
+// Validators
+// prepare change names starting with create instead add
+builder.Services.AddScoped<CreateTicketValidator>();
+builder.Services.AddScoped<GetTicketByIdValidator>();
+builder.Services.AddScoped<CreateGridValidator>();
 builder.Services.AddScoped<AddGridSectionValidator>();
-builder.Services.AddScoped<AddConsumerValidator>();
-builder.Services.AddScoped<AddBillValidator>();
-builder.Services.AddScoped<AddGridParameterLogValidator>();
+builder.Services.AddScoped<CreateConsumerRecordValidator>();
+builder.Services.AddScoped<CreateBillRecordValidator>();
+builder.Services.AddScoped<CreateGridParameterLogValidator>();
 builder.Services.AddScoped<GetGridParameterLogValidator>();
-builder.Services.AddScoped<AddConsumptionGridValidator>();
-builder.Services.AddScoped<AddConsumptionValidator>();
+builder.Services.AddScoped<GetGridConsumptionValidator>();
+builder.Services.AddScoped<CreateConsumptionRecordValidator>();
+builder.Services.AddScoped<GetConsumerDetailsValidator>();
 
-// Add services
+
+
+// Services
 builder.Services.AddScoped<ConsumerService>();
 builder.Services.AddScoped<GridService>();
 builder.Services.AddScoped<GridSectionService>();

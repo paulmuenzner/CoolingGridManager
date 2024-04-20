@@ -14,30 +14,26 @@ namespace CoolingGridManager.Controllers.Bills
     [Route("api/billing/[controller]")]
     public class GetBillController : ControllerBase
     {
-        private readonly Serilog.ILogger _logger;
         private readonly BillingService _billingService;
-        private readonly AppDbContext _context;
-
-        public GetBillController(AppDbContext context, Serilog.ILogger logger, BillingService billingService)
+        private readonly GetBillValidator _getBillValidator;
+        public GetBillController(BillingService billingService, GetBillValidator getBillValidator)
         {
-            _logger = logger;
-            _context = context;
             _billingService = billingService;
+            _getBillValidator = getBillValidator;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetBill([FromBody] IGetBillRequest body)
+        public async Task<IActionResult> GetBillDetails([FromBody] IGetBillRequest request)
         {
             try
             {
                 // Validate
-                if (body == null)
+                if (request == null)
                 {
                     return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, "Consumer ID, month, and year must be provided.", "Consumer ID, month, and year must be provided.", null);
                 }
 
-                GetBillValidator validator = new GetBillValidator(_context);
-                ValidationResult result = await validator.ValidateAsync(body);
+                ValidationResult result = await _getBillValidator.ValidateAsync(request);
                 if (!result.IsValid)
                 {
                     foreach (var error in result.Errors)
@@ -46,8 +42,8 @@ namespace CoolingGridManager.Controllers.Bills
                     }
                 }
 
-                var bill = await _billingService.GetBillingDetails(body);
-                return ResponseFormatter.Success(HttpStatusPositive.OK, new { Bill = bill }, $"Requested bill retrieved.");
+                var bill = await _billingService.GetBillingDetails(request);
+                return ResponseFormatter.Success(HttpStatusPositive.OK, new { Bill = bill }, "Requested bill retrieved.");
             }
             catch (ArgumentNullException ex)
             {

@@ -13,30 +13,27 @@ namespace CoolingGridManager.Controllers.Bills
     [Route("api/billing/[controller]")]
     public class UpdateBillStatusController : ControllerBase
     {
-        private readonly Serilog.ILogger _logger;
         private readonly BillingService _billingService;
-        private readonly AppDbContext _context;
+        private readonly BillStatusValidator _billStatusValidator;
 
-        public UpdateBillStatusController(AppDbContext context, Serilog.ILogger logger, BillingService billingService)
+        public UpdateBillStatusController(BillingService billingService, BillStatusValidator billStatusValidator)
         {
-            _logger = logger;
-            _context = context;
             _billingService = billingService;
+            _billStatusValidator = billStatusValidator;
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateBillStatus([FromBody] IUpdateStatusRequest body)
+        public async Task<IActionResult> UpdateBillStatus([FromBody] IUpdateStatusRequest request)
         {
             try
             {
                 // Validate
-                if (body == null)
+                if (request == null)
                 {
                     return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, $"Not all required information provided. Billing ID and/or Payment Status not provided or wrong type.", "Request currently not possible.", null);
                 }
 
-                BillStatusValidator validator = new BillStatusValidator(_context);
-                ValidationResult result = await validator.ValidateAsync(body);
+                ValidationResult result = await _billStatusValidator.ValidateAsync(request);
                 if (!result.IsValid)
                 {
                     foreach (var error in result.Errors)
@@ -45,7 +42,7 @@ namespace CoolingGridManager.Controllers.Bills
                     }
                 }
 
-                var bill = await _billingService.UpdatePaymentStatus(body);
+                var bill = await _billingService.UpdatePaymentStatus(request);
                 return ResponseFormatter.Success(HttpStatusPositive.OK, new { Bill = bill }, "Bill updated.");
             }
             catch (ArgumentNullException ex)

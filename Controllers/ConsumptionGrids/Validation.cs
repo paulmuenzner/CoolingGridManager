@@ -1,16 +1,17 @@
 using FluentValidation;
 using CoolingGridManager.Models.Data;
-using CoolingGridManager.Models.Requests;
+using CoolingGridManager.IRequests;
 
 
-namespace CoolingGridManager.Validators.ConsumptionGrids
+
+namespace CoolingGridManager.Validators.GridConsumptions
 {
 
-    // Add Consumption Validator
-    public class AddConsumptionGridValidator : AbstractValidator<IGetGridConsumptionRequest>
+    // Get Grid Consumption Validator
+    public class GetGridConsumptionValidator : AbstractValidator<IGetGridConsumptionRequest>
     {
         private readonly AppDbContext _context;
-        public AddConsumptionGridValidator(AppDbContext context)
+        public GetGridConsumptionValidator(AppDbContext context)
         {
             _context = context;
 
@@ -27,12 +28,12 @@ namespace CoolingGridManager.Validators.ConsumptionGrids
                 .NotNull().WithMessage("Valid grid ID must be provided.")
                 .GreaterThan(0).WithMessage("Grid ID must be greater than 0.")
                 .MustAsync(async (gridID, cancellationToken) =>
-            {
-                // No usage of Grids Service here. Validation logic, business logic, and data access logic should ideally be separated. Using a service for data access within a validation rule may violate this principle, as it introduces data access logic into the validation layer.
-                var existingGrid = await _context.Grids.FindAsync(gridID);
-                return existingGrid != null;
-            })
-            .WithMessage("Requested grid does not exist.");
+                {
+                    // No usage of Grids Service here. Validation logic, business logic, and data access logic should ideally be separated. Using a service for data access within a validation rule may violate this principle, as it introduces data access logic into the validation layer.
+                    var existingGrid = await _context.Grids.FindAsync(gridID);
+                    return existingGrid != null;
+                })
+                .WithMessage("Requested grid does not exist.");
         }
 
     }

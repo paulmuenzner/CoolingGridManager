@@ -2,8 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using CoolingGridManager.Services;
 using CoolingGridManager.ResponseHandler;
 using FluentValidation.Results;
-using CoolingGridManager.Validators.ConsumptionGrids;
-using CoolingGridManager.Models.Requests;
+using CoolingGridManager.IRequests;
+using CoolingGridManager.Validators.GridConsumptions;
+using CoolingGridManager.Models.Data;
 
 namespace CoolingGridManager.Controllers.ConsumptionGridController
 {
@@ -11,18 +12,17 @@ namespace CoolingGridManager.Controllers.ConsumptionGridController
     [Route("api/consumptiongrids/[controller]")]
     public partial class AddConsumptionController : ControllerBase
     {
-        private readonly AddConsumptionGridValidator _addConsumptionGridValidator;
+        private readonly GetGridConsumptionValidator _getGridConsumptionValidator;
         private readonly ConsumptionGridService _consumptionGridService;
         private readonly ExceptionResponse _exceptionResponse;
-        private readonly AppDbContext _context;
-        public AddConsumptionController(AppDbContext context, AddConsumptionGridValidator addConsumptionGridValidator, ExceptionResponse exceptionResponse, ConsumptionGridService consumptionGridService)
+
+        public AddConsumptionController(GetGridConsumptionValidator getGridConsumptionValidator, ExceptionResponse exceptionResponse, ConsumptionGridService consumptionGridService)
         {
             _consumptionGridService = consumptionGridService;
-            _addConsumptionGridValidator = addConsumptionGridValidator;
+            _getGridConsumptionValidator = getGridConsumptionValidator;
             _exceptionResponse = exceptionResponse;
-            _context = context;
-
         }
+
         [HttpPost]
         public async Task<IActionResult> GetGridConsumption([FromBody] IGetGridConsumptionRequest request)
         {
@@ -30,12 +30,11 @@ namespace CoolingGridManager.Controllers.ConsumptionGridController
             {
                 if (request == null)
                 {
-                    return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, "Request null and not valid. Valid request must be provided.", "Requested data not found.", null);
+                    return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, "Valid request must be provided.", "Requested data not found.", null);
                 }
 
                 // Validate
-                AddConsumptionGridValidator validator = new AddConsumptionGridValidator(_context);
-                ValidationResult result = validator.Validate(request);
+                ValidationResult result = _getGridConsumptionValidator.Validate(request);
                 if (!result.IsValid)
                 {
                     foreach (var error in result.Errors)
@@ -44,16 +43,16 @@ namespace CoolingGridManager.Controllers.ConsumptionGridController
                     }
                 }
 
-                var consumptionId = await _consumptionGridService.GetConsumptionForGridByDate(request);
-                return ResponseFormatter.Success(HttpStatusPositive.OK, new { ConsumptionID = consumptionId }, $"New consumption entry with id {consumptionId} added.");
+                ConsumptionGrid consumption = await _consumptionGridService.GetGridConsumptionDetails(request);
+                return ResponseFormatter.Success(HttpStatusPositive.OK, new { ConsumptionID = consumption }, "Consumption for grid found.");
             }
             catch (FormatException ex)
             {
-                return _exceptionResponse.ExceptionResponseHandle(ex, "Logging consumption results in FormatException.", "Adding consumption entry currently not poosible. Please retry later.", ExceptionType.Format);
+                return _exceptionResponse.ExceptionResponseHandle(ex, "FormatException when retrieving consumption for grid.", "Grid consumption request currently not poosible. Please retry later.", ExceptionType.Format);
             }
             catch (Exception ex)
             {
-                return _exceptionResponse.ExceptionResponseHandle(ex, "An unexpected error occurred.", "Adding consumption entry currently not poosible. Please retry later.", ExceptionType.General);
+                return _exceptionResponse.ExceptionResponseHandle(ex, "An unexpected error occurred.", "Grid consumption request currently not poosible. Please retry later.", ExceptionType.General);
             }
 
         }

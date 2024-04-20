@@ -1,16 +1,25 @@
 using FluentValidation;
 using CoolingGridManager.IRequests;
-using CoolingGridManager.Models.Data;
 
 
 namespace CoolingGridManager.Validators.Consumers
 {
 
-    // Add Consumer Validator
-    public class AddConsumerValidator : AbstractValidator<Consumer>
+    // GetGridParameterLog Validator
+    public class GetConsumerDetailsValidator : AbstractValidator<int>
+    {
+        public GetConsumerDetailsValidator()
+        {
+            RuleFor(consumerID => consumerID)
+                .NotEmpty().WithMessage("Valid consumer ID needed.")
+                .GreaterThan(0).WithMessage("Valid consumer ID needed.");
+        }
+
+    }
+    public class CreateConsumerRecordValidator : AbstractValidator<ICreateConsumerRecordRequest>
     {
         private readonly AppDbContext _context;
-        public AddConsumerValidator(AppDbContext context)
+        public CreateConsumerRecordValidator(AppDbContext context)
         {
             _context = context;
 
