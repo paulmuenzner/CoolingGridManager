@@ -3,7 +3,7 @@ using CoolingGridManager.ResponseHandler;
 using CoolingGridManager.Services;
 using FluentValidation.Results;
 using CoolingGridManager.Validators.Bills;
-using CoolingGridManager.Models.Requests;
+using CoolingGridManager.IRequests;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -25,12 +25,12 @@ namespace CoolingGridManager.Controllers.Bills
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateBillStatus([FromBody] IBillStatusRequest body)
+        public async Task<IActionResult> UpdateBillStatus([FromBody] IUpdateStatusRequest body)
         {
             try
             {
                 // Validate
-                if (body == null || body.billingId == null || body.isPaid == null)
+                if (body == null)
                 {
                     return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, $"Not all required information provided. Billing ID and/or Payment Status not provided or wrong type.", "Request currently not possible.", null);
                 }
@@ -45,7 +45,7 @@ namespace CoolingGridManager.Controllers.Bills
                     }
                 }
 
-                var bill = await _billingService.PaymentStatus((int)body.billingId, (bool)body.isPaid);
+                var bill = await _billingService.UpdatePaymentStatus(body);
                 return ResponseFormatter.Success(HttpStatusPositive.OK, new { Bill = bill }, "Bill updated.");
             }
             catch (ArgumentNullException ex)

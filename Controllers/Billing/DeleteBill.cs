@@ -4,7 +4,7 @@ using CoolingGridManager.Models.Data;
 using CoolingGridManager.Services;
 using FluentValidation.Results;
 using CoolingGridManager.Validators.Bills;
-using CoolingGridManager.Models.Requests;
+using CoolingGridManager.IRequests;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -30,7 +30,7 @@ namespace CoolingGridManager.Controllers.Bills
         {
             try
             {
-                if (body.BillingId == null)
+                if (body == null)
                 {
                     return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, "No billing ID provided.", "No billing ID provided.", null);
                 }
@@ -45,7 +45,7 @@ namespace CoolingGridManager.Controllers.Bills
                     }
                 }
 
-                var bill = await _billingService.DeleteBill((int)body.BillingId);
+                var bill = await _billingService.DeleteBillingEntry((int)body.BillingId);
                 return ResponseFormatter.Success(HttpStatusPositive.OK, new { Bill = bill }, $"Bill with id {body.BillingId} deleted.");
             }
             catch (ArgumentNullException ex)

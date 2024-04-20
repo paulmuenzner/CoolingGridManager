@@ -1,12 +1,12 @@
-using Microsoft.AspNetCore.Mvc;
+using CoolingGridManager.IRequests;
 using CoolingGridManager.Models.Data;
 using CoolingGridManager.Exceptions;
-using CoolingGridManager.Models.Requests;
 using Microsoft.EntityFrameworkCore;
+using CoolingGridManager.IServices;
 
 namespace CoolingGridManager.Services
 {
-    public class ConsumptionGridService
+    public class ConsumptionGridService : IConsumptionGridService
     {
         private readonly AppDbContext _context;
 
@@ -17,8 +17,9 @@ namespace CoolingGridManager.Services
             _context = context;
         }
 
+        ///////////////////////////////////////////
         // ADD CONSUMPTION VALUE
-        public async Task<ConsumptionGrid> AddGridConsumption(ConsumptionGrid request)
+        public async Task<ConsumptionGrid> CreateGridConsumptionRecord(ICreateGridConsumptionRecordRequest request)
         {
             try
             {
@@ -40,8 +41,9 @@ namespace CoolingGridManager.Services
             }
         }
 
+        //////////////////////////////////////////////////
         // GET ALL CONSUMPTION ENTRIES PER USER AND MONTH
-        public async Task<ConsumptionGrid> GetConsumptionForGridByDate(IGetGridConsumptionRequest request)
+        public async Task<ConsumptionGrid> GetGridConsumptionDetails(IGetGridConsumptionRequest request)
         {
             try
             {

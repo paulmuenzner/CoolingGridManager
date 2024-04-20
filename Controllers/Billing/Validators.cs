@@ -1,39 +1,38 @@
 using FluentValidation;
-using CoolingGridManager.Models.Requests;
+using CoolingGridManager.IRequests;
 using CoolingGridManager.Models.Data;
 using Microsoft.EntityFrameworkCore;
+
 
 
 namespace CoolingGridManager.Validators.Bills
 {
     // Update Bill Payment Status
-    public class BillStatusValidator : AbstractValidator<IBillStatusRequest>
+    public class BillStatusValidator : AbstractValidator<IUpdateStatusRequest>
     {
         private readonly AppDbContext _context;
         public BillStatusValidator(AppDbContext context)
         {
             _context = context;
 
-            RuleFor(bill => bill.billingId)
+            RuleFor(bill => bill.BillingId)
                 .NotEmpty().WithMessage("Billing ID is required.")
                 .GreaterThan(0).WithMessage("Billing ID must be greater than 0.")
                 .MustAsync(ExistingBill).WithMessage("Bill not found with provided bill ID.");
 
-            RuleFor(bill => bill.isPaid)
+            RuleFor(bill => bill.IsPaid)
                 .NotNull().WithMessage("Payment status is required.");
         }
 
-        private async Task<bool> ExistingBill(int? billingId, CancellationToken cancellationToken)
+        private async Task<bool> ExistingBill(int billingId, CancellationToken cancellationToken)
         {
-            if (billingId == null) return false;
             var existingBill = await _context.Bills.FindAsync(new object[] { billingId }, cancellationToken);
             return existingBill != null;
         }
     }
 
-
     // Delete Bill Validator
-    public class DeleteBillValidator : AbstractValidator<int?>
+    public class DeleteBillValidator : AbstractValidator<int>
     {
         private readonly AppDbContext _context;
         public DeleteBillValidator(AppDbContext context)
@@ -46,9 +45,8 @@ namespace CoolingGridManager.Validators.Bills
                 .MustAsync(ExistingBill).WithMessage("Bill not found with provided bill ID.");
         }
 
-        private async Task<bool> ExistingBill(int? billingId, CancellationToken cancellationToken)
+        private async Task<bool> ExistingBill(int billingId, CancellationToken cancellationToken)
         {
-            if (billingId == null) return false;
             var existingBill = await _context.Bills.FindAsync(new object[] { billingId }, cancellationToken);
             return existingBill != null;
         }
@@ -67,19 +65,18 @@ namespace CoolingGridManager.Validators.Bills
                 .GreaterThan(0).WithMessage("Consumer ID must be greater than 0.")
                 .MustAsync(ExistingConsumer).WithMessage("Consumer not found with provided consumer ID.");
 
-            RuleFor(bill => bill.Month)
+            RuleFor(bill => bill.BillingMonth)
                 .NotNull().WithMessage("Month is required.")
                 .InclusiveBetween(1, 12).WithMessage("No valid month selected.");
 
-            RuleFor(bill => bill.Year)
+            RuleFor(bill => bill.BillingYear)
                 .NotNull().WithMessage("Year is required.")
                 .GreaterThanOrEqualTo(2020).WithMessage("Year must be greater than or equal to 2020.")
                 .LessThan(2035).WithMessage("No valid year selected.");
         }
 
-        private async Task<bool> ExistingConsumer(int? consumerID, CancellationToken cancellationToken)
+        private async Task<bool> ExistingConsumer(int consumerID, CancellationToken cancellationToken)
         {
-            if (consumerID == null) return false;
             var existingConsumer = await _context.Consumers.FindAsync(new object[] { consumerID }, cancellationToken);
             return existingConsumer != null;
         }

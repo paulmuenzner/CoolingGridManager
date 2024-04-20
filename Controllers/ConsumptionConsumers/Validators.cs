@@ -1,5 +1,5 @@
 using FluentValidation;
-using CoolingGridManager.Models.Requests;
+using CoolingGridManager.IRequests;
 using Microsoft.EntityFrameworkCore;
 
 

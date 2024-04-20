@@ -15,6 +15,6 @@ namespace CoolingGridManager.Validators.Grids
                .Length(3, 100).WithMessage("Grid name length must be between 3 and 100 characters.")
                .Matches("^[a-zA-Z0-9]+$").WithMessage("Grid name can only contain alphanumeric characters.");
         }
-
+        // prepare Validate that grid not already existing
     }
 }

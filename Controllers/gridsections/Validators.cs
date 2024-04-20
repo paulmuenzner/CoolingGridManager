@@ -17,6 +17,7 @@ namespace CoolingGridManager.Validators.GridSections
                .NotEmpty().WithMessage("Grid section name is required.")
                .Length(3, 100).WithMessage("Grid section name length must be between 3 and 100 characters.")
                .Matches("^[a-zA-Z0-9 ]+$").WithMessage("Grid section name can only contain alphanumeric characters.");
+            // Prepare if already existing, instead of service validation ?
 
             RuleFor(gridSection => gridSection.GridID)
                 .NotEmpty().WithMessage("Valid grid ID must be provided.")

@@ -25,11 +25,15 @@ namespace CoolingGridManager.Controllers.Bills
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddBill([FromBody] Billing body)
+        public async Task<IActionResult> CreateBillingRecord([FromBody] Billing body)
         {
             try
             {
                 // Validate
+                if (body == null)
+                {
+                    return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, "Request data is either improperly formatted or contains missing data. No new billing record created.", "Creating new billing records currently not possible.", null);
+                }
                 AddBillValidator validator = new AddBillValidator(_context);
                 ValidationResult result = await validator.ValidateAsync(body);
                 if (!result.IsValid)
@@ -40,7 +44,7 @@ namespace CoolingGridManager.Controllers.Bills
                     }
                 }
 
-                var newBill = await _billingService.AddBill(body);
+                var newBill = await _billingService.CreateBillingRecord(body);
                 return ResponseFormatter.Success(HttpStatusPositive.OK, new { Bill = newBill }, $"New bill added");
             }
             catch (ArgumentNullException ex)

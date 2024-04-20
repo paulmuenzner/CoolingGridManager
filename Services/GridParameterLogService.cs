@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
 using CoolingGridManager.Models.Data;
 using CoolingGridManager.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using FormatException = CoolingGridManager.Exceptions.FormatException;
+using CoolingGridManager.IRequests;
 
 namespace CoolingGridManager.Services
 {
@@ -17,46 +17,48 @@ namespace CoolingGridManager.Services
             _context = context;
         }
 
-        // ADD CONSUMPTION VALUE
-        public async Task<GridParameterLog> AddCoolingGridParameterLog(GridParameterLog log)
+        ///////////////////////////////////////////
+        // CREATE GRID PARAMETER ENTRY
+        public async Task<GridParameterLog> CreateGridParameterLogRecord(ICreateGridParameterLogRecordRequest request)
         {
             try
             {
 
-                var existingGrid = await _context.Grids.FindAsync(log.GridID);
+                var existingGrid = await _context.Grids.FindAsync(request.GridID);
 
                 if (existingGrid == null)
                 {
-                    _logger.Warning($"Grid with ID {log.GridID} does not exist.");
-                    throw new FormatException($"Grid with ID {log.GridID} does not exist.", "AddCoolingGridParameterLog");
+                    _logger.Warning($"Grid with ID {request.GridID} does not exist.");
+                    throw new FormatException($"Grid with ID {request.GridID} does not exist.", "CreateGridParameterLogRecord");
                 }
                 // Associate the existing grid with the new grid section
-                log.Grid = existingGrid;
+                request.Grid = existingGrid;
 
-                _context.GridParameterLog.Add(log);
+                _context.GridParameterLog.Add(request);
                 await _context.SaveChangesAsync();
 
-                return log;
+                return request;
             }
             catch (Exception ex)
             {
                 var message = string.Format("Exception: {ex}", ex.ToString());
-                throw new TryCatchException(message, "AddCoolingGridParameterLog");
+                throw new TryCatchException(message, "CreateGridParameterLogRecord"); //prepare update function names everywhere
             }
         }
 
-        // GET ALL CONSUMPTION ENTRIES PER USER AND MONTH
-        public async Task<List<GridParameterLog>> GetGridParameterByMonth(int gridId, int month, int year)
+        ////////////////////////////////////////////////////
+        // GET GRID PARAMETER ENTRIES BY MONTH
+        public async Task<List<GridParameterLog>> GetMonthlyGridParameterDetails(IGetMonthlyGridParameterDetailsRequest request)
         {
             try
             {
                 // All entries of current month
-                var startDate = new DateTimeOffset(year, month, 1, 0, 0, 0, TimeSpan.Zero);
+                var startDate = new DateTimeOffset(request.Year, request.Month, 1, 0, 0, 0, TimeSpan.Zero);
                 var endDate = startDate.AddMonths(1).AddTicks(-1);
 
                 var logs = await _context.GridParameterLog
                     .Where(log =>
-                        log.GridID == gridId &&
+                        log.GridID == request.GridID &&
                         log.DateTimeStart >= startDate &&
                         log.DateTimeEnd <= endDate).ToListAsync();
 
@@ -66,7 +68,7 @@ namespace CoolingGridManager.Services
                 }
                 else
                 {
-                    var message = $"Not possible to retrieve consumption logs with 'GetConsumptionForUserByMonth'. Month: {month}, Skip: {gridId}";
+                    var message = $"Not possible to retrieve consumption logs with 'GetMonthlyGridParameterDetails'. Month: {request.Month}, Skip: {request.GridID}";
                     _logger.Error(message);
                     throw new Exception(message);
                 }
@@ -75,7 +77,7 @@ namespace CoolingGridManager.Services
             catch (Exception ex)
             {
                 var message = string.Format("Exception: {ex}", ex.ToString());
-                throw new TryCatchException(message, "GetGridParameterByMonth");
+                throw new TryCatchException(message, "GetMonthlyGridParameterDetails");
             }
         }
     }

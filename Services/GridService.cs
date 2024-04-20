@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 using CoolingGridManager.Models.Data;
 using CoolingGridManager.Exceptions;
 
@@ -13,20 +12,21 @@ namespace CoolingGridManager.Services
             _context = context;
         }
 
-        // ADD GRID
-        public async Task<int> AddGrid(string gridName)
+        /////////////////////////////////////
+        // CREATE GRID RECORD
+        public async Task<Grid> CreateGridRecord(string gridName)
         {
             try
             {
                 var grid = new Grid { GridName = gridName };
                 _context.Grids.Add(grid);
                 await _context.SaveChangesAsync();
-                return grid.GridID;
+                return grid;
             }
             catch (Exception ex)
             {
                 var message = string.Format("Exception: {ex}", ex.ToString());
-                throw new TryCatchException(message, "AddGrid");
+                throw new TryCatchException(message, "CreateGridRecord");
             }
         }
     }

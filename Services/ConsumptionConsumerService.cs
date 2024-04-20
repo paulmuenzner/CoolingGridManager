@@ -1,14 +1,14 @@
-using Microsoft.AspNetCore.Mvc;
 using CoolingGridManager.Models.Data;
 using CoolingGridManager.Exceptions;
-using CoolingGridManager.Models.Requests;
+using CoolingGridManager.IRequests;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using FormatException = CoolingGridManager.Exceptions.FormatException;
+using CoolingGridManager.IServices;
 
 namespace CoolingGridManager.Services
 {
-    public class ConsumptionConsumerService
+    public class ConsumptionConsumerService : IConsumptionConsumerService
     {
         private readonly AppDbContext _context;
 
@@ -19,8 +19,9 @@ namespace CoolingGridManager.Services
             _context = context;
         }
 
+        ///////////////////////////////////////////
         // ADD CONSUMPTION VALUE
-        public async Task<int> AddConsumption(IAddConsumerConsumptionRequest request)
+        public async Task<int> CreateConsumerConsumptionRecord(IAddConsumerConsumptionRequest request)
         {
             try
             {
@@ -57,18 +58,19 @@ namespace CoolingGridManager.Services
             }
         }
 
+        ///////////////////////////////////////////
         // GET ALL CONSUMPTION ENTRIES PER USER AND MONTH
-        public async Task<List<ConsumptionConsumer>> GetConsumptionForUserByMonth(int consumerId, int month, int year)
+        public async Task<List<ConsumptionConsumer>> GetConsumptionForUserByMonth(IGetConsumptionForUserByMonthRequest request)
         {
             try
             {
                 // All entries of current month
-                var startDate = new DateTimeOffset(year, month, 1, 0, 0, 0, TimeSpan.Zero);
+                var startDate = new DateTimeOffset(request.BillingYear, request.BillingMonth, 1, 0, 0, 0, TimeSpan.Zero);
                 var endDate = startDate.AddMonths(1).AddTicks(-1);
 
                 var logs = await _context.ConsumptionConsumers
                     .Where(log =>
-                        log.ConsumerID == consumerId &&
+                        log.ConsumerID == request.ConsumerID &&
                         log.DateTimeStart >= startDate &&
                         log.DateTimeEnd <= endDate).ToListAsync();
 
@@ -78,7 +80,7 @@ namespace CoolingGridManager.Services
                 }
                 else
                 {
-                    var message = $"Not possible to retrieve consumption logs with 'GetConsumptionForUserByMonth'. Month: {month}, Skip: {consumerId}";
+                    var message = $"Not possible to retrieve consumption logs with 'GetConsumptionForUserByMonth'. Month: {request.BillingMonth}, Skip: {request.ConsumerID}";
                     _logger.Error(message);
                     throw new Exception(message);
                 }

@@ -2,9 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using CoolingGridManager.Services;
 using CoolingGridManager.ResponseHandler;
 using CoolingGridManager.Validators.ConsumptionConsumers;
-using CoolingGridManager.Models.Data;
 using FluentValidation.Results;
-using CoolingGridManager.Models.Requests;
+using CoolingGridManager.IRequests;
 
 namespace CoolingGridManager.Controllers.ConsumptionConsumerController
 {

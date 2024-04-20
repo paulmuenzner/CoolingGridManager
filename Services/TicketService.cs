@@ -1,8 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
 using CoolingGridManager.Models.Data;
 using CoolingGridManager.Exceptions;
-using CoolingGridManager.ResponseHandler;
 using Microsoft.EntityFrameworkCore;
+using CoolingGridManager.IRequests;
 
 namespace CoolingGridManager.Services
 {
@@ -15,24 +14,26 @@ namespace CoolingGridManager.Services
             _context = context;
         }
 
-        // ADD Ticket
-        public async Task<TicketModel> AddTicket(TicketModel ticket)
+        ////////////////////////////////
+        // CREATE TICKET RECORD
+        public async Task<TicketModel> CreateTicketRecord(ICreateTicketRecordRequest request)
         {
             try
             {
-                _context.Tickets.Add(ticket);
+                _context.Tickets.Add(request);
                 await _context.SaveChangesAsync();
-                return ticket;
+                return request;
             }
             catch (Exception ex)
             {
                 var message = string.Format("Exception: {ex}", ex.ToString());
-                throw new TryCatchException(message, "AddTicket");
+                throw new TryCatchException(message, "CreateTicketRecord");
             }
         }
 
+        ////////////////////////////////
         // GET TICKET
-        public async Task<TicketModel> GetTicketById(int ticketId)
+        public async Task<TicketModel> GetTicketDetails(int ticketId)
         {
             try
             {
@@ -52,25 +53,26 @@ namespace CoolingGridManager.Services
             }
         }
 
-        // CHANGE STATUS 
-        public async Task<TicketModel> UpdateStatusTicket(int ticketId, string status)
+        ///////////////////////////////////////////
+        // UPDATE TICKET STATUS 
+        public async Task<TicketModel> UpdateTicketStatus(IUpdateTicketStatusRequest request)
         {
             try
             {
-                var ticket = await _context.Tickets.FindAsync(ticketId);
+                var ticket = await _context.Tickets.FindAsync(request.TicketID);
 
                 if (ticket == null)
                 {
-                    throw new NotFoundException($"Ticket with ID {ticketId} not found.", "UpdateStatusTicket", ticketId);
+                    throw new NotFoundException($"Ticket with ID {request.TicketID} not found.", "UpdateTicketStatus", request.TicketID);
                 }
 
                 // Update the ticket status
-                ticket.Status = status;
+                ticket.Status = request.NewStatus;
 
                 // Add a new status change object to the status history array
                 ticket.StatusHistory.Add(new StatusChange
                 {
-                    Status = status,
+                    Status = request.NewStatus,
                     ChangedDate = DateTime.UtcNow
                 });
 
@@ -81,7 +83,7 @@ namespace CoolingGridManager.Services
             catch (Exception ex)
             {
                 var message = string.Format("Exception: {ex}", ex.ToString());
-                throw new TryCatchException(message, "UpdateStatusTicket");
+                throw new TryCatchException(message, "UpdateTicketStatus");
             }
         }
     }

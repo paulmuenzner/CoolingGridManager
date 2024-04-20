@@ -1,8 +1,8 @@
 using ILogger = Serilog.ILogger;
 using CoolingGridManager.Models.Data;
-using Microsoft.EntityFrameworkCore;
 using CoolingGridManager.Exceptions;
 using FormatException = System.FormatException;
+using CoolingGridManager.IRequests;
 
 namespace CoolingGridManager.Services
 {
@@ -17,24 +17,26 @@ namespace CoolingGridManager.Services
             _context = context;
         }
 
-        // ADD GRID
-        public async Task<int> AddGridSection(GridSection gridSection)
+        ////////////////////////////////////////////////////
+        // CREATE GRID SECTION RECORD
+        public async Task<GridSection> CreateGridSectionRecord(ICreateGridSectionRecordRequest request)
         {
             try
             {
-                var existingGrid = await _context.Grids.FindAsync(gridSection.GridID);
+                // Retrieve the grid associated with the new grid section entry, as it is essential for maintaining data integrity.
+                var existingGrid = await _context.Grids.FindAsync(request.GridID);
 
                 if (existingGrid == null)
                 {
-                    _logger.LogInformation($"Grid with ID {gridSection.GridID} does not exist.");
-                    throw new FormatException($"Grid with ID {gridSection.GridID} does not exist.");
+                    _logger.LogInformation($"Grid with ID {request.GridID} does not exist.");
+                    throw new FormatException($"Grid with ID {request.GridID} does not exist.");
                 }
                 // Associate the existing grid with the new grid section
-                gridSection.Grid = existingGrid;
+                request.Grid = existingGrid;
 
-                _context.GridSections.Add(gridSection);
+                _context.GridSections.Add(request);
                 await _context.SaveChangesAsync();
-                return gridSection.GridSectionID;
+                return request;
             }
             catch (FormatException ex)
             {
@@ -47,7 +49,5 @@ namespace CoolingGridManager.Services
                 throw new TryCatchException(message, "AddGridSection");
             }
         }
-
-
     }
 }

@@ -1,4 +1,4 @@
-namespace CoolingGridManager.Models.Requests
+namespace CoolingGridManager.IRequests
 {
     public class IAddConsumerConsumptionRequest
     {
@@ -9,5 +9,12 @@ namespace CoolingGridManager.Models.Requests
         // The associated data is not tied to a specific time frame. This maintains the flexibility of the table. 
         public DateTime DateTimeStart { get; set; }
         public DateTime DateTimeEnd { get; set; }
+    }
+
+    public class IGetConsumptionForUserByMonthRequest
+    {
+        public int ConsumerID { get; set; }
+        public int BillingMonth { get; set; }
+        public int BillingYear { get; set; }
     }
 }

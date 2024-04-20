@@ -1,4 +1,5 @@
-﻿using CoolingGridManager.Models.Data;
+﻿using CoolingGridManager.IRequests;
+using CoolingGridManager.Models.Data;
 using CoolingGridManager.Services;
 using Quartz;
 using ILogger = Serilog.ILogger;
@@ -29,18 +30,18 @@ namespace CoolingGridManager.Utils.CronJobs
             try
             {
                 // Billing period is previous month
-                // Define month and year of previous calender month
+                // Define billing month -> previous calender month
                 // Current date
                 DateTime date = DateTime.Now;
-                // Get the previous month and year
-                int previousMonth = date.Month - 1;
-                int previousYear = date.Year;
+                // Get the billing month (previous month)
+                int billingMonth = date.Month - 1;
+                int billingYear = date.Year;
 
                 // Adjust the year if the previous month is December
-                if (previousMonth == 0)
+                if (billingMonth == 0)
                 {
-                    previousMonth = 12;
-                    previousYear--;
+                    billingMonth = 12;
+                    billingYear--;
                 }
                 var pageNumber = 1;
                 bool hasNextPage = true;
@@ -49,7 +50,13 @@ namespace CoolingGridManager.Utils.CronJobs
                 {
                     // Retrieve consumers for the current page (pageNumber)
                     var skip = (pageNumber - 1) * PageSize;
-                    List<Consumer> consumers = await _consumerService.GetConsumerBatch(skip, PageSize);
+                    // Create the request object
+                    var batchRequest = new IGetConsumerBatch
+                    {
+                        Skip = skip,
+                        Size = PageSize
+                    };
+                    List<Consumer> consumers = await _consumerService.GetConsumerBatch(batchRequest);
 
 
                     if (consumers.Any())
@@ -58,9 +65,16 @@ namespace CoolingGridManager.Utils.CronJobs
                         foreach (var consumer in consumers)
                         {
 
-                            List<ConsumptionConsumer> logs = await _consumptionConsumerService.GetConsumptionForUserByMonth(consumer.ConsumerID, previousMonth, previousYear);
+                            // Create the request object
+                            var consumptionRequest = new IGetConsumptionForUserByMonthRequest
+                            {
+                                ConsumerID = consumer.ConsumerID,
+                                BillingMonth = billingMonth,
+                                BillingYear = billingYear
+                            };
+                            List<ConsumptionConsumer> userConsumptionsByMonth = await _consumptionConsumerService.GetConsumptionForUserByMonth(consumptionRequest);
                             // Sum up all ConsumptionValue properties
-                            decimal totalConsumption = logs.Sum(log => log.ConsumptionValue);
+                            decimal totalConsumption = userConsumptionsByMonth.Sum(log => log.ConsumptionValue);
 
                             // Get consumer contract data
                             decimal unitPrice = consumer.UnitPrice;
@@ -73,14 +87,14 @@ namespace CoolingGridManager.Utils.CronJobs
                             var bill = new Billing
                             {
                                 ConsumerID = consumer.ConsumerID,
-                                BillingMonth = previousMonth,
-                                BillingYear = previousYear,
+                                BillingMonth = billingMonth,
+                                BillingYear = billingYear,
                                 TotalConsumption = totalConsumption,
                                 IsPaid = false,
                                 BillingAmount = billingAmount,
                                 Consumer = consumer
                             };
-                            var consumptionId = await _billingService.AddBill(bill);
+                            var consumptionId = await _billingService.CreateBillingRecord(bill);
                         }
 
                         pageNumber++;

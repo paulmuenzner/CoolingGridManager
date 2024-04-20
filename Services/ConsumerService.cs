@@ -1,11 +1,12 @@
-using Microsoft.AspNetCore.Identity;
+using CoolingGridManager.IRequests;
 using CoolingGridManager.Exceptions;
 using CoolingGridManager.Models.Data;
 using Microsoft.EntityFrameworkCore;
+using CoolingGridManager.IServices;
 
 namespace CoolingGridManager.Services
 {
-    public class ConsumerService
+    public class ConsumerService : IConsumerService
     {
         private readonly AppDbContext _context;
         private readonly Serilog.ILogger _logger;
@@ -16,8 +17,9 @@ namespace CoolingGridManager.Services
             _logger = logger;
         }
 
-        // ADD CONSUMER
-        public async Task<Consumer> Add(Consumer consumer)
+        ///////////////////////////////////////////
+        // CREATE NEW CONSUMER
+        public async Task<Consumer> CreateConsumerRecord(Consumer request)
         {
             try
             { // Prepare as validation
@@ -29,10 +31,10 @@ namespace CoolingGridManager.Services
                     throw new InvalidOperationException("No existing grid section found.");
                 }
                 // Assign the existing grid section to the consumer
-                consumer.GridSection = existingGridSection;
-                _context.Consumers.Add(consumer);
+                request.GridSection = existingGridSection;
+                _context.Consumers.Add(request);
                 await _context.SaveChangesAsync();
-                return consumer;
+                return request;
             }
             catch (Exception ex)
             {
@@ -41,30 +43,48 @@ namespace CoolingGridManager.Services
             }
         }
 
-
+        ///////////////////////////////////////////
         // GET CONSUMER
-        public async Task<Consumer?> GetConsumerById(int consumerId)
+        public async Task<Consumer> GetConsumerDetails(int consumerId)
         {
-            // Prepare try catch
-            var consumer = await _context.Consumers.FindAsync(consumerId);
-            if (consumer == null)
+            try
             {
-                // return null; // prepare
-                var message = string.Format($"No consumer found with id {consumerId}. Result is null.");
-                throw new NotFoundException(message, "Consumer", consumerId);
+                var consumer = await _context.Consumers.FindAsync(consumerId);
+                if (consumer == null)
+                {
+                    // return null; // prepare
+                    var message = string.Format($"No consumer found with id {consumerId}. Result is null.");
+                    throw new NotFoundException(message, "Consumer", consumerId);
+                }
+                if (consumer != null)
+                {
+                    return consumer;
+                }
+                else
+                {
+                    _logger.Error($"With GetConsumerDetails requested consumer null. Non-existing consumer requested. Consumer ID: {consumerId}.");
+                    throw new NotFoundException($"Requested consumer not found", "GetConsumerDetails", consumerId);
+                }
+
+
             }
-            return consumer;
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"With GetConsumerDetails requested consumer null. Consumer ID: {consumerId}.");
+                throw new TryCatchException($"Bill for consumer ID {consumerId} not found", "GetConsumerDetails");
+            }
         }
 
+        ///////////////////////////////////////////
         // Get Consumers in Batches
-        public async Task<List<Consumer>> GetConsumerBatch(int skip, int size)
+        public async Task<List<Consumer>> GetConsumerBatch(IGetConsumerBatch request)
         {
             try
             {
                 var consumers = await _context.Consumers
                         .OrderBy(c => c.ConsumerID) // Order by primary key or other unique column
-                        .Skip(skip * size)
-                        .Take(size)
+                        .Skip(request.Skip * request.Size)
+                        .Take(request.Size)
                         .ToListAsync();
                 if (consumers != null)
                 {
@@ -72,7 +92,7 @@ namespace CoolingGridManager.Services
                 }
                 else
                 {
-                    var message = $"Non-existing users requested in batches. Error retrieving consumers in batches. Size: {size}, Skip: {skip}";
+                    var message = $"Non-existing users requested in batches. Error retrieving consumers in batches. Size: {request.Size}, Skip: {request.Skip}";
                     _logger.Error(message);
                     throw new Exception(message);
                 }
@@ -80,12 +100,13 @@ namespace CoolingGridManager.Services
             }
             catch (Exception ex)
             {
-                var message = $"Error retrieving consumers in batches. Size: {size}, Skip: {skip}";
+                var message = $"Error retrieving consumers in batches. Size: {request.Size}, Skip: {request.Skip}";
                 _logger.Error(ex, message);
                 throw new Exception(message);
             }
         }
 
+        ///////////////////////////////////////////
         // GET CONSUMER WITH RELATED GRID SECTION
         public async Task<Consumer> GetConsumerWithGridSection(int id)
         {
