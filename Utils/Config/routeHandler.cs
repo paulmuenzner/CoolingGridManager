@@ -5,6 +5,6 @@ public static class CustomRouteExtensions
         app.MapAreaControllerRoute(
             name: areaName,
             areaName: areaName,
-            pattern: $"api/{areaName}/{pattern}");
+            pattern: $"api/{areaName}/{pattern}").RequireRateLimiting("fixed");
     }
 }
