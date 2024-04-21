@@ -10,18 +10,19 @@ namespace CoolingGridManager.Controllers.GridParameters
 {
     [Area("gridparameters")]
     [Route("api/gridparameters/[controller]")]
-    public partial class GetParameterLogsController : ControllerBase
+    public partial class GetLogsController : ControllerBase
     {
         private readonly GetGridParameterLogValidator _getGridParameterLogValidator;
         private readonly GridParameterLogService _gridParameterLogService;
         private readonly ExceptionResponse _exceptionResponse;
-        public GetParameterLogsController(GetGridParameterLogValidator getGridParameterLogValidator, ExceptionResponse exceptionResponse, GridParameterLogService gridParameterLogService)
+        public GetLogsController(GetGridParameterLogValidator getGridParameterLogValidator, ExceptionResponse exceptionResponse, GridParameterLogService gridParameterLogService)
         {
             _gridParameterLogService = gridParameterLogService;
             _getGridParameterLogValidator = getGridParameterLogValidator;
             _exceptionResponse = exceptionResponse;
         }
         [HttpGet]
+        [Tags("GridParameters")]
         public async Task<IActionResult> GetParameterLogs([FromBody] IGetMonthlyGridParameterDetailsRequest request)
         {
             try
@@ -46,11 +47,11 @@ namespace CoolingGridManager.Controllers.GridParameters
             }
             catch (FormatException ex)
             {
-                return _exceptionResponse.ExceptionResponseHandle(ex, "Logging consumption results in FormatException.", "Adding consumption entry currently not poosible. Please retry later.", ExceptionType.Format);
+                return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { }, "Logging consumption results in FormatException.", "Adding consumption entry currently not poosible. Please retry later.", ex);
             }
             catch (Exception ex)
             {
-                return _exceptionResponse.ExceptionResponseHandle(ex, "An unexpected error occurred.", "Adding consumption entry currently not poosible. Please retry later.", ExceptionType.General);
+                return ResponseFormatter.Negative(HttpStatusNegative.InternalServerError, new { }, "An unexpected error occurred.", "Adding consumption entry currently not poosible. Please retry later.", ex);
             }
 
         }

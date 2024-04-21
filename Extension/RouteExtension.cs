@@ -7,7 +7,7 @@ public static class RouteExtension
     {
         app.MapAreaRoute("consumers", "{controller}/{index}");
         app.MapAreaRoute("gridsections", "{controller}/{index}");
-        app.MapAreaRoute("grids", "{controller}/{action=Index}/{consumerId?}");
+        app.MapAreaRoute("grids", "{controller}/{index}");
         app.MapAreaRoute("tickets", "{controller}/{index}");
         app.MapAreaRoute("consumptionconsumers", "{controller}/{index}");
         app.MapAreaRoute("billing", "{controller}/{index}");

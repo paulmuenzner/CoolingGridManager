@@ -6,4 +6,7 @@ public static class AppData
     public static int TimeFrameYearMin { get; } = 2020;
     public static int TimeFrameYearMax { get; } = 2035;
 
+    // Regex
+    public static readonly string UuidPattern = @"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$";
+
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+
 namespace CoolingGridManager.Models.Data
 {
     [Table("ConsumptionConsumer")]
@@ -10,7 +11,10 @@ namespace CoolingGridManager.Models.Data
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int LogId { get; set; }
+        public int LogID { get; set; }
+
+        [Required(ErrorMessage = "Element ID is required.")]
+        public string ElementID { get; set; } // Associate each entry/element in database with element of sender (eg. measured meter station)
 
         [Required(ErrorMessage = "Consumption value is required.")]
         public decimal ConsumptionValue { get; set; }
@@ -33,6 +37,7 @@ namespace CoolingGridManager.Models.Data
 
         public ConsumptionConsumer()
         {
+            ElementID = string.Empty;
             ConsumptionValue = 0m;
             LogDate = DateTime.MinValue;
             // Defining the related time period where the value was measured for

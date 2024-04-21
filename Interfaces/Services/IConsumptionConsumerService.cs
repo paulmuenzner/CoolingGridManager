@@ -1,4 +1,5 @@
 using CoolingGridManager.IRequests;
+using CoolingGridManager.IResponse;
 using CoolingGridManager.Models.Data;
 
 namespace CoolingGridManager.IServices
@@ -8,7 +9,7 @@ namespace CoolingGridManager.IServices
     /// </summary>
     public interface IConsumptionConsumerService
     {
-        Task<ConsumptionConsumer> CreateConsumerConsumptionRecord(ICreateConsumerConsumptionRequest request);
+        Task<ICreateConsumerConsumptionRecordResponse> CreateConsumerConsumptionRecord(List<ConsumptionData> request);
         Task<List<ConsumptionConsumer>> GetConsumptionForUserByMonth(IGetConsumptionForUserByMonthRequest request);
 
     }

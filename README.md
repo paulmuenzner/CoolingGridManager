@@ -146,57 +146,7 @@ Run program by: `go run main.go` or use live-reloader such as [air](https://gith
 This server exposes various endpoints to facilitate authentication, file management, and plant-related operations.
 
 
-### Routes 
-
-#### Authentication 
-
-The authentication API '/auth' offers secure endpoints for user authentication. Response format is always JSON besides file upload which is form-data.
-
-1. **`/auth/registration`**
-   - **Method:** POST
-   - **Description:** Register a new user with the system.
-   - **Authentication Required:** No
-   - **Request Body Example:**
-     ```json
-     {
-       "email": "myname@emailexample.com"
-     }
-     ```
-
-2. **`/auth/verify`**
-   - **Method:** POST
-   - **Description:** Verify registered account with link using verify token sent to the registered email address.
-   - **Authentication Required:** No
-   - **Request Body Example:**
-     ```json
-     {
-       "password": "StrongPassword",
-       "passwordVerify": "StrongPassword",
-       "verifyToken": "y6X2NpA8bPAAdLZRxUT7aqNL-e9eqDcNuIG0VosGg96G0vr4jAkpwGLkDeI0fZwlsfkA65PreOiuZpza4M66cWrz7QYKicjfKWdUUdOAe-v0_EYiA-3D19pK3CS-Vj1U"
-     }
-     ```
-
-3. **`/auth/signin`**
-   - **Method:** POST
-   - **Description:** Sign in with valid credentials.
-   - **Authentication Required:** No
-   - **Request Body Example:**
-     ```json
-     {
-       "email": "myname@emailexample.com",
-       "password": "StrongPassword"
-     }
-     ```
-
-3. **`/auth/signout`**
-   - **Method:** POST
-   - **Description:** Log out the currently authenticated user.
-   - **Authentication Required:** Yes
-   - **Request Body Example:**
-     ```json
-     {}
-     ```
-
+### Examples 
 
 #### Tickets
 

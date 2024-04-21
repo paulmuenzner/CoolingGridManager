@@ -1,16 +1,23 @@
 namespace CoolingGridManager.IRequests
 {
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Create Consumer Consumption for logging external data lists collected by meter over time
     public class ICreateConsumerConsumptionRequest
     {
-        public int ConsumerID { get; set; }
-        public decimal ConsumptionValue { get; set; }
+        public required List<ConsumptionData> ConsumptionDataList { get; set; }
+    }
 
-        // Defining the related time period where the value was measured for
-        // The associated data is not tied to a specific time frame. This maintains the flexibility of the table. 
+    public class ConsumptionData
+    {
+        public int ConsumerID { get; set; }
+        public required string ElementID { get; set; }
+        public decimal ConsumptionValue { get; set; }
         public DateTime DateTimeStart { get; set; }
         public DateTime DateTimeEnd { get; set; }
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    ///// Request interface for retrieving consumption data of a billing month
     public class IGetConsumptionForUserByMonthRequest
     {
         public int ConsumerID { get; set; }

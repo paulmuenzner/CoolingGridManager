@@ -5,32 +5,35 @@ using CoolingGridManager.Services;
 using FluentValidation.Results;
 using CoolingGridManager.Validators.Consumers;
 using CoolingGridManager.IRequests;
+using Swashbuckle.AspNetCore.Annotations;
 
 
 namespace CoolingGridManager.Controllers.Consumers
 {
+    [ApiController]
     [Area("consumers")]
     [Route("api/consumers/[controller]")]
-    public class CreateConsumerRecordController : ControllerBase
+    public class CreateConsumerController : ControllerBase
     {
-        private readonly Serilog.ILogger _logger;
+
         private readonly CreateConsumerRecordValidator _createConsumerRecordValidator;
         private readonly ConsumerService _consumerService;
 
-        public CreateConsumerRecordController(CreateConsumerRecordValidator createConsumerRecordValidator, Serilog.ILogger logger, ConsumerService consumerService)
+        public CreateConsumerController(CreateConsumerRecordValidator createConsumerRecordValidator, ConsumerService consumerService)
         {
-            _logger = logger;
             _createConsumerRecordValidator = createConsumerRecordValidator;
             _consumerService = consumerService;
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> CreateConsumerRecord([FromBody] ICreateConsumerRecordRequest consumer)
+        [Tags("Consumers")]
+        public async Task<IActionResult> CreateConsumer([FromBody] ICreateConsumerRecordRequest request)
         {
             try
             {
                 // Validate
-                ValidationResult result = await _createConsumerRecordValidator.ValidateAsync(consumer);
+                ValidationResult result = await _createConsumerRecordValidator.ValidateAsync(request);
                 if (!result.IsValid)
                 {
                     foreach (var error in result.Errors)
@@ -39,8 +42,8 @@ namespace CoolingGridManager.Controllers.Consumers
                     }
                 }
 
-                Consumer newConsumer = await _consumerService.CreateConsumerRecord(consumer);
-                return ResponseFormatter.Success(HttpStatusPositive.OK, new { Consumer = newConsumer }, $"New consumer with name {newConsumer.LastName} and id {newConsumer.ConsumerID} created.");
+                Consumer newConsumer = await _consumerService.CreateConsumerRecord(request);
+                return ResponseFormatter.Success(HttpStatusPositive.Created, new { Consumer = newConsumer }, $"New consumer with name {newConsumer.LastName} and id {newConsumer.ConsumerID} created.");
             }
             catch (ArgumentNullException ex)
             {

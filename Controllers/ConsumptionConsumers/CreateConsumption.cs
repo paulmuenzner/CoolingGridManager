@@ -5,24 +5,27 @@ using CoolingGridManager.Validators.ConsumptionConsumers;
 using FluentValidation.Results;
 using CoolingGridManager.IRequests;
 using CoolingGridManager.Models.Data;
+using CoolingGridManager.IResponse;
 
 namespace CoolingGridManager.Controllers.ConsumptionConsumerController
 {
     [Area("consumptionconsumers")]
     [Route("api/consumptionconsumers/[controller]")]
-    public partial class CreateConsumerConsumptionController : ControllerBase
+    public partial class CreateController : ControllerBase
     {
         private readonly CreateConsumptionRecordValidator _createConsumptionRecordValidator;
         private readonly ConsumptionConsumerService _consumptionConsumerService;
         private readonly ExceptionResponse _exceptionResponse;
 
-        public CreateConsumerConsumptionController(CreateConsumptionRecordValidator createConsumptionRecordValidator, ExceptionResponse exceptionResponse, ConsumptionConsumerService consumptionConsumerService)
+        public CreateController(CreateConsumptionRecordValidator createConsumptionRecordValidator, ExceptionResponse exceptionResponse, ConsumptionConsumerService consumptionConsumerService)
         {
             _consumptionConsumerService = consumptionConsumerService;
             _createConsumptionRecordValidator = createConsumptionRecordValidator;
             _exceptionResponse = exceptionResponse;
         }
+
         [HttpPost]
+        [Tags("ConsumerConsumption")]
         public async Task<IActionResult> CreateConsumptionRecord([FromBody] ICreateConsumerConsumptionRequest request)
         {
             try
@@ -33,7 +36,7 @@ namespace CoolingGridManager.Controllers.ConsumptionConsumerController
                 }
 
                 // Validate
-                ValidationResult result = await _createConsumptionRecordValidator.ValidateAsync(request);
+                ValidationResult result = await _createConsumptionRecordValidator.ValidateAsync(request.ConsumptionDataList);
                 if (!result.IsValid)
                 {
                     foreach (var error in result.Errors)
@@ -42,8 +45,16 @@ namespace CoolingGridManager.Controllers.ConsumptionConsumerController
                     }
                 }
 
-                ConsumptionConsumer consumptionRecord = await _consumptionConsumerService.CreateConsumerConsumptionRecord(request);
-                return ResponseFormatter.Success(HttpStatusPositive.OK, new { ConsumptionID = consumptionRecord }, $"New consumption entry with id {consumptionRecord.LogId} added.");
+                ICreateConsumerConsumptionRecordResponse store = await _consumptionConsumerService.CreateConsumerConsumptionRecord(request.ConsumptionDataList);
+                string success = $"All {store.Count} provided consumption records were successfully added.";
+                string fail = $"Error. Not all of the {store.Count} provided consumption records are not successfully added.";
+
+                IActionResult responseFail = ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { }, fail, fail, null);
+                IActionResult responseSuccess = ResponseFormatter.Success(HttpStatusPositive.Created, new { }, success);
+
+                IActionResult response = store.Success ? responseSuccess : responseFail;
+
+                return response;
             }
             catch (FormatException ex)
             {

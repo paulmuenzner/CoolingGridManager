@@ -12,17 +12,18 @@ namespace CoolingGridManager.Controllers.Bills
 {
     [Area("billing")]
     [Route("api/billing/[controller]")]
-    public class GetBillController : ControllerBase
+    public class GetController : ControllerBase
     {
         private readonly BillingService _billingService;
         private readonly GetBillValidator _getBillValidator;
-        public GetBillController(BillingService billingService, GetBillValidator getBillValidator)
+        public GetController(BillingService billingService, GetBillValidator getBillValidator)
         {
             _billingService = billingService;
             _getBillValidator = getBillValidator;
         }
 
         [HttpGet]
+        [Tags("Billing")]
         public async Task<IActionResult> GetBillDetails([FromBody] IGetBillRequest request)
         {
             try

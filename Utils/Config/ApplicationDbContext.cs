@@ -29,20 +29,20 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Grid>()
-                .HasIndex(g => g.GridName)
-                .IsUnique();
+            .HasIndex(g => g.GridName)
+            .IsUnique();
 
         modelBuilder.Entity<GridSection>()
-                .HasIndex(g => g.GridSectionName)
-                .IsUnique();
+            .HasIndex(gs => gs.GridSectionName)
+            .IsUnique();
 
         modelBuilder.Entity<GridSection>()
             .HasOne(gs => gs.Grid)
-            .WithMany(g => g.GridSection)
+            .WithMany(gs => gs.GridSection)
             .HasForeignKey(gs => gs.GridID);
 
         modelBuilder.Entity<GridParameterLog>()
-            .HasIndex(g => g.DateTimeEnd)
+            .HasIndex(gpl => gpl.DateTimeEnd)
             .IsUnique();
 
         modelBuilder.Entity<GridParameterLog>()
@@ -50,60 +50,64 @@ public class AppDbContext : DbContext
             .IsUnique();
 
         modelBuilder.Entity<GridParameterLog>()
-            .HasOne(gs => gs.Grid)
-            .WithMany(g => g.GridParameterLog)
-            .HasForeignKey(gs => gs.GridID);
+            .HasOne(gpl => gpl.Grid)
+            .WithMany(gpl => gpl.GridParameterLog)
+            .HasForeignKey(gpl => gpl.GridID);
 
         modelBuilder.Entity<GridParameterLog>()
-            .Property(mb => mb.MeanTemperatureIn)
+            .Property(gpl => gpl.MeanTemperatureIn)
             .HasColumnType("decimal(4, 2)");
 
         modelBuilder.Entity<GridParameterLog>()
-            .Property(mb => mb.MeanTemperatureOut)
+            .Property(gpl => gpl.MeanTemperatureOut)
             .HasColumnType("decimal(4, 2)");
 
         modelBuilder.Entity<ConsumptionGrid>()
-            .HasOne(gs => gs.Grid)
-            .WithMany(g => g.ConsumptionGrid)
-            .HasForeignKey(gs => gs.GridID);
+            .HasOne(cg => cg.Grid)
+            .WithMany(cg => cg.ConsumptionGrid)
+            .HasForeignKey(cg => cg.GridID);
 
         modelBuilder.Entity<ConsumptionGrid>()
-            .Property(mb => mb.Consumption)
+            .Property(cg => cg.Consumption)
             .HasColumnType("decimal(19, 4)");
 
         modelBuilder.Entity<Billing>()
-            .HasOne(gs => gs.Consumer)
+            .HasOne(b => b.Consumer)
             .WithMany()
-            .HasForeignKey(gs => gs.ConsumerID);
+            .HasForeignKey(b => b.ConsumerID);
 
         modelBuilder.Entity<Billing>()
-            .Property(mb => mb.TotalConsumption)
+            .Property(b => b.TotalConsumption)
             .HasColumnType("decimal(18, 3)");
 
         modelBuilder.Entity<Billing>()
-            .Property(mb => mb.BillingAmount)
+            .Property(b => b.BillingAmount)
             .HasColumnType("decimal(18, 2)");
 
         modelBuilder.Entity<ConsumptionConsumer>()
-            .HasOne(gs => gs.Consumer)
+            .HasOne(cc => cc.Consumer)
             .WithMany()
-            .HasForeignKey(gs => gs.ConsumerID);
+            .HasForeignKey(cc => cc.ConsumerID);
 
         modelBuilder.Entity<ConsumptionConsumer>()
-            .Property(mb => mb.ConsumptionValue)
+            .Property(cc => cc.ConsumptionValue)
             .HasColumnType("decimal(12, 3)");
 
-        modelBuilder.Entity<Consumer>()
-            .HasOne(gs => gs.GridSection)
-            .WithMany()
-            .HasForeignKey(gs => gs.GridSectionID);
+        modelBuilder.Entity<ConsumptionConsumer>()
+            .HasIndex(cc => cc.ElementID)
+            .IsUnique();
 
         modelBuilder.Entity<Consumer>()
-            .Property(mb => mb.MonthlyBaseFee)
+            .HasOne(c => c.GridSection)
+            .WithMany()
+            .HasForeignKey(c => c.GridSectionID);
+
+        modelBuilder.Entity<Consumer>()
+            .Property(c => c.MonthlyBaseFee)
             .HasColumnType("decimal(7, 2)");
 
         modelBuilder.Entity<Consumer>()
-            .Property(mb => mb.UnitPrice)
+            .Property(c => c.UnitPrice)
             .HasColumnType("decimal(7, 2)");
 
         base.OnModelCreating(modelBuilder);

@@ -10,18 +10,20 @@ namespace CoolingGridManager.Controllers.GridParameters
 {
     [Area("gridparameters")]
     [Route("api/gridparameters/[controller]")]
-    public partial class CreateParameterLogController : ControllerBase
+    public partial class CreateLogController : ControllerBase
     {
         private readonly CreateGridParameterLogValidator _createGridParameterLogValidator;
         private readonly GridParameterLogService _gridParameterLogService;
         private readonly ExceptionResponse _exceptionResponse;
-        public CreateParameterLogController(CreateGridParameterLogValidator createGridParameterLogValidator, ExceptionResponse exceptionResponse, GridParameterLogService gridParameterLogService)
+        public CreateLogController(CreateGridParameterLogValidator createGridParameterLogValidator, ExceptionResponse exceptionResponse, GridParameterLogService gridParameterLogService)
         {
             _gridParameterLogService = gridParameterLogService;
             _createGridParameterLogValidator = createGridParameterLogValidator;
             _exceptionResponse = exceptionResponse;
         }
+
         [HttpPost]
+        [Tags("GridParameters")]
         public async Task<IActionResult> CreateParameterLogEntry([FromBody] ICreateGridParameterLogRecordRequest request)
         {
             try
@@ -42,15 +44,15 @@ namespace CoolingGridManager.Controllers.GridParameters
                 }
 
                 GridParameterLog newLog = await _gridParameterLogService.CreateGridParameterLogRecord(request);
-                return ResponseFormatter.Success(HttpStatusPositive.OK, new { ConsumptionID = newLog }, $"New parameter log for grid created.");
+                return ResponseFormatter.Success(HttpStatusPositive.Created, new { ConsumptionID = newLog }, $"New parameter log for grid created.");
             }
             catch (FormatException ex)
             {
-                return _exceptionResponse.ExceptionResponseHandle(ex, "Logging grid parameter results in FormatException.", "Creating parameter log for grid currently not poosible. Please retry later.", ExceptionType.Format);
+                return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { }, "Logging grid parameter results in FormatException.", "Creating parameter log for grid currently not poosible. Please retry later.", ex);
             }
             catch (Exception ex)
             {
-                return _exceptionResponse.ExceptionResponseHandle(ex, "An unexpected error occurred when Creating parameter log for grid.", "Creating parameter log for grid currently not poosible. Please retry later.", ExceptionType.General);
+                return ResponseFormatter.Negative(HttpStatusNegative.InternalServerError, new { }, "An unexpected error occurred when Creating parameter log for grid.", "Creating parameter log for grid currently not poosible. Please retry later.", ex);
             }
 
         }

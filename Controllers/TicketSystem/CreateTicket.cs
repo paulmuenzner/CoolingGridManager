@@ -11,19 +11,19 @@ namespace CoolingGridManager.Controllers.TicketsController
 {
     [Area("tickets")]
     [Route("api/tickets/[controller]")]
-    public partial class AddTicketController : ControllerBase
+    public partial class CreateController : ControllerBase
     {
         private readonly CreateTicketValidator _createTicketValidator;
         private readonly TicketService _ticketService;
-        private readonly Serilog.ILogger _logger;
-        public AddTicketController(CreateTicketValidator createTicketValidator, Serilog.ILogger logger, TicketService ticketService)
+        public CreateController(CreateTicketValidator createTicketValidator, TicketService ticketService)
         {
             _ticketService = ticketService;
             _createTicketValidator = createTicketValidator;
-            _logger = logger;
         }
+
         [HttpPost]
-        public async Task<IActionResult> AddTicket([FromBody] ICreateTicketRecordRequest request)
+        [Tags("Tickets")]
+        public async Task<IActionResult> CreateTicket([FromBody] ICreateTicketRecordRequest request)
         {
             try
             {
@@ -39,12 +39,11 @@ namespace CoolingGridManager.Controllers.TicketsController
 
                 // Retrieve data
                 TicketModel newTicket = await _ticketService.CreateTicketRecord(request);
-                return ResponseFormatter.Success(HttpStatusPositive.OK, new { Ticket = newTicket }, $"New ticket with id {newTicket.TicketId} added");
+                return ResponseFormatter.Success(HttpStatusPositive.Created, new { Ticket = newTicket }, $"New ticket with id {newTicket.TicketId} added");
             }
             catch (FormatException ex)
             {
-                _logger.Error(ex, "FormatException occurred while adding a ticket. Ticket: {@ticket}", request);
-                return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { }, "Check the format of the input data.", "Input string was not in the correct format.", ex);
+                return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { }, "FormatException occurred while adding a ticket. Check the format of the input data.", "Input string was not in the correct format.", ex);
             }
             catch (Exception ex)
             {

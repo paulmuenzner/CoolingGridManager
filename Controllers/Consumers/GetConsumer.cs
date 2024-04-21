@@ -4,29 +4,30 @@ using CoolingGridManager.Exceptions;
 using CoolingGridManager.Validators.Consumers;
 using FluentValidation.Results;
 using CoolingGridManager.ResponseHandler;
+using CoolingGridManager.Models.Data;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace CoolingGridManager.Controllers.Consumers
 {
+    [ApiController]
     [Area("consumers")]
-    [Route("api/consumers/[controller]/{consumerId}")]
-    public partial class GetConsumerController : Controller
+    [Route("api/consumers/[controller]")]
+    public partial class GetConsumerController : ControllerBase
     {
         private readonly GetConsumerDetailsValidator _getConsumerDetailsValidator;
         private readonly ConsumerService _consumerService;
-        private readonly ExceptionResponse _exceptionResponse;
-        public GetConsumerController(GetConsumerDetailsValidator getConsumerDetailsValidator, ExceptionResponse exceptionResponse, ConsumerService consumerService)
+        public GetConsumerController(GetConsumerDetailsValidator getConsumerDetailsValidator, ConsumerService consumerService)
         {
             _consumerService = consumerService;
             _getConsumerDetailsValidator = getConsumerDetailsValidator;
-            _exceptionResponse = exceptionResponse;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetConsumerDetails(int consumerId)
+        [Tags("Consumers")]
+        public async Task<IActionResult> GetConsumerDetails([FromBody] int consumerId) // prepare request body
         {
             try
             {
-
                 // Validate
                 ValidationResult result = await _getConsumerDetailsValidator.ValidateAsync(consumerId);
                 if (!result.IsValid)
@@ -37,16 +38,16 @@ namespace CoolingGridManager.Controllers.Consumers
                     }
                 }
 
-                var consumer = await _consumerService.GetConsumerDetails(consumerId);
-                return Ok(consumer); // Prepeare formatted response
+                Consumer consumer = await _consumerService.GetConsumerDetails(consumerId);
+                return ResponseFormatter.Success(HttpStatusPositive.OK, new { Consumer = consumer }, $"New consumer with name {consumer.LastName} created.");
             }
             catch (NotFoundException ex)
-            {// Prepeare formatter
-                return _exceptionResponse.ExceptionResponseHandle(ex, "No consumer found.", "No consumer found.", ExceptionType.NotFound);
+            {
+                return ResponseFormatter.Negative(HttpStatusNegative.NotFound, new { }, "No consumer found.", "No consumer found.", ex);
             }
             catch (Exception ex)
-            {// Prepeare formatter
-                return _exceptionResponse.ExceptionResponseHandle(ex, "An unexpected error occurred.", "Action currently not possible.", ExceptionType.General);
+            {
+                return ResponseFormatter.Negative(HttpStatusNegative.InternalServerError, new { }, "An unexpected error occurred.", "Action currently not possible.", ex);
             }
         }
     }

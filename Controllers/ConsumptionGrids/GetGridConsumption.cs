@@ -10,13 +10,13 @@ namespace CoolingGridManager.Controllers.ConsumptionGridController
 {
     [Area("consumptiongrids")]
     [Route("api/consumptiongrids/[controller]")]
-    public partial class AddConsumptionController : ControllerBase
+    public partial class GetController : ControllerBase
     {
         private readonly GetGridConsumptionValidator _getGridConsumptionValidator;
         private readonly ConsumptionGridService _consumptionGridService;
         private readonly ExceptionResponse _exceptionResponse;
 
-        public AddConsumptionController(GetGridConsumptionValidator getGridConsumptionValidator, ExceptionResponse exceptionResponse, ConsumptionGridService consumptionGridService)
+        public GetController(GetGridConsumptionValidator getGridConsumptionValidator, ExceptionResponse exceptionResponse, ConsumptionGridService consumptionGridService)
         {
             _consumptionGridService = consumptionGridService;
             _getGridConsumptionValidator = getGridConsumptionValidator;
@@ -24,6 +24,7 @@ namespace CoolingGridManager.Controllers.ConsumptionGridController
         }
 
         [HttpPost]
+        [Tags("GridConsumption")]
         public async Task<IActionResult> GetGridConsumption([FromBody] IGetGridConsumptionRequest request)
         {
             try

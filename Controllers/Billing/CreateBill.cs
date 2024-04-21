@@ -11,18 +11,19 @@ namespace CoolingGridManager.Controllers.Bills
 {
     [Area("billing")]
     [Route("api/billing/[controller]")]
-    public class AddBillController : ControllerBase
+    public class AddController : ControllerBase
     {
         private readonly CreateBillRecordValidator _createBillRecordValidator;
         private readonly BillingService _billingService;
 
-        public AddBillController(CreateBillRecordValidator createBillRecordValidator, BillingService billingService)
+        public AddController(CreateBillRecordValidator createBillRecordValidator, BillingService billingService)
         {
             _createBillRecordValidator = createBillRecordValidator;
             _billingService = billingService;
         }
 
         [HttpPost]
+        [Tags("Billing")]
         public async Task<IActionResult> CreateBillingRecord([FromBody] Billing request)
         {
             try

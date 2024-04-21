@@ -2,6 +2,9 @@ using Serilog;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using CoolingGridManager.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 
 
@@ -29,6 +32,33 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddControllers().AddJsonOptions(x =>
    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
+// Add Api Versioning 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+});
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Cooling Grid Manager API", Version = "v1" });
+
+    // Add support for XML comments
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    options.IncludeXmlComments(xmlPath);
+});
+// builder.Services.AddSwaggerGen(options =>
+// {
+//     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Cooling Grid Manager API v1", Version = "v1" });
+
+//     // Add support for XML comments
+//     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+//     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+//     options.IncludeXmlComments(xmlPath);
+// });
+
 // Register Cron Jobs
 builder.Services.AddCustomCronJobs();
 
@@ -48,10 +78,20 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+    options.RoutePrefix = string.Empty; // Sets Swagger UI at the root URL
+    options.DocumentTitle = "Cooling Grid Manager API";
+});
+
 //Add support to logging request with SERILOG
 app.UseSerilogRequestLogging();
 
 app.UseRouting();
+
+
 
 // Register routes
 RouteExtension.ConfigureRoutes(app);

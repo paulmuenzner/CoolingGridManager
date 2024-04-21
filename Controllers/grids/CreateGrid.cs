@@ -11,18 +11,18 @@ namespace CoolingGridManager.Controllers.GridController
 {
     [Area("grids")]
     [Route("api/grids/[controller]")]
-    public partial class CreateGridController : ControllerBase
+    public partial class CreateController : ControllerBase
     {
         private readonly CreateGridValidator _createGridValidator;
         private readonly GridService _gridService;
-        private readonly ExceptionResponse _exceptionResponse;
-        public CreateGridController(CreateGridValidator createGridValidator, ExceptionResponse exceptionResponse, GridService gridService)
+
+        public CreateController(CreateGridValidator createGridValidator, GridService gridService)
         {
             _gridService = gridService;
             _createGridValidator = createGridValidator;
-            _exceptionResponse = exceptionResponse;
         }
         [HttpPost]
+        [Tags("Grid")]
         public async Task<IActionResult> CreateGridRecord([FromBody] ICreateGridRequest request)
         {
             try
@@ -38,15 +38,15 @@ namespace CoolingGridManager.Controllers.GridController
                 }
 
                 Grid grid = await _gridService.CreateGridRecord(request);
-                return ResponseFormatter.Success(HttpStatusPositive.OK, new { GridID = grid.GridID }, $"New grid with name {grid.GridName} and id {grid.GridID} added");
+                return ResponseFormatter.Success(HttpStatusPositive.Created, new { GridID = grid.GridID }, $"New grid with name {grid.GridName} and id {grid.GridID} added");
             }
             catch (FormatException ex)
             {
-                return _exceptionResponse.ExceptionResponseHandle(ex, "Grid name already exists. Choose a different name.", "Grid name already exists. Choose a different name.", ExceptionType.Format);
+                return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { }, "FormatException occurred while creating a new grid. Check the format of the input data.", "Grid service currently not available.", ex);
             }
             catch (Exception ex)
             {
-                return _exceptionResponse.ExceptionResponseHandle(ex, "An unexpected error occurred when creating new grid.", "Adding new grid currently not possible.", ExceptionType.General);
+                return ResponseFormatter.Negative(HttpStatusNegative.InternalServerError, new { }, "An unexpected error occurred when creating new grid.", "Adding new grid currently not possible.", ex);
             }
 
         }

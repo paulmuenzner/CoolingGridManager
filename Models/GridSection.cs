@@ -20,7 +20,7 @@ namespace CoolingGridManager.Models.Data
         public Grid Grid { get; set; }
         public GridSection()
         {
-            GridSectionName = string.Empty; // or any default value you prefer
+            GridSectionName = string.Empty;
             Grid = new Grid();
         }
     }

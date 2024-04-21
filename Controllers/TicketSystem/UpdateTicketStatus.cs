@@ -16,15 +16,14 @@ namespace CoolingGridManager.Controllers.TicketsController
     {
         private readonly TicketService _ticketService;
         private readonly UpdateTicketStatusValidator _updateTicketStatusValidator;
-        private readonly Serilog.ILogger _logger;
-        public UpdateStatusController(UpdateTicketStatusValidator updateTicketStatusValidator, Serilog.ILogger logger, TicketService ticketService)
+        public UpdateStatusController(UpdateTicketStatusValidator updateTicketStatusValidator, TicketService ticketService)
         {
             _ticketService = ticketService;
             _updateTicketStatusValidator = updateTicketStatusValidator;
-            _logger = logger;
         }
 
         [HttpPost]
+        [Tags("Tickets")]
         public async Task<IActionResult> UpdateStatus([FromBody] IUpdateTicketStatusRequest request)
         {
             try

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using CoolingGridManager.ResponseHandler;
-using CoolingGridManager.Models.Data;
 using CoolingGridManager.Services;
 using FluentValidation.Results;
 using CoolingGridManager.Validators.Bills;
@@ -12,13 +11,13 @@ namespace CoolingGridManager.Controllers.Bills
 {
     [Area("billing")]
     [Route("api/billing/[controller]")]
-    public class DeleteBillController : ControllerBase
+    public class DeleteController : ControllerBase
     {
         private readonly DeleteBillValidator _deleteBillValidator;
         private readonly BillingService _billingService;
         private readonly AppDbContext _context;
 
-        public DeleteBillController(AppDbContext context, DeleteBillValidator deleteBillValidator, BillingService billingService)
+        public DeleteController(AppDbContext context, DeleteBillValidator deleteBillValidator, BillingService billingService)
         {
             _context = context;
             _deleteBillValidator = deleteBillValidator;
@@ -26,6 +25,7 @@ namespace CoolingGridManager.Controllers.Bills
         }
 
         [HttpDelete]
+        [Tags("Billing")]
         public async Task<IActionResult> DeleteBill([FromBody] IDeleteBillRequest request)
         {
             try

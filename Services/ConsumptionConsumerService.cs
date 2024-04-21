@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using FormatException = CoolingGridManager.Exceptions.FormatException;
 using CoolingGridManager.IServices;
+using CoolingGridManager.IResponse;
 
 namespace CoolingGridManager.Services
 {
@@ -21,34 +22,38 @@ namespace CoolingGridManager.Services
 
         ///////////////////////////////////////////
         // ADD CONSUMPTION VALUE
-        public async Task<ConsumptionConsumer> CreateConsumerConsumptionRecord(ICreateConsumerConsumptionRequest request)
+        public async Task<ICreateConsumerConsumptionRecordResponse> CreateConsumerConsumptionRecord(List<ConsumptionData> request)
         {
             try
             {
-                var consumptionRecord = new ConsumptionConsumer
+                foreach (var data in request)
                 {
-                    ConsumerID = request.ConsumerID,
-                    ConsumptionValue = request.ConsumptionValue,
-                    LogDate = DateTime.UtcNow,
-                    DateTimeStart = request.DateTimeStart,
-                    DateTimeEnd = request.DateTimeEnd
-                };
+                    var consumptionRecord = new ConsumptionConsumer
+                    {
+                        ConsumerID = data.ConsumerID,
+                        ConsumptionValue = data.ConsumptionValue,
+                        LogDate = DateTime.UtcNow,
+                        DateTimeStart = data.DateTimeStart,
+                        DateTimeEnd = data.DateTimeEnd
+                    };
 
-                // Consider related consumer (foreign key relation)
-                var existingConsumer = await _context.Consumers.FindAsync(request.ConsumerID);
+                    // Consider related consumer (foreign key relation)
+                    var existingConsumer = await _context.Consumers.FindAsync(data.ConsumerID);
 
-                if (existingConsumer == null)
-                {
-                    _logger.Warning($"Consumer with ID {request.ConsumerID} does not exist.");
-                    throw new FormatException($"Consumer with ID {request.ConsumerID} does not exist.", "AddCoolingGridParameterLog");
+                    if (existingConsumer == null)
+                    {
+                        _logger.Warning($"Consumer with ID {data.ConsumerID} does not exist.");
+                        throw new FormatException($"Consumer with ID {data.ConsumerID} does not exist.", "AddCoolingGridParameterLog");
+                    }
+                    // Associate the existing grid with the new grid section
+                    consumptionRecord.Consumer = existingConsumer;
+
+                    _context.ConsumptionConsumers.Add(consumptionRecord);
+                    await _context.SaveChangesAsync();
                 }
-                // Associate the existing grid with the new grid section
-                consumptionRecord.Consumer = existingConsumer;
-
-                _context.ConsumptionConsumers.Add(consumptionRecord);
-                await _context.SaveChangesAsync();
-
-                return consumptionRecord;
+                int length = request.Count;
+                var response = new ICreateConsumerConsumptionRecordResponse { Success = true, Count = length };
+                return response;
             }
             catch (Exception ex)
             {

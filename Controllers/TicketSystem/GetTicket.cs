@@ -11,20 +11,19 @@ namespace CoolingGridManager.Controllers.TicketsController
 {
     [Area("tickets")]
     [Route("api/tickets/[controller]")]
-    public partial class GetTicketByIdController : ControllerBase
+    public partial class GetController : ControllerBase
     {
         private readonly GetTicketByIdValidator _getTicketByIdValidator;
         private readonly TicketService _ticketService;
-        private readonly Serilog.ILogger _logger;
-        public GetTicketByIdController(GetTicketByIdValidator getTicketByIdValidator, Serilog.ILogger logger, TicketService ticketService)
+        public GetController(GetTicketByIdValidator getTicketByIdValidator, TicketService ticketService)
         {
             _ticketService = ticketService;
             _getTicketByIdValidator = getTicketByIdValidator;
-            _logger = logger;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetTicketById([FromBody] int request)
+        [Tags("Tickets")]
+        public async Task<IActionResult> GetTicket([FromBody] int request)
         {
             try
             {

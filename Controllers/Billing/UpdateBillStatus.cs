@@ -11,18 +11,19 @@ namespace CoolingGridManager.Controllers.Bills
 {
     [Area("billing")]
     [Route("api/billing/[controller]")]
-    public class UpdateBillStatusController : ControllerBase
+    public class UpdateStatusController : ControllerBase
     {
         private readonly BillingService _billingService;
         private readonly BillStatusValidator _billStatusValidator;
 
-        public UpdateBillStatusController(BillingService billingService, BillStatusValidator billStatusValidator)
+        public UpdateStatusController(BillingService billingService, BillStatusValidator billStatusValidator)
         {
             _billingService = billingService;
             _billStatusValidator = billStatusValidator;
         }
 
         [HttpPut]
+        [Tags("Billing")]
         public async Task<IActionResult> UpdateBillStatus([FromBody] IUpdateStatusRequest request)
         {
             try

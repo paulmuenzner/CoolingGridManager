@@ -11,22 +11,24 @@ namespace CoolingGridManager.Controllers.GridSectionController
 {
     [Area("gridsections")]
     [Route("api/gridsections/[controller]")]
-    public partial class CreateGridSectionController : ControllerBase
+    public partial class CreateController : ControllerBase
     {
         private readonly AddGridSectionValidator _addGridSectionValidator;
         private readonly GridSectionService _gridSectionService;
         private readonly ExceptionResponse _exceptionResponse;
         private readonly Serilog.ILogger _logger;
 
-        public CreateGridSectionController(AddGridSectionValidator addGridSectionValidator, ExceptionResponse exceptionResponse, Serilog.ILogger logger, GridSectionService gridSectionService)
+        public CreateController(AddGridSectionValidator addGridSectionValidator, ExceptionResponse exceptionResponse, Serilog.ILogger logger, GridSectionService gridSectionService)
         {
             _addGridSectionValidator = addGridSectionValidator;
             _gridSectionService = gridSectionService;
             _exceptionResponse = exceptionResponse;
             _logger = logger;
         }
+
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] ICreateGridSectionRecordRequest request)
+        [Tags("GridSections")]
+        public async Task<IActionResult> Create([FromBody] ICreateGridSectionRecordRequest request)
         {
             try
             {
@@ -41,15 +43,15 @@ namespace CoolingGridManager.Controllers.GridSectionController
                 }
 
                 var gridSectionId = await _gridSectionService.CreateGridSectionRecord(request);
-                return ResponseFormatter.Success(HttpStatusPositive.OK, new { GridSectionId = gridSectionId }, $"New grid section with ID {gridSectionId} added.");
+                return ResponseFormatter.Success(HttpStatusPositive.Created, new { GridSectionId = gridSectionId }, $"New grid section with ID {gridSectionId} added.");
             }
             catch (FormatException ex)
             {
-                return _exceptionResponse.ExceptionResponseHandle(ex, "Error. Grid section name already exists your provided grid ID is not valid.", "Error. Grid section name already exists your provided grid ID is not valid.", ExceptionType.Format);
+                return ResponseFormatter.Negative(HttpStatusNegative.BadRequest, new { }, "FormatException occurred while creating a new grid section. Check the format of the input data.", "Provided data was not in the correct format.", ex);
             }
             catch (Exception ex)
             {
-                return _exceptionResponse.ExceptionResponseHandle(ex, $"An unexpected error occurred. {ex.GetType().Name}", "Acction currently not possible.", ExceptionType.General);
+                return ResponseFormatter.Negative(HttpStatusNegative.InternalServerError, new { }, $"An unexpected error occurred. {ex.GetType().Name}", "Acction currently not possible.", ex);
             }
 
         }
