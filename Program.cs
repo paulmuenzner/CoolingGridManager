@@ -66,7 +66,7 @@ builder.Services.AddRateLimiter(_ => _
     .AddFixedWindowLimiter(policyName: "fixed", options =>
     {
         options.PermitLimit = 4;
-        options.Window = TimeSpan.FromSeconds(12);
+        options.Window = TimeSpan.FromSeconds(15);
         options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
         options.QueueLimit = 2;
     }));
@@ -100,6 +100,7 @@ app.UseRouting();
 app.MapHealthChecks("/health");
 
 app.UseRateLimiter();
+
 
 // Register routes
 RouteExtension.ConfigureRoutes(app);

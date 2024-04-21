@@ -12,6 +12,7 @@ namespace CoolingGridManager.Controllers.TicketsController
 {
     [Area("tickets")]
     [Route("api/tickets/[controller]")]
+    [EnableRateLimiting("fixed")]
     public partial class UpdateStatusController : ControllerBase
     {
         private readonly TicketService _ticketService;

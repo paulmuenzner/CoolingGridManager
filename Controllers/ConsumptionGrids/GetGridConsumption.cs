@@ -5,11 +5,13 @@ using FluentValidation.Results;
 using CoolingGridManager.IRequests;
 using CoolingGridManager.Validators.GridConsumptions;
 using CoolingGridManager.Models.Data;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace CoolingGridManager.Controllers.ConsumptionGridController
 {
     [Area("consumptiongrids")]
     [Route("api/consumptiongrids/[controller]")]
+    [EnableRateLimiting("fixed")]
     public partial class GetController : ControllerBase
     {
         private readonly GetGridConsumptionValidator _getGridConsumptionValidator;

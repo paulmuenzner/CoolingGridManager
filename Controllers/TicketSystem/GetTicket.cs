@@ -5,12 +5,14 @@ using CoolingGridManager.Exceptions;
 using FluentValidation.Results;
 using CoolingGridManager.Validators.Tickets;
 using CoolingGridManager.Models.Data;
+using Microsoft.AspNetCore.RateLimiting;
 
 
 namespace CoolingGridManager.Controllers.TicketsController
 {
     [Area("tickets")]
     [Route("api/tickets/[controller]")]
+    [EnableRateLimiting("fixed")]
     public partial class GetController : ControllerBase
     {
         private readonly GetTicketByIdValidator _getTicketByIdValidator;

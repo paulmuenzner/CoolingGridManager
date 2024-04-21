@@ -5,12 +5,14 @@ using CoolingGridManager.ResponseHandler;
 using CoolingGridManager.Validators.GridSections;
 using FluentValidation.Results;
 using CoolingGridManager.IRequests;
+using Microsoft.AspNetCore.RateLimiting;
 
 
 namespace CoolingGridManager.Controllers.GridSectionController
 {
     [Area("gridsections")]
     [Route("api/gridsections/[controller]")]
+    [EnableRateLimiting("fixed")]
     public partial class CreateController : ControllerBase
     {
         private readonly AddGridSectionValidator _addGridSectionValidator;

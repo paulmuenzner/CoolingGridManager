@@ -5,12 +5,14 @@ using CoolingGridManager.Services;
 using FluentValidation.Results;
 using CoolingGridManager.Validators.Bills;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.RateLimiting;
 
 
 namespace CoolingGridManager.Controllers.Bills
 {
     [Area("billing")]
     [Route("api/billing/[controller]")]
+    [EnableRateLimiting("fixed")]
     public class AddController : ControllerBase
     {
         private readonly CreateBillRecordValidator _createBillRecordValidator;

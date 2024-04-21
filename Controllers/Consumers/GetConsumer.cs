@@ -6,12 +6,14 @@ using FluentValidation.Results;
 using CoolingGridManager.ResponseHandler;
 using CoolingGridManager.Models.Data;
 using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace CoolingGridManager.Controllers.Consumers
 {
     [ApiController]
     [Area("consumers")]
     [Route("api/consumers/[controller]")]
+    [EnableRateLimiting("fixed")]
     public partial class GetConsumerController : ControllerBase
     {
         private readonly GetConsumerDetailsValidator _getConsumerDetailsValidator;

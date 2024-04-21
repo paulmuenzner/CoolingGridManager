@@ -5,11 +5,13 @@ using CoolingGridManager.Models.Data;
 using FluentValidation.Results;
 using CoolingGridManager.Validators.GridParameterLogs;
 using CoolingGridManager.IRequests;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace CoolingGridManager.Controllers.GridParameters
 {
     [Area("gridparameters")]
     [Route("api/gridparameters/[controller]")]
+    [EnableRateLimiting("fixed")]
     public partial class CreateLogController : ControllerBase
     {
         private readonly CreateGridParameterLogValidator _createGridParameterLogValidator;

@@ -5,12 +5,14 @@ using FluentValidation.Results;
 using CoolingGridManager.Validators.Bills;
 using CoolingGridManager.IRequests;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.RateLimiting;
 
 
 namespace CoolingGridManager.Controllers.Bills
 {
     [Area("billing")]
     [Route("api/billing/[controller]")]
+    [EnableRateLimiting("fixed")]
     public class DeleteController : ControllerBase
     {
         private readonly DeleteBillValidator _deleteBillValidator;

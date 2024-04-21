@@ -5,7 +5,7 @@ using CoolingGridManager.Services;
 using FluentValidation.Results;
 using CoolingGridManager.Validators.Consumers;
 using CoolingGridManager.IRequests;
-using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.AspNetCore.RateLimiting;
 
 
 namespace CoolingGridManager.Controllers.Consumers
@@ -13,6 +13,7 @@ namespace CoolingGridManager.Controllers.Consumers
     [ApiController]
     [Area("consumers")]
     [Route("api/consumers/[controller]")]
+    [EnableRateLimiting("fixed")]
     public class CreateConsumerController : ControllerBase
     {
 

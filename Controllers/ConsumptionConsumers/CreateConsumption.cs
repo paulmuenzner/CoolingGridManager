@@ -6,11 +6,13 @@ using FluentValidation.Results;
 using CoolingGridManager.IRequests;
 using CoolingGridManager.Models.Data;
 using CoolingGridManager.IResponse;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace CoolingGridManager.Controllers.ConsumptionConsumerController
 {
     [Area("consumptionconsumers")]
     [Route("api/consumptionconsumers/[controller]")]
+    [EnableRateLimiting("fixed")]
     public partial class CreateController : ControllerBase
     {
         private readonly CreateConsumptionRecordValidator _createConsumptionRecordValidator;
