@@ -1,5 +1,4 @@
 ﻿using Quartz;
-using Microsoft.Extensions.DependencyInjection;
 using CoolingGridManager.Utils.CronJobs;
 
 

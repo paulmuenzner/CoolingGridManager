@@ -4,30 +4,31 @@ using CoolingGridManager.ResponseHandler;
 using CoolingGridManager.Validators.Grids;
 using FluentValidation.Results;
 using CoolingGridManager.Models.Data;
+using CoolingGridManager.IRequests;
 
 
 namespace CoolingGridManager.Controllers.GridController
 {
     [Area("grids")]
     [Route("api/grids/[controller]")]
-    public partial class AddGridController : ControllerBase
+    public partial class CreateGridController : ControllerBase
     {
         private readonly CreateGridValidator _createGridValidator;
         private readonly GridService _gridService;
         private readonly ExceptionResponse _exceptionResponse;
-        public AddGridController(CreateGridValidator createGridValidator, ExceptionResponse exceptionResponse, GridService gridService)
+        public CreateGridController(CreateGridValidator createGridValidator, ExceptionResponse exceptionResponse, GridService gridService)
         {
             _gridService = gridService;
             _createGridValidator = createGridValidator;
             _exceptionResponse = exceptionResponse;
         }
         [HttpPost]
-        public async Task<IActionResult> CreateGridRecord([FromBody] string request)
+        public async Task<IActionResult> CreateGridRecord([FromBody] ICreateGridRequest request)
         {
             try
             {
                 // Validate
-                ValidationResult result = _createGridValidator.Validate(request);
+                ValidationResult result = await _createGridValidator.ValidateAsync(request);
                 if (!result.IsValid)
                 {
                     foreach (var error in result.Errors)

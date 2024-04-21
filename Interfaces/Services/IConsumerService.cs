@@ -10,7 +10,7 @@ namespace CoolingGridManager.IServices
     {
         Task<Consumer> CreateConsumerRecord(ICreateConsumerRecordRequest request);
         Task<Consumer> GetConsumerDetails(int consumerId);
-        Task<List<Consumer>> GetConsumerBatch(IGetConsumerBatchrequest request);
+        Task<List<Consumer>> GetConsumerBatch(IGetConsumerBatchRequest request);
         Task<Consumer> GetConsumerWithGridSection(int id);
     }
 }

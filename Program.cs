@@ -1,17 +1,7 @@
 using Serilog;
 using Microsoft.EntityFrameworkCore;
-using CoolingGridManager.Services;
 using System.Text.Json.Serialization;
-using FluentValidation.AspNetCore;
-using CoolingGridManager.Validators.Tickets;
-using CoolingGridManager.Validators.Grids;
-using CoolingGridManager.Validators.GridSections;
-using CoolingGridManager.Validators.Consumers;
-using CoolingGridManager.Validators.Bills;
 using CoolingGridManager.Extensions;
-using CoolingGridManager.Validators.GridParameterLogs;
-using CoolingGridManager.Validators.ConsumptionConsumers;
-using CoolingGridManager.Validators.GridConsumptions;
 
 
 
@@ -30,47 +20,23 @@ builder.Services.AddSingleton<Serilog.ILogger>(_ => Log.Logger);
 // Register Exception responses
 builder.Services.AddSingleton<ExceptionResponse>();
 
-
 // Configure database
 var connectionString = ConfigurationHelper.GetDatabaseConnectionString();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-
 // Add support for controllers
 builder.Services.AddControllers().AddJsonOptions(x =>
    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
-builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
-
-
+// Register Cron Jobs
 builder.Services.AddCustomCronJobs();
 
-// Validators
-// prepare change names starting with create instead add
-builder.Services.AddScoped<CreateTicketValidator>();
-builder.Services.AddScoped<GetTicketByIdValidator>();
-builder.Services.AddScoped<CreateGridValidator>();
-builder.Services.AddScoped<AddGridSectionValidator>();
-builder.Services.AddScoped<CreateConsumerRecordValidator>();
-builder.Services.AddScoped<CreateBillRecordValidator>();
-builder.Services.AddScoped<CreateGridParameterLogValidator>();
-builder.Services.AddScoped<GetGridParameterLogValidator>();
-builder.Services.AddScoped<GetGridConsumptionValidator>();
-builder.Services.AddScoped<CreateConsumptionRecordValidator>();
-builder.Services.AddScoped<GetConsumerDetailsValidator>();
+// Register Validators
+builder.Services.AddValidators();
 
-
-
-// Services
-builder.Services.AddScoped<ConsumerService>();
-builder.Services.AddScoped<GridService>();
-builder.Services.AddScoped<GridSectionService>();
-builder.Services.AddScoped<TicketService>();
-builder.Services.AddScoped<ConsumptionConsumerService>();
-builder.Services.AddScoped<ConsumptionGridService>();
-builder.Services.AddScoped<GridParameterLogService>();
-builder.Services.AddScoped<BillingService>();
+// Register Services
+ServiceExtension.AddServices(builder.Services);
 
 
 var app = builder.Build();
@@ -82,23 +48,13 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-
-
 //Add support to logging request with SERILOG
 app.UseSerilogRequestLogging();
 
 app.UseRouting();
 
-app.MapAreaRoute("consumers", "{controller}/{index}");
-app.MapAreaRoute("gridsections", "{controller}/{index}");
-app.MapAreaRoute("grids", "{controller}/{action=Index}/{consumerId?}"); // prepare
-app.MapAreaRoute("tickets", "{controller}/{index}");
-app.MapAreaRoute("consumptionconsumers", "{controller}/{index}");
-app.MapAreaRoute("billing", "{controller}/{index}");
-app.MapAreaRoute("gridparameters", "{controller}/{index}");
-app.MapAreaRoute("consumptiongrid", "{controller}/{index}");
-
-
+// Register routes
+RouteExtension.ConfigureRoutes(app);
 
 app.MapGet("/{**slug}", async (context) =>
 {

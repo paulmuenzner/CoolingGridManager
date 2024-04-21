@@ -33,7 +33,7 @@ public class AddBillJob : IJob
 
 
             // Call AddBill method with generated Billing object
-            await _billingService.AddBill(bill);
+            await _billingService.CreateBillingRecord(bill);
             Console.WriteLine("Bill added successfully.");
         }
         catch (Exception ex)

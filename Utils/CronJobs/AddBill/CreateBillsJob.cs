@@ -8,7 +8,7 @@ namespace CoolingGridManager.Utils.CronJobs
 {
 
     [DisallowConcurrentExecution]
-    public class AddBills : IJob
+    public class CreateBills : IJob
     {
         private const int PageSize = 100;
         private readonly ConsumptionConsumerService _consumptionConsumerService;
@@ -16,7 +16,7 @@ namespace CoolingGridManager.Utils.CronJobs
         private readonly BillingService _billingService;
         private readonly ConsumerService _consumerService;
 
-        public AddBills(ILogger logger, BillingService billingService, ConsumerService consumerService, ConsumptionConsumerService consumptionConsumerService)
+        public CreateBills(ILogger logger, BillingService billingService, ConsumerService consumerService, ConsumptionConsumerService consumptionConsumerService)
         {
             _logger = logger;
             _billingService = billingService;
@@ -51,7 +51,7 @@ namespace CoolingGridManager.Utils.CronJobs
                     // Retrieve consumers for the current page (pageNumber)
                     var skip = (pageNumber - 1) * PageSize;
                     // Create the request object
-                    var batchRequest = new IGetConsumerBatch
+                    var batchRequest = new IGetConsumerBatchRequest
                     {
                         Skip = skip,
                         Size = PageSize

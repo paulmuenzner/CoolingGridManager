@@ -77,7 +77,7 @@ namespace CoolingGridManager.Services
 
         ///////////////////////////////////////////
         // Get Consumers in Batches
-        public async Task<List<Consumer>> GetConsumerBatch(IGetConsumerBatchRecord request)
+        public async Task<List<Consumer>> GetConsumerBatch(IGetConsumerBatchRequest request)
         {
             try
             {

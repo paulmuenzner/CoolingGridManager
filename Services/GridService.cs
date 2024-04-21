@@ -1,5 +1,6 @@
 using CoolingGridManager.Models.Data;
 using CoolingGridManager.Exceptions;
+using CoolingGridManager.IRequests;
 
 namespace CoolingGridManager.Services
 {
@@ -14,11 +15,11 @@ namespace CoolingGridManager.Services
 
         /////////////////////////////////////
         // CREATE GRID RECORD
-        public async Task<Grid> CreateGridRecord(string gridName)
+        public async Task<Grid> CreateGridRecord(ICreateGridRequest request)
         {
             try
             {
-                var grid = new Grid { GridName = gridName };
+                var grid = new Grid { GridName = request.GridName };
                 _context.Grids.Add(grid);
                 await _context.SaveChangesAsync();
                 return grid;

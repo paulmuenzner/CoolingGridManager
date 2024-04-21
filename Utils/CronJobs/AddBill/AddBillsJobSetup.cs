@@ -7,9 +7,9 @@ namespace CoolingGridManager.Utils.CronJobs
     {
         public void Configure(QuartzOptions options)
         {
-            var jobKey = JobKey.Create(nameof(AddBills));
+            var jobKey = JobKey.Create(nameof(CreateBills));
             options
-                .AddJob<AddBills>(jobBuilder => jobBuilder.WithIdentity(jobKey))
+                .AddJob<CreateBills>(jobBuilder => jobBuilder.WithIdentity(jobKey))
                 .AddTrigger(trigger =>
                     trigger
                         .ForJob(jobKey)

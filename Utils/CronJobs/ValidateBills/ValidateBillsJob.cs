@@ -47,7 +47,7 @@ namespace CoolingGridManager.Utils.CronJobs
 
 
                 // Call AddBill method with generated Billing object
-                await _billingService.AddBill(bill);
+                await _billingService.CreateBillingRecord(bill);
                 _logger.LogInformation("Bill added successfully {UtcNow}", DateTime.UtcNow);
             }
             catch (Exception ex)
