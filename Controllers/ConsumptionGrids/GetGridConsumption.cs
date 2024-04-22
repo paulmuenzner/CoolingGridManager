@@ -25,7 +25,26 @@ namespace CoolingGridManager.Controllers.ConsumptionGridController
             _exceptionResponse = exceptionResponse;
         }
 
-        [HttpPost]
+        /// <summary>
+        /// Retrieve grid consumption per month
+        /// </summary>
+        /// <remarks>
+        /// Retrieve consumption of an entire grid for a certain month from ConsumptionGrid table. Feel free to revise and customize this controller as per your needs (eg. daily instead of monthly).
+        /// This ConsumptionGrid table is filled automatically by a cron job using the data from the more detailed GridParameterLogs table.
+        ///
+        /// ```json
+        /// Sample request:
+        /// Get /api/consumptiongrids/get
+        /// 
+        /// {
+        ///   "gridID": 1,
+        ///   "month": 3,
+        ///   "year": 2023
+        /// }
+        /// ```
+        ///
+        /// </remarks>
+        [HttpGet]
         [Tags("GridConsumption")]
         public async Task<IActionResult> GetGridConsumption([FromBody] IGetGridConsumptionRequest request)
         {

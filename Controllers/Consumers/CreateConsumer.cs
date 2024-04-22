@@ -10,13 +10,10 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace CoolingGridManager.Controllers.Consumers
 {
-
-
     [ApiController]
     [Area("consumers")]
     [Route("api/consumers/[controller]")]
     [EnableRateLimiting("fixed")]
-
     public class CreateConsumerController : ControllerBase
     {
 
@@ -30,8 +27,11 @@ namespace CoolingGridManager.Controllers.Consumers
         }
 
         /// <summary>
-        /// Deletes a specific TodoItem.
+        /// Create new consumer
         /// </summary>
+        /// <remarks>
+        /// Create new consumers for the cooling grid. Amongst others, a grid section ID (gridSectionID) is required for each new consumer. So first create a grid and structure it in grid sections.
+        /// </remarks>
         [HttpPost]
         [Tags("Consumers")]
         public async Task<IActionResult> CreateConsumer([FromBody] ICreateConsumerRecordRequest request)

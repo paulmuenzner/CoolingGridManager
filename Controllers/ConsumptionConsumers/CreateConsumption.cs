@@ -26,6 +26,12 @@ namespace CoolingGridManager.Controllers.ConsumptionConsumerController
             _exceptionResponse = exceptionResponse;
         }
 
+        /// <summary>
+        /// Add consumer consumption
+        /// </summary>
+        /// <remarks>
+        /// Add a batch of consumer consumption records, such as those collected at a meter station over the course of a day, in list format.
+        /// </remarks>
         [HttpPost]
         [Tags("ConsumerConsumption")]
         public async Task<IActionResult> CreateConsumptionRecord([FromBody] ICreateConsumerConsumptionRequest request)

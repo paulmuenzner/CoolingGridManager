@@ -62,6 +62,10 @@ public class AppDbContext : DbContext
             .Property(gpl => gpl.MeanTemperatureOut)
             .HasColumnType("decimal(4, 2)");
 
+        modelBuilder.Entity<GridParameterLog>()
+            .HasIndex(cc => cc.ElementID)
+            .IsUnique();
+
         modelBuilder.Entity<ConsumptionGrid>()
             .HasOne(cg => cg.Grid)
             .WithMany(cg => cg.ConsumptionGrid)

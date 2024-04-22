@@ -2,8 +2,9 @@ using CoolingGridManager.Models.Data;
 
 namespace CoolingGridManager.IRequests
 {
-    public class ICreateGridParameterLogRecordRequest : GridParameterLog
+    public class ICreateGridParameterLogRecordRequest
     {
+        public required List<GridParameterLog> GridParameterData { get; set; }
     }
 
 

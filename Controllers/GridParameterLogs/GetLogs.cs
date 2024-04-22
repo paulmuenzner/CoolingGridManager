@@ -23,6 +23,25 @@ namespace CoolingGridManager.Controllers.GridParameters
             _getGridParameterLogValidator = getGridParameterLogValidator;
             _exceptionResponse = exceptionResponse;
         }
+
+        /// <summary>
+        /// Retrieve grid parameter per month
+        /// </summary>
+        /// <remarks>
+        /// Retrieve parameter logs of a grid for a certain month. Feel free to revise and customize this controller as per your needs (eg. daily instead of monthly).
+        ///
+        /// ```json
+        /// Sample request:
+        /// Get /api/gridparameters/getlogs
+        /// 
+        /// {
+        ///   "gridID": 1,
+        ///   "month": 3,
+        ///   "year": 2023
+        /// }
+        /// ```
+        ///
+        /// </remarks>
         [HttpGet]
         [Tags("GridParameters")]
         public async Task<IActionResult> GetParameterLogs([FromBody] IGetMonthlyGridParameterDetailsRequest request)

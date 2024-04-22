@@ -3,6 +3,7 @@ using CoolingGridManager.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using FormatException = CoolingGridManager.Exceptions.FormatException;
 using CoolingGridManager.IRequests;
+using CoolingGridManager.IResponse;
 
 namespace CoolingGridManager.Services
 {
@@ -19,25 +20,27 @@ namespace CoolingGridManager.Services
 
         ///////////////////////////////////////////
         // CREATE GRID PARAMETER ENTRY
-        public async Task<GridParameterLog> CreateGridParameterLogRecord(ICreateGridParameterLogRecordRequest request)
+        public async Task<IParameterLogResponse> CreateGridParameterLogRecord(ICreateGridParameterLogRecordRequest request)
         {
             try
             {
-
-                var existingGrid = await _context.Grids.FindAsync(request.GridID);
-
-                if (existingGrid == null)
+                foreach (var data in request.GridParameterData)
                 {
-                    _logger.Warning($"Grid with ID {request.GridID} does not exist.");
-                    throw new FormatException($"Grid with ID {request.GridID} does not exist.", "CreateGridParameterLogRecord");
+                    var existingGrid = await _context.Grids.FindAsync(data.GridID);
+
+                    if (existingGrid == null)
+                    {
+                        _logger.Warning($"Grid with ID {data.GridID} does not exist.");
+                        throw new FormatException($"Grid with ID {data.GridID} does not exist.", "CreateGridParameterLogRecord");
+                    }
+                    // Associate the existing grid with the new grid section
+                    data.Grid = existingGrid;
+
+                    _context.GridParameterLog.Add(data);
+                    await _context.SaveChangesAsync();
                 }
-                // Associate the existing grid with the new grid section
-                request.Grid = existingGrid;
-
-                _context.GridParameterLog.Add(request);
-                await _context.SaveChangesAsync();
-
-                return request;
+                IParameterLogResponse response = new IParameterLogResponse { Success = true, Count = request.GridParameterData.Count };
+                return response;
             }
             catch (Exception ex)
             {

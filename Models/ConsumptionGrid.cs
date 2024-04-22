@@ -15,7 +15,7 @@ namespace CoolingGridManager.Models.Data
         [Required(ErrorMessage = "Consumption value is required.")]
         public decimal Consumption { get; set; }
 
-        public int GridID { get; set; } // Foreign key property
+        public int GridID { get; set; }
 
         [ForeignKey("GridID")]
         public Grid Grid { get; set; }

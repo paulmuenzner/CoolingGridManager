@@ -23,6 +23,13 @@ namespace CoolingGridManager.Controllers.TicketsController
             _getTicketByIdValidator = getTicketByIdValidator;
         }
 
+        /// <summary>
+        /// Retrieve ticket details
+        /// </summary>
+        /// <remarks>
+        /// Retrieve ticket by ticket ID.
+        ///
+        /// </remarks>
         [HttpGet]
         [Tags("Tickets")]
         public async Task<IActionResult> GetTicket([FromBody] int request)

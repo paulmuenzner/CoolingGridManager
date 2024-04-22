@@ -13,8 +13,12 @@ namespace CoolingGridManager.Models.Data
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int LogID { get; set; }
 
+        /// <summary>
+        /// Data integrity measure
+        /// Associate each entry/element in database with element of sender (eg. measured meter station) to avoid duplication
+        /// </summary>
         [Required(ErrorMessage = "Element ID is required.")]
-        public string ElementID { get; set; } // Associate each entry/element in database with element of sender (eg. measured meter station)
+        public string ElementID { get; set; }
 
         [Required(ErrorMessage = "Consumption value is required.")]
         public decimal ConsumptionValue { get; set; }

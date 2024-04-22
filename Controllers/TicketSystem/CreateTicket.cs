@@ -23,6 +23,13 @@ namespace CoolingGridManager.Controllers.TicketsController
             _createTicketValidator = createTicketValidator;
         }
 
+        /// <summary>
+        /// Create Ticket
+        /// </summary>
+        /// <remarks>
+        /// Create new ticket for incidence management.
+        ///
+        /// </remarks>
         [HttpPost]
         [Tags("Tickets")]
         public async Task<IActionResult> CreateTicket([FromBody] ICreateTicketRecordRequest request)

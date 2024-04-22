@@ -23,6 +23,14 @@ namespace CoolingGridManager.Controllers.GridController
             _gridService = gridService;
             _createGridValidator = createGridValidator;
         }
+
+        /// <summary>
+        /// Create new grid
+        /// </summary>
+        /// <remarks>
+        /// Create new grid. This is one of the first steps using this cooling grid manager.  
+        ///
+        /// </remarks>
         [HttpPost]
         [Tags("Grid")]
         public async Task<IActionResult> CreateGridRecord([FromBody] ICreateGridRequest request)

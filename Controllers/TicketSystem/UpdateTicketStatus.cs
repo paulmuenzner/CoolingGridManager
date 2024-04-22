@@ -24,6 +24,13 @@ namespace CoolingGridManager.Controllers.TicketsController
             _updateTicketStatusValidator = updateTicketStatusValidator;
         }
 
+        /// <summary>
+        /// Update ticket status
+        /// </summary>
+        /// <remarks>
+        /// Update ticket status, for example to 'solved'
+        ///
+        /// </remarks>
         [HttpPost]
         [Tags("Tickets")]
         public async Task<IActionResult> UpdateStatus([FromBody] IUpdateTicketStatusRequest request)

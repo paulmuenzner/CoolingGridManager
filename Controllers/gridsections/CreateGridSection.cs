@@ -28,6 +28,14 @@ namespace CoolingGridManager.Controllers.GridSectionController
             _logger = logger;
         }
 
+        /// <summary>
+        /// Create new grid section
+        /// </summary>
+        /// <remarks>
+        /// Create new grid section for a grid. This is one of the first steps using this cooling grid manager. 
+        /// Divide the network into individual sections. 
+        ///
+        /// </remarks>
         [HttpPost]
         [Tags("GridSections")]
         public async Task<IActionResult> Create([FromBody] ICreateGridSectionRecordRequest request)

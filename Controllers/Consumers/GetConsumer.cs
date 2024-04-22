@@ -25,6 +25,13 @@ namespace CoolingGridManager.Controllers.Consumers
             _getConsumerDetailsValidator = getConsumerDetailsValidator;
         }
 
+
+        /// <summary>
+        /// Retrieve consumer details
+        /// </summary>
+        /// <remarks>
+        /// Retrieve consumer details of existing consumers by providing the consumer ID (consumerID) only.
+        /// </remarks>
         [HttpGet]
         [Tags("Consumers")]
         public async Task<IActionResult> GetConsumerDetails([FromBody] IGetConsumerRequest request)

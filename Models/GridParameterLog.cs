@@ -11,6 +11,14 @@ namespace CoolingGridManager.Models.Data
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int LogID { get; set; }
 
+        /// <summary>
+        /// Data integrity measure
+        /// Associate each entry/element in database with element of sender (eg. measured meter station) to avoid duplication
+        /// </summary>
+        [Required(ErrorMessage = "Element ID is required.")]
+        public string ElementID { get; set; }
+
+
         [Required(ErrorMessage = "Mass flow rate is required.")]
         public decimal MassFlowRate { get; set; }
 
@@ -37,6 +45,7 @@ namespace CoolingGridManager.Models.Data
 
         public GridParameterLog()
         {
+            ElementID = string.Empty;
             MassFlowRate = 0;
             SpecificHeatCapacity = 0;
             MeanTemperatureIn = 0m;
