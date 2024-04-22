@@ -23,7 +23,6 @@ namespace CoolingGridManager.Services
         {
             try
             {
-                // Prepare as validation
                 // Retrieve an existing grid section from the context
                 var existingGridSection = await _context.GridSections.FirstOrDefaultAsync();
                 if (existingGridSection == null)
@@ -50,8 +49,9 @@ namespace CoolingGridManager.Services
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Error creating user"); // Prepare
-                throw;
+                string message = string.Format($"Error using CreateConsumerRecord. Consumer ID: {request.ConsumerID}. Exception: {ex}", ex.ToString());
+                _logger.Error(ex, message);
+                throw new TryCatchException(message, "CreateConsumerRecord");
             }
         }
 
@@ -66,7 +66,7 @@ namespace CoolingGridManager.Services
                 if (consumer == null)
                 {
                     var message = string.Format($"No consumer found with id {consumerID}. Result is null.");
-                    throw new NotFoundException(message, "Consumer", consumerID);
+                    throw new NotFoundException(message, "GetConsumerDetails", consumerID);
                 }
                 if (consumer != null)
                 {
@@ -82,8 +82,9 @@ namespace CoolingGridManager.Services
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, $"With GetConsumerDetails requested consumer null. Consumer ID: {request.ConsumerID}.");
-                throw new TryCatchException($"Bill for consumer ID {request.ConsumerID} not found", "GetConsumerDetails");
+                string message = string.Format("Exception: {ex}", ex.ToString()) + $"Consumer ID: {request.ConsumerID}.";
+                _logger.Error(ex, message);
+                throw new TryCatchException(message, "GetConsumerDetails");
             }
         }
 
@@ -112,9 +113,9 @@ namespace CoolingGridManager.Services
             }
             catch (Exception ex)
             {
-                var message = $"Error retrieving consumers in batches. Size: {request.Size}, Skip: {request.Skip}";
+                string message = string.Format("Exception: {ex}", ex.ToString()) + $"Error retrieving consumers in batches. Size: {request.Size}, Skip: {request.Skip}";
                 _logger.Error(ex, message);
-                throw new Exception(message);
+                throw new TryCatchException(message, "GetConsumerBatch");
             }
         }
 
@@ -133,15 +134,17 @@ namespace CoolingGridManager.Services
                 }
                 else
                 {
-                    _logger.Error($"Non-existing user requested. User ID: {id}");
-                    throw new Exception($"Consumer with ID: {id} not found");
+                    string message = $"Non-existing user requested in GetConsumerWithGridSection. User ID: {id}";
+                    _logger.Error(message);
+                    throw new Exception(message);
                 }
 
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, $"Error retrieving consumer with ID: {id}");
-                throw new Exception($"Consumer with ID: {id} not found");
+                string message = string.Format("Exception: {ex}", ex.ToString());
+                _logger.Error(ex, message);
+                throw new TryCatchException(message, "GetConsumerWithGridSection");
             }
         }
     }

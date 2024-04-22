@@ -2,6 +2,7 @@ using FluentValidation;
 using CoolingGridManager.IRequests;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
+using Utility.ValidatorHelpers;
 
 
 namespace CoolingGridManager.Validators.ConsumptionConsumers
@@ -14,7 +15,7 @@ namespace CoolingGridManager.Validators.ConsumptionConsumers
             _context = context;
 
             RuleForEach(consumptionList => consumptionList)
-                .Must(consumptionList => HaveSameMonth(consumptionList.DateTimeStart, consumptionList.DateTimeEnd))
+                .Must(consumptionList => DateHelpers.HaveSameMonth(consumptionList.DateTimeStart, consumptionList.DateTimeEnd))
                 .WithMessage("For data consistency, start and end dates must be in the same month.");
 
             RuleForEach(list => list)
@@ -79,16 +80,5 @@ namespace CoolingGridManager.Validators.ConsumptionConsumers
 
             return !hasOverlap;
         }
-
-        private bool HaveSameMonth(DateTime dateTimeStart, DateTime dateTimeEnd)
-        {
-            // Extract month and year components from the start and end dates
-            var startMonthYear = new DateTime(dateTimeStart.Year, dateTimeStart.Month, 1);
-            var endMonthYear = new DateTime(dateTimeEnd.Year, dateTimeEnd.Month, 1);
-
-            // Compare if the month and year components are the same
-            return startMonthYear == endMonthYear;
-        }
-
     }
 }

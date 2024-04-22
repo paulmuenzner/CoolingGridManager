@@ -1,7 +1,6 @@
-using ILogger = Serilog.ILogger;
 using CoolingGridManager.Models.Data;
 using CoolingGridManager.Exceptions;
-using FormatException = System.FormatException;
+using FormatException = CoolingGridManager.Exceptions.FormatException;
 using CoolingGridManager.IRequests;
 
 namespace CoolingGridManager.Services
@@ -9,9 +8,9 @@ namespace CoolingGridManager.Services
     public class GridSectionService
     {
         private readonly AppDbContext _context;
-        private readonly ILogger<GridSectionService> _logger;
+        private readonly Serilog.ILogger _logger;
 
-        public GridSectionService(AppDbContext context, ILogger<GridSectionService> logger)
+        public GridSectionService(AppDbContext context, Serilog.ILogger logger)
         {
             _logger = logger;
             _context = context;
@@ -28,8 +27,8 @@ namespace CoolingGridManager.Services
 
                 if (existingGrid == null)
                 {
-                    _logger.LogInformation($"Grid with ID {request.GridID} does not exist.");
-                    throw new FormatException($"Grid with ID {request.GridID} does not exist.");
+                    _logger.Information($"Grid with ID {request.GridID} does not exist.");
+                    throw new FormatException($"Grid with ID {request.GridID} does not exist.", "CreateGridSectionRecord");
                 }
                 // Associate the existing grid with the new grid section
                 request.Grid = existingGrid;
@@ -38,15 +37,11 @@ namespace CoolingGridManager.Services
                 await _context.SaveChangesAsync();
                 return request;
             }
-            catch (FormatException ex)
-            {
-                var message = string.Format("Exception: {ex}", ex.ToString());
-                throw new FormatException(message);
-            }
             catch (Exception ex)
             {
-                var message = string.Format("Exception: {ex}", ex.ToString());
-                throw new TryCatchException(message, "AddGridSection");
+                string message = string.Format("Exception: {ex}", ex.ToString());
+                _logger.Error(ex, message);
+                throw new TryCatchException(message, "CreateGridSectionRecord");
             }
         }
     }

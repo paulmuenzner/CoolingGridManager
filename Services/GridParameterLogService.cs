@@ -10,7 +10,6 @@ namespace CoolingGridManager.Services
     public class GridParameterLogService
     {
         private readonly AppDbContext _context;
-
         private readonly Serilog.ILogger _logger;
         public GridParameterLogService(AppDbContext context, Serilog.ILogger logger)
         {
@@ -44,8 +43,9 @@ namespace CoolingGridManager.Services
             }
             catch (Exception ex)
             {
-                var message = string.Format("Exception: {ex}", ex.ToString());
-                throw new TryCatchException(message, "CreateGridParameterLogRecord"); //prepare update function names everywhere
+                string message = string.Format("Exception: {ex}", ex.ToString());
+                _logger.Error(ex, message);
+                throw new TryCatchException(message, "CreateGridParameterLogRecord");
             }
         }
 
@@ -79,7 +79,8 @@ namespace CoolingGridManager.Services
             }
             catch (Exception ex)
             {
-                var message = string.Format("Exception: {ex}", ex.ToString());
+                string message = string.Format("Exception: {ex}", ex.ToString());
+                _logger.Error(ex, message);
                 throw new TryCatchException(message, "GetMonthlyGridParameterDetails");
             }
         }

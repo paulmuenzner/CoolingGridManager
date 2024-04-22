@@ -36,8 +36,9 @@ namespace CoolingGridManager.Services
             }
             catch (Exception ex)
             {
-                var message = string.Format("Exception: {ex}", ex.ToString());
-                throw new TryCatchException(message, "AddGridConsumption");
+                string message = string.Format("Exception: {ex}", ex.ToString());
+                _logger.Error(ex, message);
+                throw new TryCatchException(message, "CreateGridConsumptionRecord");
             }
         }
 
@@ -60,7 +61,7 @@ namespace CoolingGridManager.Services
                 }
                 else
                 {
-                    var message = $"Not possible to retrieve grid consumption logs with 'GetConsumptionForGridByDate'. Month: {request.Month}, Year: {request.Year}, GridID: {request.GridID}";
+                    var message = $"Not possible to retrieve grid consumption logs with 'GetGridConsumptionDetails'. Month: {request.Month}, Year: {request.Year}, GridID: {request.GridID}";
                     _logger.Error(message);
                     throw new Exception(message);
                 }
@@ -68,8 +69,9 @@ namespace CoolingGridManager.Services
             }
             catch (Exception ex)
             {
-                var message = string.Format("Exception: {ex}", ex.ToString());
-                throw new TryCatchException(message, "GetConsumptionForGridByDate");
+                string message = string.Format("Exception: {ex}", ex.ToString());
+                _logger.Error(ex, message);
+                throw new TryCatchException(message, "GetGridConsumptionDetails");
             }
         }
     }

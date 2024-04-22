@@ -71,27 +71,12 @@ namespace CoolingGridManager.Validators.Tickets
                .Must(TicketValidatorHelper.BeValidCategory).WithMessage("Invalid category value. Can only be technical, billing or miscellaneous.");
 
             RuleFor(ticketModel => ticketModel.Priority)
-                .NotEmpty().WithMessage("Priority is required.").Must(BeValidPriority)
-                .WithMessage("Invalid priority value. Can only be high, medium or low.");
+                .NotEmpty().WithMessage("Priority is required.")
+                .Must(TicketValidatorHelper.BeValidPriority).WithMessage("Invalid priority value. Can only be high, medium or low.");
 
             RuleFor(ticketModel => ticketModel.Status)
                 .NotEmpty().WithMessage("Status is required.")
                 .Must(TicketValidatorHelper.BeValidStatus).WithMessage("Invalid status value. Can only be open, solved or onhold.");
-        }
-
-        private bool BeValidStatus(string description)
-        {
-            return description == "open" || description == "solved" || description == "onhold";
-        }
-
-        private bool BeValidPriority(string description)
-        {
-            return description == "high" || description == "medium" || description == "low";
-        }
-
-        private bool BeValidCategory(string description)
-        {
-            return description == "billing" || description == "technical" || description == "miscellaneous";
         }
     }
 

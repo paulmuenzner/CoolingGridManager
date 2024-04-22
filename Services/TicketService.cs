@@ -8,10 +8,11 @@ namespace CoolingGridManager.Services
     public class TicketService
     {
         private readonly AppDbContext _context;
-
-        public TicketService(AppDbContext context)
+        private readonly Serilog.ILogger _logger;
+        public TicketService(AppDbContext context, Serilog.ILogger logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         ////////////////////////////////
@@ -26,7 +27,8 @@ namespace CoolingGridManager.Services
             }
             catch (Exception ex)
             {
-                var message = string.Format("Exception: {ex}", ex.ToString());
+                string message = string.Format("Exception: {ex}", ex.ToString());
+                _logger.Error(ex, message);
                 throw new TryCatchException(message, "CreateTicketRecord");
             }
         }
@@ -43,13 +45,15 @@ namespace CoolingGridManager.Services
                 if (ticket == null)
                 {
                     var message = string.Format($"No ticket found with ID {ticketId}.");
-                    throw new NotFoundException(message, "GetTicketById", ticketId);
+                    throw new NotFoundException(message, "GetTicketDetails", ticketId);
                 }
                 return ticket;
             }
-            catch (ArgumentNullException ex)
+            catch (Exception ex)
             {
-                throw new NotFoundException(ex.Message, "GetTicketById", ticketId);
+                string message = string.Format("Exception: {ex}", ex.ToString());
+                _logger.Error(ex, message);
+                throw new TryCatchException(message, "GetTicketDetails");
             }
         }
 
@@ -82,7 +86,8 @@ namespace CoolingGridManager.Services
             }
             catch (Exception ex)
             {
-                var message = string.Format("Exception: {ex}", ex.ToString());
+                string message = string.Format("Exception: {ex}", ex.ToString());
+                _logger.Error(ex, message);
                 throw new TryCatchException(message, "UpdateTicketStatus");
             }
         }

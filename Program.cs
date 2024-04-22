@@ -15,7 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHealthChecks();
 
 // Load Configuration File 
-var configuration = ConfigurationHelper.LoadConfiguration();
+Serilog.ILogger logger = Log.Logger;
+IConfiguration configuration = new Settings(logger).LoadSettings();
 
 //Add support to logging with SERILOG
 builder.Host.UseSerilog((context, configuration) =>
@@ -28,7 +29,7 @@ builder.Services.AddSingleton<Serilog.ILogger>(_ => Log.Logger);
 builder.Services.AddSingleton<ExceptionResponse>();
 
 // Configure database
-var connectionString = ConfigurationHelper.GetDatabaseConnectionString();
+var connectionString = new DatabaseConnection(logger).GetDatabaseConnectionString();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 

@@ -7,9 +7,10 @@ namespace CoolingGridManager.Services
     public class GridService
     {
         private readonly AppDbContext _context;
-
-        public GridService(AppDbContext context)
+        private readonly Serilog.ILogger _logger;
+        public GridService(AppDbContext context, Serilog.ILogger logger)
         {
+            _logger = logger;
             _context = context;
         }
 
@@ -26,7 +27,8 @@ namespace CoolingGridManager.Services
             }
             catch (Exception ex)
             {
-                var message = string.Format("Exception: {ex}", ex.ToString());
+                string message = string.Format("Exception: {ex}", ex.ToString());
+                _logger.Error(ex, message);
                 throw new TryCatchException(message, "CreateGridRecord");
             }
         }

@@ -30,8 +30,9 @@ namespace CoolingGridManager.Services
             }
             catch (Exception ex)
             {
-                var message = string.Format("Exception: {ex}", ex.ToString());
-                throw new TryCatchException(message, "AddBill");
+                string message = string.Format("Error creating new bill. Exception: {ex}", ex.ToString());
+                _logger.Error(ex, message);
+                throw new TryCatchException(message, "CreateBillingRecord");
             }
         }
 
@@ -54,14 +55,15 @@ namespace CoolingGridManager.Services
                 else
                 {
                     _logger.Error($"Requested bill null. Non-existing bill requested. Consumer ID: {request.ConsumerID}, Month: {request.BillingMonth}, Year: {request.BillingYear}");
-                    throw new NotFoundException($"Requested bill not found", "GetBill", request);
+                    throw new NotFoundException($"Requested bill not found", "GetBillingDetails", request);
                 }
 
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, $"Exception. Non-existing bill requested. Consumer ID: {request.ConsumerID}, Month: {request.BillingMonth}, Year: {request.BillingYear}");
-                throw new TryCatchException($"Bill for consumer ID {request.ConsumerID} not found", "GetBill");
+                string message = string.Format($"Exception retrieving consumer bill. Consumer ID: {request.ConsumerID}, Month: {request.BillingMonth}, Year: {request.BillingYear}. Exception: {ex}", ex.ToString());
+                _logger.Error(ex, message);
+                throw new TryCatchException(message, "GetBillingDetails");
             }
         }
 
@@ -90,8 +92,9 @@ namespace CoolingGridManager.Services
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, $"Error deleting bill with ID: {billingId}");
-                throw new TryCatchException($"Bill with ID {billingId} not deleted.", "DeleteBill");
+                string message = string.Format($"Error deleting bill with ID: {billingId}. Exception: {ex}", ex.ToString());
+                _logger.Error(ex, message);
+                throw new TryCatchException(message, "DeleteBillingEntry");
             }
         }
 
@@ -114,8 +117,9 @@ namespace CoolingGridManager.Services
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, $"Error updating payment status to {request.IsPaid} of bill with ID: {request.BillingId}");
-                throw new TryCatchException($"Update of payment status of bill ID {request.BillingId} currently not possible.", "MarkBillAsPaid");
+                string message = string.Format($"Error updating payment status to {request.IsPaid} of bill with ID: {request.BillingId}. Billing ID: {request.BillingId}. Exception: {ex}", ex.ToString());
+                _logger.Error(ex, message);
+                throw new TryCatchException(message, "CreateConsumerRecord");
             }
         }
     }

@@ -43,7 +43,7 @@ namespace CoolingGridManager.Services
                     if (existingConsumer == null)
                     {
                         _logger.Warning($"Consumer with ID {data.ConsumerID} does not exist.");
-                        throw new FormatException($"Consumer with ID {data.ConsumerID} does not exist.", "AddCoolingGridParameterLog");
+                        throw new FormatException($"Consumer with ID {data.ConsumerID} does not exist.", "CreateConsumerConsumptionRecord");
                     }
                     // Associate the existing grid with the new grid section
                     consumptionRecord.Consumer = existingConsumer;
@@ -57,9 +57,9 @@ namespace CoolingGridManager.Services
             }
             catch (Exception ex)
             {
-                var message = $"**Full details:** {ex}";
-                Log.Error("AddConsumption try catch error", message);
-                throw new TryCatchException(message, "AddConsumption");
+                string message = string.Format("Exception: {ex}", ex.ToString());
+                _logger.Error(ex, message);
+                throw new TryCatchException(message, "CreateConsumerConsumptionRecord");
             }
         }
 
@@ -93,7 +93,8 @@ namespace CoolingGridManager.Services
             }
             catch (Exception ex)
             {
-                var message = string.Format($"Exception: {ex}", ex.ToString());
+                string message = string.Format("Exception: {ex}", ex.ToString());
+                _logger.Error(ex, message);
                 throw new TryCatchException(message, "GetConsumptionForUserByMonth");
             }
         }
