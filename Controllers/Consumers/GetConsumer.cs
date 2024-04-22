@@ -7,6 +7,7 @@ using CoolingGridManager.ResponseHandler;
 using CoolingGridManager.Models.Data;
 using Swashbuckle.AspNetCore.Annotations;
 using Microsoft.AspNetCore.RateLimiting;
+using CoolingGridManager.IRequests;
 
 namespace CoolingGridManager.Controllers.Consumers
 {
@@ -26,12 +27,12 @@ namespace CoolingGridManager.Controllers.Consumers
 
         [HttpGet]
         [Tags("Consumers")]
-        public async Task<IActionResult> GetConsumerDetails([FromBody] int consumerId) // prepare request body
+        public async Task<IActionResult> GetConsumerDetails([FromBody] IGetConsumerRequest request)
         {
             try
             {
                 // Validate
-                ValidationResult result = await _getConsumerDetailsValidator.ValidateAsync(consumerId);
+                ValidationResult result = await _getConsumerDetailsValidator.ValidateAsync(request);
                 if (!result.IsValid)
                 {
                     foreach (var error in result.Errors)
@@ -40,7 +41,7 @@ namespace CoolingGridManager.Controllers.Consumers
                     }
                 }
 
-                Consumer consumer = await _consumerService.GetConsumerDetails(consumerId);
+                Consumer consumer = await _consumerService.GetConsumerDetails(request);
                 return ResponseFormatter.Success(HttpStatusPositive.OK, new { Consumer = consumer }, $"New consumer with name {consumer.LastName} created.");
             }
             catch (NotFoundException ex)

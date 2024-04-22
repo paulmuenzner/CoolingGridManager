@@ -6,11 +6,11 @@ namespace CoolingGridManager.Validators.Consumers
 {
 
     // GetGridParameterLog Validator
-    public class GetConsumerDetailsValidator : AbstractValidator<int>
+    public class GetConsumerDetailsValidator : AbstractValidator<IGetConsumerRequest>
     {
         public GetConsumerDetailsValidator()
         {
-            RuleFor(consumerID => consumerID)
+            RuleFor(request => request.ConsumerID)
                 .NotEmpty().WithMessage("Valid consumer ID needed.")
                 .GreaterThan(0).WithMessage("Valid consumer ID needed.");
         }

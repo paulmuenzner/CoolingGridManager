@@ -8,7 +8,12 @@ namespace CoolingGridManager.IRequests
         public required int Size { get; set; }
     }
 
-    public class ICreateConsumerRecordRequest : Consumer
+    public class IGetConsumerRequest
+    {
+        public required int ConsumerID { get; set; }
+    }
+
+    public class ICreateConsumerRecordRequest : CreateConsumerDto
     {
     }
 

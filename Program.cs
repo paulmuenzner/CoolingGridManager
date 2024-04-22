@@ -84,13 +84,16 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseSwagger();
-app.UseSwaggerUI(options =>
+if (app.Environment.IsDevelopment())
 {
-    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-    options.RoutePrefix = string.Empty; // Sets Swagger UI at the root URL
-    options.DocumentTitle = "Cooling Grid Manager API";
-});
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+        options.RoutePrefix = string.Empty; // Sets Swagger UI at the root URL
+        options.DocumentTitle = "Cooling Grid Manager API";
+    });
+}
 
 //Add support to logging request with SERILOG
 app.UseSerilogRequestLogging();

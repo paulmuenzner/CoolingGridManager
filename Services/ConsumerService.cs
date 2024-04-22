@@ -22,19 +22,31 @@ namespace CoolingGridManager.Services
         public async Task<Consumer> CreateConsumerRecord(ICreateConsumerRecordRequest request)
         {
             try
-            { // Prepare as validation
+            {
+                // Prepare as validation
                 // Retrieve an existing grid section from the context
                 var existingGridSection = await _context.GridSections.FirstOrDefaultAsync();
                 if (existingGridSection == null)
                 {
-                    // Handle the case where no existing grid section is found
                     throw new InvalidOperationException("No existing grid section found.");
                 }
-                // Assign the existing grid section to the consumer
-                request.GridSection = existingGridSection;
-                _context.Consumers.Add(request);
+
+                var consumer = new Consumer
+                {
+                    FirstName = request.FirstName,
+                    LastName = request.LastName,
+                    CompanyName = request.CompanyName,
+                    Email = request.Email,
+                    Phone = request.Phone,
+                    MonthlyBaseFee = request.MonthlyBaseFee,
+                    UnitPrice = request.UnitPrice,
+                    GridSection = existingGridSection,
+                    GridSectionID = request.GridSectionID
+                };
+
+                _context.Consumers.Add(consumer);
                 await _context.SaveChangesAsync();
-                return request;
+                return consumer;
             }
             catch (Exception ex)
             {
@@ -45,16 +57,16 @@ namespace CoolingGridManager.Services
 
         ///////////////////////////////////////////
         // GET CONSUMER
-        public async Task<Consumer> GetConsumerDetails(int consumerId)
+        public async Task<Consumer> GetConsumerDetails(IGetConsumerRequest request)
         {
             try
             {
-                var consumer = await _context.Consumers.FindAsync(consumerId);
+                int consumerID = request.ConsumerID;
+                var consumer = await _context.Consumers.FindAsync(consumerID);
                 if (consumer == null)
                 {
-                    // return null; // prepare
-                    var message = string.Format($"No consumer found with id {consumerId}. Result is null.");
-                    throw new NotFoundException(message, "Consumer", consumerId);
+                    var message = string.Format($"No consumer found with id {consumerID}. Result is null.");
+                    throw new NotFoundException(message, "Consumer", consumerID);
                 }
                 if (consumer != null)
                 {
@@ -62,16 +74,16 @@ namespace CoolingGridManager.Services
                 }
                 else
                 {
-                    _logger.Error($"With GetConsumerDetails requested consumer null. Non-existing consumer requested. Consumer ID: {consumerId}.");
-                    throw new NotFoundException($"Requested consumer not found", "GetConsumerDetails", consumerId);
+                    _logger.Error($"With GetConsumerDetails requested consumer null. Non-existing consumer requested. Consumer ID: {consumerID}.");
+                    throw new NotFoundException($"Requested consumer not found", "GetConsumerDetails", consumerID);
                 }
 
 
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, $"With GetConsumerDetails requested consumer null. Consumer ID: {consumerId}.");
-                throw new TryCatchException($"Bill for consumer ID {consumerId} not found", "GetConsumerDetails");
+                _logger.Error(ex, $"With GetConsumerDetails requested consumer null. Consumer ID: {request.ConsumerID}.");
+                throw new TryCatchException($"Bill for consumer ID {request.ConsumerID} not found", "GetConsumerDetails");
             }
         }
 

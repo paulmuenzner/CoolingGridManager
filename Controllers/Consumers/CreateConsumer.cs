@@ -10,10 +10,13 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace CoolingGridManager.Controllers.Consumers
 {
+
+
     [ApiController]
     [Area("consumers")]
     [Route("api/consumers/[controller]")]
     [EnableRateLimiting("fixed")]
+
     public class CreateConsumerController : ControllerBase
     {
 
@@ -26,7 +29,9 @@ namespace CoolingGridManager.Controllers.Consumers
             _consumerService = consumerService;
         }
 
-
+        /// <summary>
+        /// Deletes a specific TodoItem.
+        /// </summary>
         [HttpPost]
         [Tags("Consumers")]
         public async Task<IActionResult> CreateConsumer([FromBody] ICreateConsumerRecordRequest request)

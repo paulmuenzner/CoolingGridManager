@@ -14,7 +14,7 @@ namespace CoolingGridManager.Utils.CronJobs
                     trigger
                         .ForJob(jobKey)
                         .WithSimpleSchedule(schedule =>
-                            schedule.WithIntervalInSeconds(3).RepeatForever()));
+                            schedule.WithIntervalInSeconds(99999).RepeatForever()));
         }
     }
 }
