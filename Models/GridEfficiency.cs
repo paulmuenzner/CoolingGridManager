@@ -5,15 +5,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CoolingGridManager.Models.Data
 {
-    [Table("EfficiencyGrid")]
-    public class EfficiencyGrid : EfficiencyGridBase
+    [Table("GridEfficiency")]
+    public class GridEfficiency : GridEfficiencyBase
     {
         public int GridID { get; set; }
 
         [ForeignKey("GridID")]
         public Grid Grid { get; set; }
 
-        public EfficiencyGrid()
+        public GridEfficiency()
         {
             Efficiency = 0m;
             LossesAbsolute = 0;
@@ -24,12 +24,12 @@ namespace CoolingGridManager.Models.Data
 
 
         // Data Transfer Object specifically for creating new grid efficiency entries
-        public class EfficiencyGridDto : EfficiencyGridBase
+        public class GridEfficiencyDto : GridEfficiencyBase
         {
             [Required(ErrorMessage = "Grid ID is required.")]
             [Display(Name = "Grid ID")]
             public int GridID { get; set; }
-            public EfficiencyGridDto()
+            public GridEfficiencyDto()
             {
                 Efficiency = 0m;
                 LossesAbsolute = 0;
@@ -44,7 +44,7 @@ namespace CoolingGridManager.Models.Data
 
 
 
-public class EfficiencyGridBase
+public class GridEfficiencyBase
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -64,7 +64,7 @@ public class EfficiencyGridBase
     [Range(2020, 2040, ErrorMessage = "Year must be between 2020 and 2040.")]
     public int Year { get; set; }
 
-    public EfficiencyGridBase()
+    public GridEfficiencyBase()
     {
         Efficiency = 0m;
         LossesAbsolute = 0;
