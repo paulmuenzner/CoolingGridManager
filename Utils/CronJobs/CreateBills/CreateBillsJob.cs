@@ -80,7 +80,7 @@ namespace CoolingGridManager.Utils.CronJobs
                                 continue;
                             }
 
-                            // Create the request object
+                            // Get all relevant data from parameter logs 
                             List<ConsumptionConsumer> userConsumptionsByMonth = await _consumptionConsumerService.GetConsumptionForUserByMonth(billRequest);
 
                             // Sum up all ConsumptionValue properties

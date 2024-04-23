@@ -1,10 +1,11 @@
 using CoolingGridManager.Models.Data;
+using static CoolingGridManager.Models.Data.GridParameterLog;
 
 namespace CoolingGridManager.IRequests
 {
     public class ICreateGridParameterLogRecordRequest
     {
-        public required List<GridParameterLog> GridParameterData { get; set; }
+        public required List<CreateGridParameterLogDto> GridParameterData { get; set; }
     }
 
 

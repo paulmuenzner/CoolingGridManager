@@ -7,15 +7,15 @@ namespace CoolingGridManager.Utils.CronJobs
     {
         public void Configure(QuartzOptions options)
         {
-            var jobKey = JobKey.Create(nameof(ValidateBills));
+            var jobKey = JobKey.Create(nameof(GridConsumption));
             options
-                .AddJob<ValidateBills>(jobBuilder => jobBuilder.WithIdentity(jobKey))
+                .AddJob<GridConsumption>(jobBuilder => jobBuilder.WithIdentity(jobKey))
                 .AddTrigger(trigger =>
                     trigger
                         .ForJob(jobKey)
-                        .WithCronSchedule("0 0 0 3 * ? *"));
-            // .WithSimpleSchedule(schedule =>
-            //     schedule.WithIntervalInSeconds(5).RepeatForever()));
+            // .WithCronSchedule("0 0 0 3 * ? *"));
+            .WithSimpleSchedule(schedule =>
+                schedule.WithIntervalInSeconds(5).RepeatForever()));
         }
     }
 }

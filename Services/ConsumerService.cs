@@ -23,10 +23,12 @@ namespace CoolingGridManager.Services
         {
             try
             {
-                // Retrieve an existing grid section from the context
-                var existingGridSection = await _context.GridSections.FirstOrDefaultAsync();
+                // Retrieve an existing grid section from the context<
+                var gridSectionID = request.GridSectionID;
+                var existingGridSection = await _context.GridSections.FindAsync(gridSectionID);
                 if (existingGridSection == null)
                 {
+                    _logger.Warning($"Cannot find grid section of grid section ID {gridSectionID}.");
                     throw new InvalidOperationException("No existing grid section found.");
                 }
 

@@ -23,13 +23,23 @@ namespace CoolingGridManager.Services
         {
             try
             {
+                // Retrieve an existing grid from the context<
+                var gridID = request.GridID;
+                var grid = await _context.Grids.FindAsync(gridID);
+                if (grid == null)
+                {
+                    _logger.Warning($"Cannot find grid with ID {gridID}.");
+                    throw new InvalidOperationException($"Cannot find grid with ID {gridID}.");
+                }
+
                 var consumptionLog = new ConsumptionGrid
                 {
+                    Grid = grid,
                     Month = request.Month,
                     Year = request.Year,
                     Consumption = request.Consumption
                 };
-                _context.ConsumptionGrids.Add(request);
+                _context.ConsumptionGrids.Add(consumptionLog);
                 await _context.SaveChangesAsync();
 
                 return consumptionLog;
@@ -42,9 +52,17 @@ namespace CoolingGridManager.Services
             }
         }
 
+        ///////////////////////////////
+        // Consumption Entry Exists?
+        public async Task<bool> DoesGridConsumptionEntryExist(IGetGridDataRequest request)
+        {
+            return await _context.ConsumptionGrids
+                .AnyAsync(g => g.GridID == request.GridID && g.Month == request.Month && g.Year == request.Year);
+        }
+
         //////////////////////////////////////////////////
         // GET ALL CONSUMPTION ENTRIES PER USER AND MONTH
-        public async Task<ConsumptionGrid> GetGridConsumptionDetails(IGetGridConsumptionRequest request)
+        public async Task<ConsumptionGrid> GetGridConsumptionDetails(IGetGridDataRequest request)
         {
             try
             {

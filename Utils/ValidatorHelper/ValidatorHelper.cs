@@ -1,4 +1,4 @@
-// Helpers.cs
+
 namespace Utility.ValidatorHelpers
 {
     public static class DateHelpers

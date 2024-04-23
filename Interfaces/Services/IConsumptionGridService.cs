@@ -9,7 +9,7 @@ namespace CoolingGridManager.IServices
     public interface IConsumptionGridService
     {
         Task<ConsumptionGrid> CreateGridConsumptionRecord(ICreateGridConsumptionRecordRequest request);
-        Task<ConsumptionGrid> GetGridConsumptionDetails(IGetGridConsumptionRequest request);
-
+        Task<ConsumptionGrid> GetGridConsumptionDetails(IGetGridDataRequest request);
+        Task<bool> DoesGridConsumptionEntryExist(IGetGridDataRequest request);
     }
 }

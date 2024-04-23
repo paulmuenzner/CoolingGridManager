@@ -10,5 +10,6 @@ public static class AppData
     public static readonly string UuidPattern = @"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$";
 
     // Cron Schedules
-    public static string CronScheduleCreateBills { get; } = "0 0 0 3 * ? *";
+    public static string CronScheduleCreateBills { get; } = "0 0 0 3 * ? *"; // Every third day in a month
+    public static string CronScheduleCalculateGridConsumption { get; } = "0 0 0 3 * ? *"; // Every third day in a month
 }

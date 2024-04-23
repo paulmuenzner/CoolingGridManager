@@ -73,7 +73,7 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<ConsumptionGrid>()
             .Property(cg => cg.Consumption)
-            .HasColumnType("decimal(19, 4)");
+            .HasColumnType("decimal(20, 4)");
 
         modelBuilder.Entity<Billing>()
             .HasOne(b => b.Consumer)

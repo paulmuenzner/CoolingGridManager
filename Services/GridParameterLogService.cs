@@ -25,17 +25,27 @@ namespace CoolingGridManager.Services
             {
                 foreach (var data in request.GridParameterData)
                 {
-                    var existingGrid = await _context.Grids.FindAsync(data.GridID);
+                    var GridID = data.GridID;
+                    var existingGrid = await _context.Grids.FindAsync(GridID);
 
                     if (existingGrid == null)
                     {
-                        _logger.Warning($"Grid with ID {data.GridID} does not exist.");
-                        throw new FormatException($"Grid with ID {data.GridID} does not exist.", "CreateGridParameterLogRecord");
+                        _logger.Warning($"Grid with ID {GridID} does not exist.");
+                        throw new FormatException($"Grid with ID {GridID} does not exist.", "CreateGridParameterLogRecord");
                     }
                     // Associate the existing grid with the new grid section
-                    data.Grid = existingGrid;
-
-                    _context.GridParameterLog.Add(data);
+                    var input = new GridParameterLog
+                    {
+                        ElementID = data.ElementID,
+                        MassFlowRate = data.MassFlowRate,
+                        SpecificHeatCapacity = data.SpecificHeatCapacity,
+                        MeanTemperatureIn = data.MeanTemperatureIn,
+                        MeanTemperatureOut = data.MeanTemperatureOut,
+                        DateTimeStart = data.DateTimeStart,
+                        DateTimeEnd = data.DateTimeEnd,
+                        Grid = existingGrid
+                    };
+                    _context.GridParameterLog.Add(input);
                     await _context.SaveChangesAsync();
                 }
                 IParameterLogResponse response = new IParameterLogResponse { Success = true, Count = request.GridParameterData.Count };
@@ -51,7 +61,7 @@ namespace CoolingGridManager.Services
 
         ////////////////////////////////////////////////////
         // GET GRID PARAMETER ENTRIES BY MONTH
-        public async Task<List<GridParameterLog>> GetMonthlyGridParameterDetails(IGetMonthlyGridParameterDetailsRequest request)
+        public async Task<List<GridParameterLog>> GetMonthlyGridParameterDetails(IGetGridDataRequest request)
         {
             try
             {
