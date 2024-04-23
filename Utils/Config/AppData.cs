@@ -9,4 +9,6 @@ public static class AppData
     // Regex
     public static readonly string UuidPattern = @"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$";
 
+    // Cron Schedules
+    public static string CronScheduleCreateBills { get; } = "0 0 0 3 * ? *";
 }

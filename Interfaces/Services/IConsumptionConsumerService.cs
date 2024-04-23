@@ -10,7 +10,7 @@ namespace CoolingGridManager.IServices
     public interface IConsumptionConsumerService
     {
         Task<ICreateConsumerConsumptionRecordResponse> CreateConsumerConsumptionRecord(List<ConsumptionData> request);
-        Task<List<ConsumptionConsumer>> GetConsumptionForUserByMonth(IGetConsumptionForUserByMonthRequest request);
+        Task<List<ConsumptionConsumer>> GetConsumptionForUserByMonth(IGetBillRequest request);
 
     }
 }

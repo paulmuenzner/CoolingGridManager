@@ -65,7 +65,7 @@ namespace CoolingGridManager.Services
 
         ///////////////////////////////////////////
         // GET ALL CONSUMPTION ENTRIES PER USER AND MONTH
-        public async Task<List<ConsumptionConsumer>> GetConsumptionForUserByMonth(IGetConsumptionForUserByMonthRequest request)
+        public async Task<List<ConsumptionConsumer>> GetConsumptionForUserByMonth(IGetBillRequest request)
         {
             try
             {

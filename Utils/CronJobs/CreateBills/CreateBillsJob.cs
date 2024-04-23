@@ -64,15 +64,25 @@ namespace CoolingGridManager.Utils.CronJobs
                         // Handle each consumer in the batch
                         foreach (var consumer in consumers)
                         {
-
-                            // Create the request object
-                            var consumptionRequest = new IGetConsumptionForUserByMonthRequest
+                            // First: It shouldn't but validate if Bill already exists avoiding duplication
+                            var billRequest = new IGetBillRequest
                             {
                                 ConsumerID = consumer.ConsumerID,
                                 BillingMonth = billingMonth,
                                 BillingYear = billingYear
                             };
-                            List<ConsumptionConsumer> userConsumptionsByMonth = await _consumptionConsumerService.GetConsumptionForUserByMonth(consumptionRequest);
+                            var billExists = await _billingService.DoesBillingEntryExist(billRequest);
+
+                            // Skip to next consumer if bill exists
+                            if (billExists)
+                            {
+                                _logger.Warning($"Bill for consumer with ID {consumer.ConsumerID} for month {billingMonth} and year {billingYear} already existing. Date: {date}.");
+                                continue;
+                            }
+
+                            // Create the request object
+                            List<ConsumptionConsumer> userConsumptionsByMonth = await _consumptionConsumerService.GetConsumptionForUserByMonth(billRequest);
+
                             // Sum up all ConsumptionValue properties
                             decimal totalConsumption = userConsumptionsByMonth.Sum(log => log.ConsumptionValue);
 
@@ -82,7 +92,6 @@ namespace CoolingGridManager.Utils.CronJobs
 
                             // Calculate billing amount 
                             decimal billingAmount = totalConsumption * unitPrice + monthlyBaseFee;
-                            _logger.Information($"Total consumption value: {billingAmount}");
 
                             var bill = new Billing
                             {

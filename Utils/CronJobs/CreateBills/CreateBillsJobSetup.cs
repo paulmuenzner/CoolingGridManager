@@ -10,11 +10,9 @@ namespace CoolingGridManager.Utils.CronJobs
             var jobKey = JobKey.Create(nameof(CreateBills));
             options
                 .AddJob<CreateBills>(jobBuilder => jobBuilder.WithIdentity(jobKey))
-                .AddTrigger(trigger =>
-                    trigger
+                .AddTrigger(trigger => trigger
                         .ForJob(jobKey)
-                        .WithSimpleSchedule(schedule =>
-                            schedule.WithIntervalInSeconds(99999).RepeatForever()));
+                        .WithCronSchedule(AppData.CronScheduleCreateBills));
         }
     }
 }

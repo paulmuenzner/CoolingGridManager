@@ -14,8 +14,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHealthChecks();
 
-// Load Configuration File 
+
 Serilog.ILogger logger = Log.Logger;
+
+// Load Configuration File 
 IConfiguration configuration = new Settings(logger).LoadSettings();
 
 //Add support to logging with SERILOG
