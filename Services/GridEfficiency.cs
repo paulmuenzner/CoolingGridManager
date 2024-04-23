@@ -2,6 +2,7 @@ using CoolingGridManager.Models.Data;
 using CoolingGridManager.Exceptions;
 using CoolingGridManager.IRequests;
 using Microsoft.EntityFrameworkCore;
+using FormatException = CoolingGridManager.Exceptions.FormatException;
 
 namespace CoolingGridManager.Services
 {
@@ -17,51 +18,37 @@ namespace CoolingGridManager.Services
 
         /////////////////////////////////////
         // CREATE GRID EFFICIENCY RECORD
-        public async Task<Grid> CreateGridEfficiencyRecord(ICreateGridRequest request)
+        public async Task<GridEfficiency> CreateGridEfficiencyRecord(ICreateGridEfficiencyRequest request)
         {
             try
             {
-                var grid = new GridEfficiency { GridName = request.GridName };
-                _context.Grids.Add(grid);
+                // Retrieve an existing grid from the context<
+                var GridID = request.GridID;
+                var relatedGrid = await _context.Grids.FindAsync(GridID);
+
+                if (relatedGrid == null)
+                {
+                    _logger.Warning($"Grid with ID {GridID} does not exist.");
+                    throw new FormatException($"Grid with ID {GridID} does not exist.", "CreateGridEfficiencyRecord");
+                }
+
+                var record = new GridEfficiency
+                {
+                    Efficiency = request.Efficiency,
+                    LossesAbsolute = request.LossesAbsolute,
+                    Month = request.Month,
+                    Year = request.Year,
+                    Grid = relatedGrid
+                };
+                _context.GridEfficiencies.Add(record);
                 await _context.SaveChangesAsync();
-                return grid;
+                return record;
             }
             catch (Exception ex)
             {
                 string message = string.Format("Exception: {ex}", ex.ToString());
                 _logger.Error(ex, message);
-                throw new TryCatchException(message, "CreateGridRecord");
-            }
-        }
-
-        ///////////////////////////////////////////
-        // Get Grids in Batches
-        public async Task<List<Grid>> GetGridBatch(IGetGridBatchRequest request)
-        {
-            try
-            {
-                var grids = await _context.Grids
-                        .OrderBy(g => g.GridID)
-                        .Skip(request.Skip * request.Size)
-                        .Take(request.Size)
-                        .ToListAsync();
-                if (grids != null)
-                {
-                    return grids;
-                }
-                else
-                {
-                    var message = $"Non-existing grids requested in batches using GetGridBatch. Error retrieving grids in batches. Size: {request.Size}, Skip: {request.Skip}";
-                    _logger.Error(message);
-                    throw new Exception(message);
-                }
-
-            }
-            catch (Exception ex)
-            {
-                string message = string.Format("Exception: {ex}", ex.ToString()) + $"Error retrieving grids in batches. Size: {request.Size}, Skip: {request.Skip}";
-                _logger.Error(ex, message);
-                throw new TryCatchException(message, "GetGridBatch");
+                throw new TryCatchException(message, "CreateGridEfficiencyRecord");
             }
         }
 

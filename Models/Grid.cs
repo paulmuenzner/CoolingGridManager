@@ -21,6 +21,7 @@ namespace CoolingGridManager.Models.Data
         public ICollection<GridSection> GridSection { get; set; }
         public ICollection<GridParameterLog> GridParameterLog { get; set; }
         public ICollection<ConsumptionGrid> ConsumptionGrid { get; set; }
+        public ICollection<GridEfficiency> GridEfficiency { get; set; }
 
         public Grid()
         {
@@ -28,6 +29,7 @@ namespace CoolingGridManager.Models.Data
             GridSection = new List<GridSection>();
             GridParameterLog = new List<GridParameterLog>();
             ConsumptionGrid = new List<ConsumptionGrid>();
+            GridEfficiency = new List<GridEfficiency>();
         }
     }
 }

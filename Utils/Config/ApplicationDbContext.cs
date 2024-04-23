@@ -14,6 +14,7 @@ public class AppDbContext : DbContext
     public DbSet<Consumer> Consumers { get; set; }
     public DbSet<Grid> Grids { get; set; }
     public DbSet<GridParameterLog> GridParameterLog { get; set; }
+    public DbSet<GridEfficiency> GridEfficiencies { get; set; }
     public DbSet<GridSection> GridSections { get; set; }
     public DbSet<ConsumptionConsumer> ConsumptionConsumers { get; set; }
     public DbSet<ConsumptionGrid> ConsumptionGrids { get; set; }
@@ -39,6 +40,11 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<GridSection>()
             .HasOne(gs => gs.Grid)
             .WithMany(gs => gs.GridSection)
+            .HasForeignKey(gs => gs.GridID);
+
+        modelBuilder.Entity<GridEfficiency>()
+            .HasOne(gs => gs.Grid)
+            .WithMany(gs => gs.GridEfficiency)
             .HasForeignKey(gs => gs.GridID);
 
         modelBuilder.Entity<GridParameterLog>()
