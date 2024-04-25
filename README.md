@@ -2,18 +2,11 @@
 
 
 <!-- PROJECT SHIELDS -->
-<!--
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
-<!-- [![Golang][golang-shield]][golang-url] -->
-[![Go Report Card](https://goreportcard.com/badge/github.com/paulmuenzner/coolinggridmanager)](https://goreportcard.com/report/github.com/paulmuenzner/coolinggridmanager)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/b16cd474a2ff4655b973991746193d9c)](https://app.codacy.com/gh/paulmuenzner/coolinggridmanager/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Issues][issues-shield]][issues-url]
-![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/paulmuenzner/coolinggridmanager)
 [![GNU License][license-shield]][license-url]
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/paulmuenzner/coolinggridmanager)
-![GitHub top language](https://img.shields.io/github/languages/top/paulmuenzner/coolinggridmanager)
- <!-- [![paulmuenzner.com][website-shield]][website-url] -->
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/paulmuenzner/CoolingGridManager)
+![GitHub top language](https://img.shields.io/github/languages/top/paulmuenzner/CoolingGridManager)
+ [![paulmuenzner.com][website-shield]][website-url]
 [![paulmuenzner github][github-shield]][github-url] 
 [![Contributors][contributors-shield]][contributors-url]
 
@@ -22,9 +15,6 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/paulmuenzner/coolinggridmanager">
-    <img src="assets/golang-manage-renewable-power-plants.png" alt="Logo" width="342" height="210">
-  </a>
 
   <h3 align="center">C# Cooling Grid Manager</h3>
 
@@ -34,29 +24,25 @@
     <a href="#about-the-project"><strong>EXPLORE DOCS</strong></a>
     <br />
     <br />
-    <a href="#configuration">High Flexibility</a>
+    <a href="#about-the-project">Pleanty features</a>
     ·
-    <a href="https://github.com/paulmuenzner/coolinggridmanager/issues">Report Bug</a>
+    <a href="https://github.com/paulmuenzner/CoolingGridManager/issues">Report Bug</a>
     ·
-    <a href="https://github.com/paulmuenzner/coolinggridmanager/issues">Request Feature</a>
+    <a href="https://github.com/paulmuenzner/CoolingGridManager/issues">Request Feature</a>
   </p>
 </div>
 
-<!-- HEADER -->
-![Header](assets/golang-power-plant-management-server-paul-muenzner.png)
 
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>
   <ol>
     <li><a href="#about-the-project">About The Project</a></li>
-    <li><a href="#getting-started">Getting Started</a></li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
 
@@ -65,13 +51,13 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-The Cooling Grid Manager is a comprehensive software solution designed to efficiently manage and optimize cooling grid systems. This project leverages the power of C# programming language and .NET technologies to deliver a robust and user-friendly application tailored for the needs of cooling grid operators and managers.
+This Cooling Grid Manager is a software solution designed to efficiently manage and optimize cooling grid systems. This project leverages the power of C# programming language and .NET technologies to deliver a robust and user-friendly application tailored for the needs of cooling grid operators and managers. See it as a starting point and develop and extend it as per your needs.
 
 
 ### Features
 -   ***Ticket Management:*** Streamline ticket creation, tracking, and resolution processes for maintenance, repairs, billing, and other operational tasks.
 -   ***Integration:*** Seamlessly integrate with existing data sources, IoT devices, and monitoring systems to centralize data management and enhance operational efficiency.
--   ***Loss Logging:*** Track and log losses within the cooling grid system, facilitating loss analysis, root cause identification, and remedial action implementation.
+-   ***Parameter Logging:*** Track and log grid parameters for each cooling grid system, facilitating loss analysis, root cause identification, and remedial action implementation.
 -   ***Billing:*** Efficiently manage billing processes for cooling grid services, including invoicing, payment tracking, and revenue management.
 -   ***Consumer Management:*** Centralize consumer data and interactions, enabling effective communication, service provisioning, and account management.
 -   ***Consumption Tracking:*** Monitor and analyze cooling grid consumption patterns to optimize resource allocation, identify inefficiencies, and implement cost-saving measures.
@@ -85,54 +71,17 @@ The Cooling Grid Manager is a comprehensive software solution designed to effici
 -   ***Entity Framework Core:*** Facilitates object-relational mapping (ORM) for database interaction, simplifying data access and management.
 -   ***FluentValidation:*** Integrated for comprehensive validation of input data, ensuring data integrity and application reliability.
 -   ***Serilog:*** Employed for structured logging, enabling efficient monitoring and troubleshooting of application behavior and errors.
+-   ***Cron Jobs:*** Implemented for automating tasks such as creating bills and calculating grid efficiency and energy transfer at the start of each month, enhancing efficiency and reducing manual intervention.
+-   ***Swagger:*** Integrated Swagger for API documentation, offering a user-friendly interface to explore and interact with API endpoints, facilitating development and collaboration.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-<!-- GETTING STARTED -->
-## Getting Started
-
-Prior to launching the program, clone the repo, install go dependencies and ensure that all configurations are set. 
-
-
-### Prerequisites 
--   Make sure MongoDB is installed and available.
--   Make sure a properly configured [AWS S3 Bucket](https://aws.amazon.com/s3/?nc1=h_ls) is ready.
-
-
-### Installation
-
--   Clone the repo
-   ```sh
-   git clone https://github.com/paulmuenzner/coolinggridmanager.git
-   ```
--   Install go dependencies by running
-   ```sh
-   go get
-   ```
-
-### Environment file (.env)
-Before running the program, you need to set up the required environment variables by creating a .env file in the root directory of the project. This file holds sensitive information and configurations needed for the proper functioning of the application.
-
-#### Mandatory Environment Variables
-
-AWS S3 & MongoDB Configuration:
-
-If your application involves interactions with AWS S3, you must provide the following key-value pairs in the .env file:
-
--   AWS_S3_BUCKET_NAME: The name of your AWS S3 bucket.
--   AWS_REGION: The AWS region where your S3 bucket is located.
--   AWS_ACCESS_KEY_ID: Your AWS access key ID.
--   AWS_SECRET_ACCESS_KEY: Your AWS secret access key.
--   MONGODB_SCHEME: MongoDB Scheme (likely mongodb) 
--   MONGODB_HOST: MongoDB Host (localhost if self-hosted running locally. Read more on [mongodb.com](https://www.mongodb.com/docs/manual/reference/connection-string/).) 
--   MONGODB_PORT: MongoDB Port, eg. 27018 or standard port 27017. Read more on [mongodb.com](https://www.mongodb.com/docs/manual/reference/connection-string/).
--   MONGODB_DATABASE_NAME: Name of your MongoDB database you like to backup.
-
 
 ### Run program
 
-Run program by: `go run main.go` or use live-reloader such as [air](https://github.com/cosmtrek/air) with `air`
+Run program by: `dotnet run` 
+Build program by: `dotnet build` 
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -144,49 +93,17 @@ Run program by: `go run main.go` or use live-reloader such as [air](https://gith
 ## Usage
 
 This server exposes various endpoints to facilitate authentication, file management, and plant-related operations.
+Please review implemented swagger information for more details at: http://localhost:5286/index.html
 
 
 ### Examples 
 
 #### Tickets
 
-The files API '/files' provides functionality for managing files and documents.
+The files API '/tickets' provides functionality for creating and updating (eg. status "solved") support tickets.
+Currently available options for status are 'open', 'onhold' and 'solved'.
+For the purpose of Incident Management, support tickets can be submitted and managed to keep an eye on and solve adverse events.
 
-1. **`/api/tickets/addticket`**
-   - **Method:** POST
-   - **Validation:** Yes
-   - **Description:** For the purpose of Incident Management support tickets can be submitted and managed to keep an eye on and solve adverse events.
-   <!-- - **Authentication Required:** Yes -->
-    - **Request Body Example:**
-     ```json
-     {
-        "title": "Stucking valve",
-        "description": "Example description with at least 50 chars for the ticket submitted by me.",
-        "category": "technical",
-        "priority": "high",
-        "reportedBy": "Jon Doe",
-        "responsible": "Service worker A",
-        "status": "open",
-        "statusHistory": [
-            {
-                "status": "Open",
-                "changedDate": "2024-03-25T10:00:00Z"
-            }
-         ]
-     }
-     ```
-
-2. **`/api/tickets/updatestatus`**
-   - **Method:** POST
-   - **Validation:** Yes
-   - **Description:** Update the status of an existing ticket. Currently available options are 'open', 'onhold' and 'solved'.
-    - **Request Body Example:**
-     ```json
-     {
-        "ticketId":17,
-        "status": "solved"
-     }
-     ```
 
 3. **`/api/tickets/getticketbyid`**
    - **Method:** GET
@@ -205,196 +122,51 @@ The files API '/files' provides functionality for managing files and documents.
 
 API '/consumptions' offers endpoints for managing consumption data of consumers.
 
-1. **`/consumptions/addconsumption`**
-   - **Method:** POST
-   - **Validation:** Yes
-   - **Description:** Aggregate and accumulate cooling energy consumption per user and day (kWh/user*day). The 'LogDate' denotes the timestamp when the value was recorded, while 'ConsumptionDate' indicates the specific day when this consumption occurred. Consumption date cannot be in the future.
-   - **Request Body Example:**
-     ```json
-     {
-        "ConsumerID": 123,
-        "ConsumptionValue": 45.67,
-        "ConsumptionDate": "2024-03-25T10:00:00Z"
-     }
-     ```
 
 #### Billing 
 
-API '/billing' offers endpoints for managing consumption data of consumers.
+API '/billing' offers endpoints for managing consumer bills.
 
-1. **`/billing/getbill`**
-   - **Method:** GET
-   - **Validation:** Yes
-   - **Description:** Request bill for consumer and month (billing period).
-   - **Request Body Example:**
-     ```json
-     {
-        "consumerID": 123,
-        "month": 3,
-        "year": 2024
-     }
-     ```
-
-2. **`/billing/addbill`**
-   - **Method:** POST
-   - **Validation:** Yes
-   - **Description:** Add bill for consumer ID and month (billing period).
-   - **Request Body Example:**
-     ```json
-     {
-        "consumerID": 123,
-        "billingMonth": 3,
-        "billingYear": 2024,
-        "totalConsumption": 150.5,
-        "isPaid": false,
-        "billingAmount": 250.75
-     }
-     ```
-
-3. **`/billing/deletebill`**
-   - **Method:** DELETE
-   - **Validation:** Yes
-   - **Description:** Delete bill.
-   - **Request Body Example:**
-     ```json
-     {
-        "billingId": 2
-     }
-     ```
-
-4. **`/billing/updatestatus`**
-   - **Method:** PUT
-   - **Validation:** Yes
-   - **Description:** Update payment status for bill.
-   - **Request Body Example:**
-     ```json
-     {
-        "billingId": 2,
-        "isPaid": true
-     }
-     ```
 
 #### Consumer 
 
-API '/consumers' offers endpoints for managing consumers.
+API '/consumers' offers endpoints for managing consumers, for example creation of a new consumer or retrieving consumer details connected to a grid section of a grid.
 
-1. **`/consumers/addconsumer`**
-   - **Method:** POST
-   - **Validation:** Yes
-   - **Description:** Add consumers requesting cooling energy from the cooling grid. Provide ID of existing grid section.
-   - **Request Body Example:**
-     ```json
-     {
-        "firstName": "Jon",
-        "lastName": "Doe",
-        "companyName": "Byte DataCenter Ltd",
-        "email": "email@jondoe.com",
-        "phone": "123456789",
-        "gridSectionID": 17
-     }
-     ```
 
 #### Grids 
 
-API '/grids' offers endpoints for managing cooling grid systems.
+API '/grids' offers endpoints for managing cooling grid systems, for example creation of a new grid.
 
-1. **`/grids/addgrid`**
-   - **Method:** POST
-   - **Validation:** Yes
-   - **Description:** Add new grid. Grids are divided in grid sections; managed with a separate API. 
-   - **Request Body Example:**
-     ```json
-     {
-        "gridName": "ABC Grid"
-     }
-     ```
 
 #### Grid Parameters 
 
-API '/gridparameters' offers endpoints for managing cooling grid systems.
-
-1. **`/gridparameters/addparameterlog`**
-   - **Method:** POST
-   - **Validation:** Yes
-   - **Description:** Add new grid parameter log, such as mass flow rate (in kg/s), specific heat capacity of the heating fluid (in J/kg⋅K) as well as temperature inlet and outlet (K) which is needed to calculate the temperature difference ΔT = T_inlet - T_outlet. The following formula can be used to calculate the energy flow (cooling heat transfer rate) through the pipe: Energy Flow (Q) = Mass Flow Rate (m) * Specific Heat Capacity (Cp) * Temperature Difference (ΔT).
-   Determine the appropriate frequency for data collection based on your monitoring needs. A higher frequency provides more detailed information but requires more storage and processing resources.
-   - **Request Body Example:**
-     ```json
-     {
-        "massFlowRate": 21.5,
-        "specificHeatCapacity": 4.18,
-        "temperatureIn": 2.2,
-        "temperatureOut": 15.2,
-        "startDate": "2024-04-10T00:00:00Z",
-        "endDate": "2024-04-11T00:00:00Z",
-        "gridId": 1
-     }
-     ```
+API '/gridparameters' offers endpoints for managing cooling grid systems. 
+For example, add new grid parameter log, such as mass flow rate (in kg/s), specific heat capacity of the heating fluid (in J/kg⋅K) as well as temperature inlet and outlet (K) which is needed to calculate the temperature difference ΔT = T_in - T_out. The following formula can be used to calculate the energy flow (cooling energy transfer rate) through the pipe: Energy Flow (Q) = Mass Flow Rate (m) * Specific Heat Capacity (Cp) * Temperature Difference (ΔT). Determine the appropriate frequency for data collection based on your monitoring needs. A higher frequency provides more detailed information but requires more storage and processing resources.
 
 
-#### Grid Energy Consumption 
+#### Grid Energy Transfer 
 
-API '/consumptiongrid' offers endpoints for managing the consumption log for the entire year. Based on on the logged parameters of the grid, the entire energy consumption is calculated for each month based on E_month = Σ (Q_avg_i * Δt_i). The difference is composed of grid losses and consumer consumption.
-
-1. **`/consumptiongrid/get`**
-   - **Method:** GET
-   - **Validation:** Yes
-   - **Description:** Retrieve the grid's consumption of cooling energy for a certain month.
-   - **Request Body Example:**
-     ```json
-     {
-        "month": 4,
-        "year": 2024
-     }
-     ```
+API '/GridEnergyTransfer' offers endpoints for managing the transfered energy per month. Based on on the logged parameters of the grid, the entire energy transfer in kWh is calculated for each month based on E_month = (m_dot) * (cp) * (T_in - T_out) * (t) / (3600 * 1000). T_in represents the average flow temperature into the grid; T_out the return flow temperature. t reflects the time in seconds. The difference between energy transfer of the grid and total consumer consumption reflects grid losses.
 
 
 #### Grid Sections 
 
-API '/gridsections' offers endpoints for managing grid sections.
+Subdivide each grid into sections for better overview and management
 
-1. **`/gridsections/addgrid`**
-   - **Method:** POST
-   - **Validation:** Yes
-   - **Description:** Add new grid section which belongs to an existing grid. 
-   - **Request Body Example:**
-     ```json
-     {
-        "gridSectionName": "Section East",
-        "gridID": 12
-     }
-     ```
-
-Feel free to explore and integrate these API routes into your applications! If you have any questions or need further assistance, please refer to the detailed documentation for each route.
-
-### Statistical Analysis
-
-Possible calculations:
-
--   Interquartile Range
--   Lower bound
--   Mean
--   Median
--   Outliers
--   Quantile 25, Quantile 75, Quantile 90, Quantile 95
--   Skewness
--   Standard deviation
--   Upper bound
--   Variance
 
 
 <!-- ROADMAP -->
 ## Roadmap
 
--   ✅ Storing images on and implementing AWS S3 
--   ✅ Extend email notification feature
--   ⬜️ Addressing more nuanced linting issues.
--   ⬜️ Implement brute-force protection for authorization process
+-   ✅ Cron job implementation calculating and storing grid energy transfer
+-   ✅ Cron job implementation calculating and storing grid efficiency
+-   ⬜️ Implementing Authentication and Authorization 
+-   ⬜️ Providing statistical evaluation
 -   ⬜️ Extend testing
--   ⬜️ Add option to backup and upload MongoDB database to S3
+-   ⬜️ Add email notifications
 
 
-See the [open issues](https://github.com/paulmuenzner/coolinggridmanager/issues) to report bugs or request fatures.
+See the [open issues](https://github.com/paulmuenzner/CoolingGridManager/issues) to report bugs or request fatures.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -425,25 +197,11 @@ Distributed under the GNU General Public License v2.0. See [LICENSE](LICENSE.txt
 
 Paul Münzner: [https://paulmuenzner.com](https://paulmuenzner.com) 
 
-Project Link: [https://github.com/paulmuenzner/coolinggridmanager](https://github.com/paulmuenzner/coolinggridmanager)
+Project Link: [https://github.com/paulmuenzner/CoolingGridManager](https://github.com/paulmuenzner/CoolingGridManager)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
-
-*   [AWS S3 Upload Size](https://docs.aws.amazon.com/AmazonS3/latest/userguide/upload-objects.html)
-*   [MongoDB Go Docs](https://www.mongodb.com/docs/drivers/go/current/quick-start/)
-*   [AWS SDK for Go V2 Docs][aws-url]
-*   [Gomail Docs](https://pkg.go.dev/gopkg.in/gomail.v2?utm_source=godoc)
-*   [Testing](https://pkg.go.dev/testing) & [assert](https://pkg.go.dev/github.com/stretchr/testify/assert)
-
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
@@ -457,12 +215,12 @@ Use this space to list resources you find helpful and would like to give credit 
 [mongodb-url]: https://go.dev/
 [github-shield]: https://img.shields.io/badge/paulmuenzner-black.svg?logo=github&logoColor=ffffff&colorB=000000
 [github-url]: https://github.com/paulmuenzner?tab=repositories
-[contributors-shield]: https://img.shields.io/github/contributors/paulmuenzner/coolinggridmanager.svg
-[contributors-url]: https://github.com/paulmuenzner/coolinggridmanager/graphs/contributors
-[issues-shield]: https://img.shields.io/github/issues/paulmuenzner/coolinggridmanager.svg
-[issues-url]: https://github.com/paulmuenzner/coolinggridmanager/issues
+[contributors-shield]: https://img.shields.io/github/contributors/paulmuenzner/CoolingGridManager.svg
+[contributors-url]: https://github.com/paulmuenzner/CoolingGridManager/graphs/contributors
+[issues-shield]: https://img.shields.io/github/issues/paulmuenzner/CoolingGridManager.svg
+[issues-url]: https://github.com/paulmuenzner/CoolingGridManager/issues
 [license-shield]: https://img.shields.io/badge/license-GPL_2.0-orange.svg?colorB=FF5733
-[license-url]: https://github.com/paulmuenzner/coolinggridmanager/blob/master/LICENSE.txt
+[license-url]: https://github.com/paulmuenzner/CoolingGridManager/blob/master/LICENSE.txt
 <!-- [website-shield]: https://img.shields.io/badge/www-paulmuenzner.com-blue
 [website-url]: https://paulmuenzner.com -->
 

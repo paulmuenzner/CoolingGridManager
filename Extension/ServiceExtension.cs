@@ -10,7 +10,8 @@ public static class ServiceExtension
         services.AddScoped<GridSectionService>();
         services.AddScoped<TicketService>();
         services.AddScoped<ConsumptionConsumerService>();
-        services.AddScoped<ConsumptionGridService>();
+        services.AddScoped<GridEnergyTransferService>();
+        services.AddScoped<GridEfficiencyService>();
         services.AddScoped<GridParameterLogService>();
         services.AddScoped<BillingService>();
     }

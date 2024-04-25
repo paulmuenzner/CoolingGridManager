@@ -1,8 +1,15 @@
 namespace CoolingGridManager.IRequests
 {
-    public class IGetBillRequest
+    public class IGetBillByConsumerRequest
     {
         public required int ConsumerID { get; set; }
+        public required int BillingMonth { get; set; }
+        public required int BillingYear { get; set; }
+    }
+
+    public class IGetBillByGridRequest
+    {
+        public required int GridID { get; set; }
         public required int BillingMonth { get; set; }
         public required int BillingYear { get; set; }
     }

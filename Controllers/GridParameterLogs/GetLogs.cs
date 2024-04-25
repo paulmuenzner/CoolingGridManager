@@ -44,13 +44,13 @@ namespace CoolingGridManager.Controllers.GridParameters
         /// </remarks>
         [HttpGet]
         [Tags("GridParameters")]
-        public async Task<IActionResult> GetParameterLogs([FromBody] IGetMonthlyGridParameterDetailsRequest request)
+        public async Task<IActionResult> GetParameterLogs([FromBody] IGetGridDataRequest request)
         {
             try
             {
                 if (request == null)
                 {
-                    return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, "Request not valid. Valid grid ID, year and month must be provided.", "Requested paramter logs not found.", null);
+                    return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, "Request not valid. Valid grid ID, year and month must be provided.", "Requested parameter not valid.", null);
                 }
 
                 // Validate

@@ -30,7 +30,7 @@ namespace CoolingGridManager.Utils.CronJobs
             try
             {
                 // Billing period is previous month
-                // Define billing month -> previous calender month
+                // Define billing month -> previous calendar month
                 // Current date
                 DateTime date = DateTime.Now;
                 // Get the billing month (previous month)
@@ -65,7 +65,7 @@ namespace CoolingGridManager.Utils.CronJobs
                         foreach (var consumer in consumers)
                         {
                             // First: It shouldn't but validate if Bill already exists avoiding duplication
-                            var billRequest = new IGetBillRequest
+                            var billRequest = new IGetBillByConsumerRequest
                             {
                                 ConsumerID = consumer.ConsumerID,
                                 BillingMonth = billingMonth,

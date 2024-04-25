@@ -2,6 +2,7 @@ using CoolingGridManager.Models.Data;
 using CoolingGridManager.Exceptions;
 using FormatException = CoolingGridManager.Exceptions.FormatException;
 using CoolingGridManager.IRequests;
+using Microsoft.EntityFrameworkCore;
 
 namespace CoolingGridManager.Services
 {
@@ -42,6 +43,31 @@ namespace CoolingGridManager.Services
                 string message = string.Format("Exception: {ex}", ex.ToString());
                 _logger.Error(ex, message);
                 throw new TryCatchException(message, "CreateGridSectionRecord");
+            }
+        }
+
+        ////////////////////////////////////////////////////
+        // GET GRID SECTION RECORDS BY GRID ID
+        public async Task<List<GridSection>> GetGridSectionRecords(int gridID)
+        {
+            try
+            {
+                // Retrieve the grid sections associated with GridID
+                List<GridSection> existingGrid = await _context.GridSections.Where(gs => gs.GridID == gridID).ToListAsync();
+
+                if (existingGrid == null)
+                {
+                    _logger.Information($"Grid sections with Grid ID {gridID} not found with GetGridSectionRecords.");
+                    return new List<GridSection>();
+                }
+
+                return existingGrid;
+            }
+            catch (Exception ex)
+            {
+                string message = string.Format("Exception: {ex}", ex.ToString());
+                _logger.Error(ex, message);
+                throw new TryCatchException(message, "GetGridSectionRecords");
             }
         }
     }

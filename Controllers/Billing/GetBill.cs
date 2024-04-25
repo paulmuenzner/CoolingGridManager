@@ -26,7 +26,7 @@ namespace CoolingGridManager.Controllers.Bills
 
         [HttpGet]
         [Tags("Billing")]
-        public async Task<IActionResult> GetBillDetails([FromBody] IGetBillRequest request)
+        public async Task<IActionResult> GetBillDetails([FromBody] IGetBillByConsumerRequest request)
         {
             try
             {

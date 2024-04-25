@@ -34,8 +34,7 @@ namespace CoolingGridManager.Services
 
                 var record = new GridEfficiency
                 {
-                    Efficiency = request.Efficiency,
-                    LossesAbsolute = request.LossesAbsolute,
+                    EfficiencyRelative = request.EfficiencyRelative,
                     Month = request.Month,
                     Year = request.Year,
                     Grid = relatedGrid
@@ -52,5 +51,36 @@ namespace CoolingGridManager.Services
             }
         }
 
+
+        /////////////////////////////////////
+        // GET GRID EFFICIENCY RECORD
+        public async Task<GridEfficiency> GetGridEfficiency(IGetGridDataRequest request)
+        {
+            try
+            {
+                // Retrieve data from GridEfficiency table
+                var gridEfficiency = await _context.GridEfficiencies.FirstOrDefaultAsync(x =>
+                        x.GridID == request.GridID &&
+                        x.Month == request.Month &&
+                        x.Year == request.Year);
+
+                if (gridEfficiency == null)
+                {
+                    _logger.Warning($"Entry with grid ID {request.GridID} does not exist.");
+                    throw new FormatException($"Entry with grid ID {request.GridID} does not exist.", "GetGridEfficiency");
+                }
+                return gridEfficiency;
+
+            }
+            catch (Exception ex)
+            {
+                string message = string.Format("Exception: {ex}", ex.ToString());
+                _logger.Error(ex, message);
+                throw new TryCatchException(message, "GetGridEfficiency");
+            }
+        }
+
     }
 }
+
+

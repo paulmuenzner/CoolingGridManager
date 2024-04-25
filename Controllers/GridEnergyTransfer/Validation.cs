@@ -4,14 +4,14 @@ using CoolingGridManager.IRequests;
 
 
 
-namespace CoolingGridManager.Validators.GridConsumptions
+namespace CoolingGridManager.Validators.GridEnergyTransfer
 {
 
     // Get Grid Consumption Validator
-    public class GetGridConsumptionValidator : AbstractValidator<IGetGridConsumptionRequest>
+    public class GetGridEnergyTransferValidator : AbstractValidator<IGetGridDataRequest>
     {
         private readonly AppDbContext _context;
-        public GetGridConsumptionValidator(AppDbContext context)
+        public GetGridEnergyTransferValidator(AppDbContext context)
         {
             _context = context;
 
@@ -21,7 +21,7 @@ namespace CoolingGridManager.Validators.GridConsumptions
 
             RuleFor(consumption => consumption.Year)
                 .NotEmpty().WithMessage("Year value is required.")
-                .InclusiveBetween(AppData.TimeFrameYearMin, AppData.TimeFrameYearMax).WithMessage("Year must be between 2020 and 2040.");
+                .InclusiveBetween(AppData.TimeFrameYearMin, AppData.TimeFrameYearMax).WithMessage($"Year must be between {AppData.TimeFrameYearMin} and {AppData.TimeFrameYearMax}.");
 
             RuleFor(consumption => consumption.GridID)
                 .NotEmpty().WithMessage("Valid grid ID must be provided.")

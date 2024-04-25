@@ -38,7 +38,7 @@ namespace CoolingGridManager.Services
 
         ////////////////////////////
         // GET BILL DETAILS 
-        public async Task<Billing> GetBillingDetails(IGetBillRequest request)
+        public async Task<Billing> GetBillingDetails(IGetBillByConsumerRequest request)
         {
             try
             {
@@ -69,7 +69,7 @@ namespace CoolingGridManager.Services
 
         ////////////////////////////
         // Bill Exists?
-        public async Task<bool> DoesBillingEntryExist(IGetBillRequest request)
+        public async Task<bool> DoesBillingEntryExist(IGetBillByConsumerRequest request)
         {
             return await _context.Bills
                 .AnyAsync(b => b.ConsumerID == request.ConsumerID && b.BillingMonth == request.BillingMonth && b.BillingYear == request.BillingYear);

@@ -8,7 +8,7 @@ using Utility.ValidatorHelpers;
 namespace CoolingGridManager.Validators.GridParameterLogs
 {
     // GetGridParameterLog Validator
-    public class GetGridParameterLogValidator : AbstractValidator<IGetMonthlyGridParameterDetailsRequest>
+    public class GetGridParameterLogValidator : AbstractValidator<IGetGridDataRequest>
     {
         private readonly AppDbContext _context;
         public GetGridParameterLogValidator(AppDbContext context)

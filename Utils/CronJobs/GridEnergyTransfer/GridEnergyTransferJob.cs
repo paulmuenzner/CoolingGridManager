@@ -9,19 +9,26 @@ namespace CoolingGridManager.Utils.CronJobs
 {
 
     [DisallowConcurrentExecution]
-    public class GridConsumption : IJob
+    /// <summary>
+    /// Grid Energy Transfer
+    /// </summary>
+    /// <remarks>
+    /// Calculate Grid Energy Transfer based on the grid's flow, return flow. 
+    /// This value/result doesn't equal and must be greater than the metered total consumption of all consumers of this grid, which doesn't includes losses
+    /// </remarks>
+    public class GridEnergyTransfer : IJob
     {
         private const int PageSize = 10;
         private readonly GridParameterLogService _gridParameterLogService;
-        private readonly ConsumptionGridService _consumptionGridService;
+        private readonly GridEnergyTransferService _gridEnergyTransferService;
         private readonly GridService _gridService;
         private readonly ILogger _logger;
 
-        public GridConsumption(ILogger logger, GridParameterLogService gridParameterLogService, ConsumptionGridService consumptionGridService, GridService gridService)
+        public GridEnergyTransfer(ILogger logger, GridParameterLogService gridParameterLogService, GridEnergyTransferService gridEnergyTransferService, GridService gridService)
         {
             _logger = logger;
             _gridParameterLogService = gridParameterLogService;
-            _consumptionGridService = consumptionGridService;
+            _gridEnergyTransferService = gridEnergyTransferService;
             _gridService = gridService;
         }
 
@@ -30,19 +37,19 @@ namespace CoolingGridManager.Utils.CronJobs
         {
             try
             {
-                // Relevant period to calculate monthly grid consumption for is previous month
+                // Relevant period to calculate monthly grid energy transfer is previous month
                 // Current date
                 DateTime date = DateTime.Now;
 
                 // Get the month (previous month)
-                int consumptionMonth = date.Month - 1;
-                int consumptionYear = date.Year;
+                int month = date.Month - 1;
+                int year = date.Year;
 
                 // Adjust the year if the previous month is December
-                if (consumptionMonth == 0)
+                if (month == 0)
                 {
-                    consumptionMonth = 12;
-                    consumptionYear--;
+                    month = 12;
+                    year--;
                 }
                 var pageNumber = 1;
                 bool hasNextPage = true;
@@ -65,36 +72,36 @@ namespace CoolingGridManager.Utils.CronJobs
                         // Handle each grid in the batch
                         foreach (var grid in grids)
                         {
-                            // First: It shouldn't but validate if consumption entry already exists avoiding duplication
+                            // First: It shouldn't but validate if entry for energy transfer already exists avoiding duplication
                             var gridRequest = new IGetGridDataRequest
                             {
                                 GridID = grid.GridID,
-                                Month = consumptionMonth,
-                                Year = consumptionYear
+                                Month = month,
+                                Year = year
                             };
-                            var consumptionEntryExists = await _consumptionGridService.DoesGridConsumptionEntryExist(gridRequest);
+                            var gridEnergyTransferEntryExists = await _gridEnergyTransferService.DoesGridEnergyTransferEntryExist(gridRequest);
 
                             // Skip to next grid if entry already existing
-                            if (consumptionEntryExists)
+                            if (gridEnergyTransferEntryExists)
                             {
-                                _logger.Warning($"Consumption entry for grid with ID {grid.GridID} for month {consumptionMonth} and year {consumptionYear} already existing. Date: {date}.");
+                                _logger.Warning($"Entry for energy transfer of grid with ID {grid.GridID} for month {month} and year {year} already existing. Date: {date}.");
                                 continue;
                             }
 
                             // Get all relevant data from grid parameter logs 
-                            List<GridParameterLog> gridConsumptionsByMonth = await _gridParameterLogService.GetMonthlyGridParameterDetails(gridRequest);
+                            List<GridParameterLog> gridParametersByMonth = await _gridParameterLogService.GetMonthlyGridParameterDetails(gridRequest);
 
-                            // Calculate consumed cooling energy for entire month
-                            decimal totalConsumption = Energy.CaluclateGridConsumption(gridConsumptionsByMonth);
+                            // Calculate transfered cooling energy for entire month (also based on flow, return flow)
+                            decimal totalEnergyTransfer_kWh = Energy.CalculateGridEnergyTransfer(gridParametersByMonth);
 
-                            var record = new ICreateGridConsumptionRecordRequest
+                            var record = new ICreateGridEnergyTransferRecordRequest
                             {
                                 GridID = grid.GridID,
-                                Consumption = totalConsumption,
-                                Month = consumptionMonth,
-                                Year = consumptionYear
+                                EnergyTransfer = totalEnergyTransfer_kWh,
+                                Month = month,
+                                Year = year
                             };
-                            var consumptionId = await _consumptionGridService.CreateGridConsumptionRecord(record);
+                            await _gridEnergyTransferService.CreateGridEnergyTransferRecord(record);
                         }
 
                         pageNumber++;
@@ -107,7 +114,7 @@ namespace CoolingGridManager.Utils.CronJobs
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Error retrieving and logging consumers in batches");
+                _logger.Error(ex, "Error determining and storing energy transfer entry.");
                 throw;
             }
         }

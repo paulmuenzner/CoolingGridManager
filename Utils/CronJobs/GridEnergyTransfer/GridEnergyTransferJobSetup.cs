@@ -7,9 +7,9 @@ namespace CoolingGridManager.Utils.CronJobs
     {
         public void Configure(QuartzOptions options)
         {
-            var jobKey = JobKey.Create(nameof(GridConsumption));
+            var jobKey = JobKey.Create(nameof(GridEnergyTransfer));
             options
-                .AddJob<GridConsumption>(jobBuilder => jobBuilder.WithIdentity(jobKey))
+                .AddJob<GridEnergyTransfer>(jobBuilder => jobBuilder.WithIdentity(jobKey))
                 .AddTrigger(trigger =>
                     trigger
                         .ForJob(jobKey)

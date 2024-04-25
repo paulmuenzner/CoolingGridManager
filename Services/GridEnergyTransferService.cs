@@ -6,20 +6,19 @@ using CoolingGridManager.IServices;
 
 namespace CoolingGridManager.Services
 {
-    public class ConsumptionGridService : IConsumptionGridService
+    public class GridEnergyTransferService : IGridEnergyTransferService
     {
         private readonly AppDbContext _context;
-
         private readonly Serilog.ILogger _logger;
-        public ConsumptionGridService(AppDbContext context, Serilog.ILogger logger)
+        public GridEnergyTransferService(AppDbContext context, Serilog.ILogger logger)
         {
             _logger = logger;
             _context = context;
         }
 
         ///////////////////////////////////////////
-        // ADD CONSUMPTION VALUE
-        public async Task<ConsumptionGrid> CreateGridConsumptionRecord(ICreateGridConsumptionRecordRequest request)
+        // ADD VALUE FOR ENERGY TRANSFER
+        public async Task<GridEnergyTransfer> CreateGridEnergyTransferRecord(ICreateGridEnergyTransferRecordRequest request)
         {
             try
             {
@@ -32,43 +31,43 @@ namespace CoolingGridManager.Services
                     throw new InvalidOperationException($"Cannot find grid with ID {gridID}.");
                 }
 
-                var consumptionLog = new ConsumptionGrid
+                var log = new GridEnergyTransfer
                 {
                     Grid = grid,
                     Month = request.Month,
                     Year = request.Year,
-                    Consumption = request.Consumption
+                    EnergyTransfer = request.EnergyTransfer
                 };
-                _context.ConsumptionGrids.Add(consumptionLog);
+                _context.GridEnergyTransfers.Add(log);
                 await _context.SaveChangesAsync();
 
-                return consumptionLog;
+                return log;
             }
             catch (Exception ex)
             {
                 string message = string.Format("Exception: {ex}", ex.ToString());
                 _logger.Error(ex, message);
-                throw new TryCatchException(message, "CreateGridConsumptionRecord");
+                throw new TryCatchException(message, "CreateGridEnergyTransferRecord");
             }
         }
 
         ///////////////////////////////
-        // Consumption Entry Exists?
-        public async Task<bool> DoesGridConsumptionEntryExist(IGetGridDataRequest request)
+        // ENTRY EXISTS?
+        public async Task<bool> DoesGridEnergyTransferEntryExist(IGetGridDataRequest request)
         {
-            return await _context.ConsumptionGrids
+            return await _context.GridEnergyTransfers
                 .AnyAsync(g => g.GridID == request.GridID && g.Month == request.Month && g.Year == request.Year);
         }
 
+
         //////////////////////////////////////////////////
-        // GET ALL CONSUMPTION ENTRIES PER USER AND MONTH
-        public async Task<ConsumptionGrid> GetGridConsumptionDetails(IGetGridDataRequest request)
+        // GET ENERGY TRANSFER DETAILS FOR GRID 
+        public async Task<GridEnergyTransfer> GetGridEnergyTransferDetails(IGetGridDataRequest request)
         {
             try
             {
-                // All entries of current month
-                var logs = await _context.ConsumptionGrids
-                    .FirstOrDefaultAsync(log =>
+                var logs = await _context.GridEnergyTransfers
+                        .FirstOrDefaultAsync(log =>
                         log.GridID == request.GridID &&
                         log.Month == request.Month &&
                         log.Year == request.Year);
@@ -79,7 +78,7 @@ namespace CoolingGridManager.Services
                 }
                 else
                 {
-                    var message = $"Not possible to retrieve grid consumption logs with 'GetGridConsumptionDetails'. Month: {request.Month}, Year: {request.Year}, GridID: {request.GridID}";
+                    var message = $"Not possible to retrieve the grid's energy transfer logs with 'GetGridEnergyTransferDetails'. Month: {request.Month}, Year: {request.Year}, GridID: {request.GridID}";
                     _logger.Error(message);
                     throw new Exception(message);
                 }
@@ -89,8 +88,13 @@ namespace CoolingGridManager.Services
             {
                 string message = string.Format("Exception: {ex}", ex.ToString());
                 _logger.Error(ex, message);
-                throw new TryCatchException(message, "GetGridConsumptionDetails");
+                throw new TryCatchException(message, "GetGridEnergyTransferDetails");
             }
+        }
+
+        internal async Task CreateGridEfficiencyRecord(GridEfficiency record)
+        {
+            throw new NotImplementedException();
         }
     }
 }

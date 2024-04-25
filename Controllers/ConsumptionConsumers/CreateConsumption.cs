@@ -40,7 +40,7 @@ namespace CoolingGridManager.Controllers.ConsumptionConsumerController
             {
                 if (request == null)
                 {
-                    return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, "Request not valid.", "Related consumer not found.", null);
+                    return ResponseFormatter.Negative(HttpStatusNegative.UnprocessableEntity, new { }, "Request not valid.", "Related consumer not valid.", null);
                 }
 
                 // Validate

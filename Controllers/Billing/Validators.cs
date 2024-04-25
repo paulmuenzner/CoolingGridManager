@@ -53,7 +53,7 @@ namespace CoolingGridManager.Validators.Bills
     }
 
     // Add Bill Validator
-    public class GetBillValidator : AbstractValidator<IGetBillRequest>
+    public class GetBillValidator : AbstractValidator<IGetBillByConsumerRequest>
     {
         private readonly AppDbContext _context;
         public GetBillValidator(AppDbContext context)

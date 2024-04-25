@@ -17,7 +17,7 @@ public class AppDbContext : DbContext
     public DbSet<GridEfficiency> GridEfficiencies { get; set; }
     public DbSet<GridSection> GridSections { get; set; }
     public DbSet<ConsumptionConsumer> ConsumptionConsumers { get; set; }
-    public DbSet<ConsumptionGrid> ConsumptionGrids { get; set; }
+    public DbSet<GridEnergyTransfer> GridEnergyTransfers { get; set; }
     public DbSet<TicketModel> Tickets { get; set; }
 
 
@@ -43,9 +43,13 @@ public class AppDbContext : DbContext
             .HasForeignKey(gs => gs.GridID);
 
         modelBuilder.Entity<GridEfficiency>()
-            .HasOne(gs => gs.Grid)
-            .WithMany(gs => gs.GridEfficiency)
-            .HasForeignKey(gs => gs.GridID);
+            .HasOne(e => e.Grid)
+            .WithMany(e => e.GridEfficiency)
+            .HasForeignKey(e => e.GridID);
+
+        modelBuilder.Entity<GridEfficiency>()
+            .Property(e => e.EfficiencyRelative)
+            .HasColumnType("decimal(1, 10)");
 
         modelBuilder.Entity<GridParameterLog>()
             .HasIndex(gpl => gpl.DateTimeEnd)
@@ -72,13 +76,13 @@ public class AppDbContext : DbContext
             .HasIndex(cc => cc.ElementID)
             .IsUnique();
 
-        modelBuilder.Entity<ConsumptionGrid>()
+        modelBuilder.Entity<GridEnergyTransfer>()
             .HasOne(cg => cg.Grid)
-            .WithMany(cg => cg.ConsumptionGrid)
+            .WithMany(cg => cg.GridEnergyTransfer)
             .HasForeignKey(cg => cg.GridID);
 
-        modelBuilder.Entity<ConsumptionGrid>()
-            .Property(cg => cg.Consumption)
+        modelBuilder.Entity<GridEnergyTransfer>()
+            .Property(cg => cg.EnergyTransfer)
             .HasColumnType("decimal(20, 4)");
 
         modelBuilder.Entity<Billing>()

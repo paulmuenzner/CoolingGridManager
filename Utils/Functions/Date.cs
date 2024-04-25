@@ -1,6 +1,5 @@
 
 
-
 namespace Utility.Functions
 {
     public static class Date
@@ -15,6 +14,23 @@ namespace Utility.Functions
 
             return timeSpanSeconds;
 
+        }
+    }
+
+    public static class Cron
+    {
+        public static string ModifyMinHourCronSchedule(string currentExpression, string hour, string minute)
+        {
+
+            // Split the expression into components
+            var expressionParts = currentExpression.Split(' ');
+
+            // Modify minute and hour fields
+            expressionParts[0] = minute;
+            expressionParts[1] = hour;
+
+            // Join the modified expression parts back together
+            return string.Join(" ", expressionParts);
         }
     }
 

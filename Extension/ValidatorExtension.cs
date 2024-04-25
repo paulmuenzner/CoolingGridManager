@@ -1,5 +1,4 @@
-﻿using CoolingGridManager.Validators;
-using FluentValidation; // Import the validators folder
+﻿using FluentValidation;
 
 namespace CoolingGridManager.Extensions
 {

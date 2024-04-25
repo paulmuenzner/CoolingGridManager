@@ -13,5 +13,6 @@ public static class RouteExtension
         app.MapAreaRoute("billing", "{controller}/{index}");
         app.MapAreaRoute("gridparameters", "{controller}/{index}");
         app.MapAreaRoute("consumptiongrid", "{controller}/{index}");
+        app.MapAreaRoute("gridefficiency", "{controller}/{index}");
     }
 }

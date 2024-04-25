@@ -9,7 +9,7 @@ namespace CoolingGridManager.IServices
     public interface IGridParameterLogService
     {
         Task<GridParameterLog> CreateGridParameterLogRecord(ICreateGridParameterLogRecordRequest request);
-        Task<ConsumptionGrid> GetMonthlyGridParameterDetails(IGetMonthlyGridParameterDetailsRequest request);
+        Task<GridEnergyTransfer> GetMonthlyGridParameterDetails(IGetMonthlyGridParameterDetailsRequest request);
 
     }
 }

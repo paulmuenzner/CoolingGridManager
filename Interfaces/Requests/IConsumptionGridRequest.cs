@@ -1,4 +1,4 @@
-using static CoolingGridManager.Models.Data.ConsumptionGrid;
+using static CoolingGridManager.Models.Data.GridEnergyTransfer;
 
 namespace CoolingGridManager.IRequests
 {
@@ -9,7 +9,7 @@ namespace CoolingGridManager.IRequests
         public int Month { get; set; }
     }
 
-    public class ICreateGridConsumptionRecordRequest : CreateConsumptionGridDto
+    public class ICreateGridEnergyTransferRecordRequest : CreateGridEnergyTransferDto
     {
     }
 

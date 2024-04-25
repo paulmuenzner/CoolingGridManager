@@ -96,7 +96,7 @@ namespace CoolingGridManager.Services
         {
             try
             {
-                var consumers = await _context.Consumers
+                List<Consumer> consumers = await _context.Consumers
                         .OrderBy(c => c.ConsumerID) // Order by primary key or other unique column
                         .Skip(request.Skip * request.Size)
                         .Take(request.Size)

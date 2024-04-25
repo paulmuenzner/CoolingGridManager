@@ -17,15 +17,13 @@ namespace CoolingGridManager.Controllers.GridSectionController
     {
         private readonly AddGridSectionValidator _addGridSectionValidator;
         private readonly GridSectionService _gridSectionService;
-        private readonly ExceptionResponse _exceptionResponse;
-        private readonly Serilog.ILogger _logger;
 
-        public CreateController(AddGridSectionValidator addGridSectionValidator, ExceptionResponse exceptionResponse, Serilog.ILogger logger, GridSectionService gridSectionService)
+
+        public CreateController(AddGridSectionValidator addGridSectionValidator, GridSectionService gridSectionService)
         {
             _addGridSectionValidator = addGridSectionValidator;
             _gridSectionService = gridSectionService;
-            _exceptionResponse = exceptionResponse;
-            _logger = logger;
+
         }
 
         /// <summary>

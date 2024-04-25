@@ -18,7 +18,10 @@ namespace CoolingGridManager.Models.Data
         [Required(ErrorMessage = "Element ID is required.")]
         public string ElementID { get; set; }
 
-        [Required(ErrorMessage = "Consumption value is required.")]
+        /// <summary>
+        /// Unit kWh!
+        /// </summary>
+        [Required(ErrorMessage = "Consumption value in kWh is required.")]
         public decimal ConsumptionValue { get; set; }
 
         [Required(ErrorMessage = "Log Date is required.")]

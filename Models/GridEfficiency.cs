@@ -15,8 +15,7 @@ namespace CoolingGridManager.Models.Data
 
         public GridEfficiency()
         {
-            Efficiency = 0m;
-            LossesAbsolute = 0;
+            EfficiencyRelative = 0m;
             Month = 0;
             Year = 0;
             Grid = new Grid();
@@ -31,7 +30,7 @@ namespace CoolingGridManager.Models.Data
             public int GridID { get; set; }
             public GridEfficiencyDto()
             {
-                Efficiency = 0m;
+                EfficiencyRelative = 0m;
                 LossesAbsolute = 0;
                 Month = 0;
                 Year = 0;
@@ -50,8 +49,8 @@ public class GridEfficiencyBase
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
-    [Required(ErrorMessage = "Efficiency value is required.")]
-    public decimal Efficiency { get; set; }
+    [Required(ErrorMessage = "Relative efficiency value is required.")]
+    public decimal EfficiencyRelative { get; set; }
 
     [Required(ErrorMessage = "Absolute losses required.")]
     public decimal LossesAbsolute { get; set; }
@@ -66,7 +65,7 @@ public class GridEfficiencyBase
 
     public GridEfficiencyBase()
     {
-        Efficiency = 0m;
+        EfficiencyRelative = 0m;
         LossesAbsolute = 0;
         Month = 0;
         Year = 0;

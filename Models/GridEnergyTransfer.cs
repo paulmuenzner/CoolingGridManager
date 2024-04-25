@@ -1,36 +1,38 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+/// <summary>
+/// Grid Energy Transfer in kWh including consumption and losses
+/// </summary>
 namespace CoolingGridManager.Models.Data
 {
-    [Table("ConsumptionGrid")]
-    public class ConsumptionGrid : ConsumptionGridBase
+    [Table("GridEnergyTransfer")]
+    public class GridEnergyTransfer : GridEnergyTransferBase
     {
         public int GridID { get; set; }
 
         [ForeignKey("GridID")]
         public Grid Grid { get; set; }
 
-        public ConsumptionGrid()
+        public GridEnergyTransfer()
         {
-            Consumption = 0m;
+
+            EnergyTransfer = 0m;
             Month = 0;
             Year = 0;
             Grid = new Grid();
         }
 
 
-        // Data Transfer Object specifically for creating new grid consumption entries
-        public class CreateConsumptionGridDto : ConsumptionGridBase
+        // Data Transfer Object specifically for creating new grid entries for energy transfer based on flow, return flow
+        public class CreateGridEnergyTransferDto : GridEnergyTransferBase
         {
             [Required(ErrorMessage = "Grid ID is required.")]
             [Display(Name = "Grid ID")]
             public int GridID { get; set; }
-            public CreateConsumptionGridDto()
+            public CreateGridEnergyTransferDto()
             {
-                Consumption = 0m;
+                EnergyTransfer = 0m;
                 Month = 0;
                 Year = 0;
                 GridID = 0;
@@ -42,14 +44,17 @@ namespace CoolingGridManager.Models.Data
 
 
 
-public class ConsumptionGridBase
+public class GridEnergyTransferBase
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
-    [Required(ErrorMessage = "Consumption value is required.")]
-    public decimal Consumption { get; set; }
+    /// <summary>
+    /// Grid Energy Transfer in kWh
+    /// </summary>
+    [Required(ErrorMessage = "Energy transfer value is required.")]
+    public decimal EnergyTransfer { get; set; }
 
     [Required(ErrorMessage = "Month is required.")]
     [Range(1, 12, ErrorMessage = "Month must be between 1 and 12.")]
@@ -59,9 +64,9 @@ public class ConsumptionGridBase
     [Range(2020, 2040, ErrorMessage = "Year must be between 2020 and 2040.")]
     public int Year { get; set; }
 
-    public ConsumptionGridBase()
+    public GridEnergyTransferBase()
     {
-        Consumption = 0m;
+        EnergyTransfer = 0m;
         Month = 0;
         Year = 0;
     }
