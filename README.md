@@ -104,19 +104,6 @@ Currently available options for status are 'open', 'onhold' and 'solved'.
 For the purpose of Incident Management, support tickets can be submitted and managed to keep an eye on and solve adverse events.
 
 
-3. **`/api/tickets/getticketbyid`**
-   - **Method:** GET
-   - **Validation:** Yes
-   - **Description:** Request existing ticket by ticket ID.
-    - **Request Body Example:**
-     ```json
-     {
-        "ticketId": 17
-     }
-     ```
-
-
-
 #### Consumption 
 
 API '/consumptions' offers endpoints for managing consumption data of consumers.
