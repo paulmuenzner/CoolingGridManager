@@ -6,7 +6,6 @@
 [![GNU License][license-shield]][license-url]
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/paulmuenzner/CoolingGridManager)
 ![GitHub top language](https://img.shields.io/github/languages/top/paulmuenzner/CoolingGridManager)
-![paulmuenzner.com](https://paulmuenzner.com)
 [![paulmuenzner github][github-shield]][github-url] 
 [![Contributors][contributors-shield]][contributors-url]
 
