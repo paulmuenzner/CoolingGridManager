@@ -1,9 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-/// <summary>
-/// Grid Energy Transfer in kWh including consumption and losses
-/// </summary>
+
 namespace CoolingGridManager.Models.Data
 {
     [Table("GridEnergyTransfer")]
@@ -23,6 +21,9 @@ namespace CoolingGridManager.Models.Data
             Grid = new Grid();
         }
 
+        /// <summary>
+        /// Grid Energy Transfer in kWh including consumption and losses
+        /// </summary>
 
         // Data Transfer Object specifically for creating new grid entries for energy transfer based on flow, return flow
         public class CreateGridEnergyTransferDto : GridEnergyTransferBase

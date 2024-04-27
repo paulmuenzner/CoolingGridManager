@@ -9,13 +9,7 @@ namespace CoolingGridManager.Utils.CronJobs
 {
 
     [DisallowConcurrentExecution]
-    /// <summary>
-    /// Grid Energy Transfer
-    /// </summary>
-    /// <remarks>
-    /// Calculate Grid Energy Transfer based on the grid's flow, return flow. 
-    /// This value/result doesn't equal and must be greater than the metered total consumption of all consumers of this grid, which doesn't includes losses
-    /// </remarks>
+
     public class GridEnergyTransfer : IJob
     {
         private const int PageSize = 10;
@@ -32,7 +26,13 @@ namespace CoolingGridManager.Utils.CronJobs
             _gridService = gridService;
         }
 
-
+        /// <summary>
+        /// Grid Energy Transfer
+        /// </summary>
+        /// <remarks>
+        /// Calculate Grid Energy Transfer based on the grid's flow, return flow. 
+        /// This value/result doesn't equal and must be greater than the metered total consumption of all consumers of this grid, which doesn't includes losses
+        /// </remarks>
         public async Task Execute(IJobExecutionContext context)
         {
             try

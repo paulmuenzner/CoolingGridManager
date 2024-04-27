@@ -3,6 +3,16 @@ using System.Text.RegularExpressions;
 
 public class ExceptionDetails
 {
+
+    public ExceptionDetails()
+    {
+        // Initialize non-nullable properties
+        ExceptionType = "";
+        ErrorMessage = "";
+        FileName = "";
+        MethodName = "";
+    }
+
     public string ExceptionType { get; set; }
     public string ErrorMessage { get; set; }
     public string FileName { get; set; }
