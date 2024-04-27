@@ -15,6 +15,15 @@ namespace Utility.Functions
             return timeSpanSeconds;
 
         }
+
+        // GET START DATETIME AND END DATETIME BY MONTH AND YEAR
+        public static (DateTimeOffset startDate, DateTimeOffset endDate) GetStartEndDateTime(int month, int year)
+        {
+            DateTimeOffset startDate = new DateTimeOffset(year, month, 1, 0, 0, 0, TimeSpan.Zero);
+            DateTimeOffset endDate = startDate.AddMonths(1).AddTicks(-1);
+
+            return (startDate, endDate);
+        }
     }
 
     public static class Cron

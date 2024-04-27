@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using FormatException = CoolingGridManager.Exceptions.FormatException;
 using CoolingGridManager.IServices;
 using CoolingGridManager.IResponse;
+using Utility.Functions;
 
 namespace CoolingGridManager.Services
 {
@@ -30,8 +31,7 @@ namespace CoolingGridManager.Services
                 List<GridSection> gridSections = await _gridSectionService.GetGridSectionRecords(request.GridID);
 
                 // Define time span (start and end DateTime) based on provided year and month 
-                var startDate = new DateTimeOffset(request.Year, request.Month, 1, 0, 0, 0, TimeSpan.Zero);
-                var endDate = startDate.AddMonths(1).AddTicks(-1);
+                var (startDate, endDate) = Date.GetStartEndDateTime(request.Month, request.Year);
 
                 if (gridSections.Any())
                 {
@@ -119,15 +119,14 @@ namespace CoolingGridManager.Services
             }
         }
 
-        /////////////////////////////////////////// prepare name
+        /////////////////////////////////////////// 
         // GET ALL CONSUMPTION ENTRIES PER USER AND MONTH
         public async Task<List<ConsumptionConsumer>> GetConsumptionForUserByMonth(IGetBillByConsumerRequest request)
         {
             try
             {
                 // All entries of current month
-                var startDate = new DateTimeOffset(request.BillingYear, request.BillingMonth, 1, 0, 0, 0, TimeSpan.Zero);
-                var endDate = startDate.AddMonths(1).AddTicks(-1);
+                var (startDate, endDate) = Date.GetStartEndDateTime(request.BillingMonth, request.BillingYear);
 
                 List<ConsumptionConsumer> logs = await _context.ConsumptionConsumers
                     .Where(log =>

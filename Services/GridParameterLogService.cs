@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using FormatException = CoolingGridManager.Exceptions.FormatException;
 using CoolingGridManager.IRequests;
 using CoolingGridManager.IResponse;
+using Utility.Functions;
 
 namespace CoolingGridManager.Services
 {
@@ -66,8 +67,8 @@ namespace CoolingGridManager.Services
             try
             {
                 // All entries of current month
-                var startDate = new DateTimeOffset(request.Year, request.Month, 1, 0, 0, 0, TimeSpan.Zero);
-                var endDate = startDate.AddMonths(1).AddTicks(-1);
+                var (startDate, endDate) = Date.GetStartEndDateTime(request.Month, request.Year);
+
 
                 var logs = await _context.GridParameterLog
                     .Where(log =>
