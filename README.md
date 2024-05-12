@@ -75,7 +75,8 @@ This Cooling Grid Manager is a software solution designed to efficiently manage 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
+<!-- USAGE -->
+## Usage
 
 ### Run program
 
@@ -85,17 +86,10 @@ Build program by: `dotnet build`
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
-
-<!-- USAGE -->
-## Usage
+### Endpoints 
 
 This server exposes various endpoints to facilitate authentication, file management, and plant-related operations.
 Please review implemented swagger information for more details at: http://localhost:5286/index.html
-
-
-### Examples 
 
 #### Tickets
 
@@ -124,6 +118,11 @@ API '/consumers' offers endpoints for managing consumers, for example creation o
 API '/grids' offers endpoints for managing cooling grid systems, for example creation of a new grid.
 
 
+#### Grid Sections 
+
+Subdivide each grid into sections with API '/gridsections' for better overview and management.
+
+
 #### Grid Parameters 
 
 API '/gridparameters' offers endpoints for managing cooling grid systems. 
@@ -133,11 +132,6 @@ For example, add new grid parameter log, such as mass flow rate (in kg/s), speci
 #### Grid Energy Transfer 
 
 API '/GridEnergyTransfer' offers endpoints for managing the transfered energy per month. Based on on the logged parameters of the grid, the entire energy transfer in kWh is calculated for each month based on E_month = (m_dot) * (cp) * (T_in - T_out) * (t) / (3600 * 1000). T_in represents the average flow temperature into the grid; T_out the return flow temperature. t reflects the time in seconds. The difference between energy transfer of the grid and total consumer consumption reflects grid losses.
-
-
-#### Grid Sections 
-
-Subdivide each grid into sections for better overview and management
 
 
 
