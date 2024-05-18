@@ -23,7 +23,7 @@
     <a href="#about-the-project"><strong>EXPLORE DOCS</strong></a>
     <br />
     <br />
-    <a href="#about-the-project">Pleanty features</a>
+    <a href="#about-the-project">Plenty of features</a>
     ·
     <a href="https://github.com/paulmuenzner/CoolingGridManager/issues">Report Bug</a>
     ·
